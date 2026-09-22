@@ -1,5 +1,7 @@
 node_modules/
 .expo/
+.vscode/
+.claude/
 dist/
 dist-check/
 npm-debug.log*

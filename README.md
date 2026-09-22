@@ -4,6 +4,8 @@ Aplicativo mobile que reproduz visualmente partes da interface do Spotify utiliz
 
 O projeto é um mock de interface: não possui backend, reprodução real de áudio, autenticação, persistência de dados ou integração com a API do Spotify. As telas e interações foram desenvolvidas para demonstrar componentes, navegação e construção de interfaces híbridas.
 
+Repositório: https://github.com/GuiMell0/Spotify-Expo
+
 ## Principais recursos:
 
 - Telas navegáveis;
