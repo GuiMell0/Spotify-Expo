@@ -35,7 +35,7 @@ export default function PlaylistScreen({ navigation }) {
             <View style={styles.pill}><MaterialCommunityIcons name="tune-variant" size={18} color={colors.text} /><Text style={styles.pillText}>Mixar</Text></View>
           </View>
           <View style={styles.list}>
-            {[...tracks, { id: '6', title: 'I Caught Myself', artist: 'Paramore' }].map((track, index) => (
+            {[...tracks, { id: '12', title: 'I Caught Myself', artist: 'Paramore' }].map((track, index) => (
               <TrackRow key={track.id} track={track} index={index} liked={index < 3} onPress={() => navigation.navigate('Player')} />
             ))}
           </View>

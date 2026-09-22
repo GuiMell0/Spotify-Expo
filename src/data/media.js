@@ -16,14 +16,14 @@ export const ASSETS = {
 export const quickItems = [
   { id: '1', title: 'daily', image: ASSETS.daily, target: 'Playlist' },
   { id: '2', title: 'my heart', image: ASSETS.heart, target: 'Playlist' },
-  { id: '3', title: 'Pierce The Veil', image: ASSETS.misadventures, target: 'Artist' },
+  { id: '3', title: 'Pierce The Veil', image: ASSETS.artist, target: 'Artist' },
   { id: '4', title: 'As suas músicas mais ouvidas', image: ASSETS.albumRed, target: 'Playlist' },
   { id: '5', title: 'No Repeat', image: ASSETS.albumNeon, target: 'Playlist' },
   { id: '6', title: 'all songs', image: ASSETS.albumDark, target: 'Album' },
 ];
 
 export const homeAlbums = [
-  { id: '1', title: "Carla's Song", subtitle: 'Harry Styles, Paramore e mais', image: ASSETS.playerCover, target: 'Playlist' },
+  { id: '1', title: "Mix de Pierce The Veil", subtitle: 'Pierce The Veil, Paramore e mais', image: ASSETS.collide, target: 'Playlist' },
   { id: '2', title: 'Misadventures', subtitle: 'Pierce The Veil', image: ASSETS.misadventures, target: 'Album' },
   { id: '3', title: 'This Is Paramore', subtitle: 'Os maiores sucessos', image: ASSETS.albumRed, target: 'Playlist' },
   { id: '4', title: 'Rock Mix', subtitle: 'Slipknot, System of a Down e mais', image: ASSETS.albumDark, target: 'Playlist' },
@@ -44,4 +44,10 @@ export const tracks = [
   { id: '3', title: 'The Divine Zero', artist: 'Pierce The Veil', duration: '4:00' },
   { id: '4', title: 'Floral & Fading', artist: 'Pierce The Veil', duration: '3:29' },
   { id: '5', title: 'Phantom Power And Ludicrous Speed', artist: 'Pierce The Veil', duration: '3:50' },
+  { id: '6', title: 'Circles', artist: 'Pierce The Veil', duration: '3:44' },
+  { id: '7', title: 'Today I Saw The Whole World', artist: 'Pierce The Veil', duration: '3:41' },
+  { id: '8', title: 'Gold Medal Ribbon', artist: 'Pierce The Veil', duration: '3:58' },
+  { id: '9', title: 'Bedless', artist: 'Pierce The Veil', duration: '4:44' },
+  { id: '10', title: 'Sambuka', artist: 'Pierce The Veil', duration: '2:36' },
+  { id: '11', title: 'Song For Isabelle', artist: 'Pierce The Veil', duration: '4:50' },
 ];

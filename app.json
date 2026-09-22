@@ -10,13 +10,12 @@
       "**/*"
     ],
     "android": {
-      "package": "spotifyexpoclone",
-      "edgeToEdgeEnabled": true,
+      "package": "com.guimello.spotifyexpo",
       "predictiveBackGestureEnabled": false
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "spotifyexpoclone"
+      "bundleIdentifier": "com.guimello.spotifyexpo"
     },
     "plugins": [
       "expo-status-bar"
