@@ -1,16 +1,16 @@
 export const ASSETS = {
-  profile: { uri: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=85' },
-  daily: { uri: 'https://images.unsplash.com/photo-1511367461989-f85a21fda167?auto=format&fit=crop&w=700&q=85' },
-  heart: { uri: 'https://images.unsplash.com/photo-1499209974431-9dddcece7f88?auto=format&fit=crop&w=700&q=85' },
-  misadventures: { uri: 'https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?auto=format&fit=crop&w=900&q=85' },
-  collide: { uri: 'https://images.unsplash.com/photo-1521337581100-8ca9a73a5f79?auto=format&fit=crop&w=700&q=85' },
-  albumRed: { uri: 'https://images.unsplash.com/photo-1539375665275-f9de415ef9ac?auto=format&fit=crop&w=700&q=85' },
-  albumBlue: { uri: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=700&q=85' },
-  albumNeon: { uri: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=700&q=85' },
-  albumDark: { uri: 'https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=700&q=85' },
-  artist: { uri: 'https://images.unsplash.com/photo-1524650359799-842906ca1c06?auto=format&fit=crop&w=1200&q=85' },
-  artistCircle: { uri: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=700&q=85' },
-  playerCover: { uri: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1000&q=90' },
+  profile: { uri: 'https://media.newyorker.com/photos/63e3b4c471b96b7ea72c8e9c/master/w_800%2Cc_limit/Petrusich-Hayley-Williams-Final.jpg' },
+  daily: { uri: 'https://image-cdn-fa.spotifycdn.com/image/ab67706c0000da847f02edfa813e224718b82183' },
+  heart: { uri: 'https://i.scdn.co/image/ab67616d0000b2735cab62839794c2cc3d6a135b' },
+  misadventures: { uri: 'https://i.scdn.co/image/ab67616d0000b273feef5b9537d7b52555a42f17' },
+  collide: { uri: 'https://i.scdn.co/image/ab67616d0000b273918bf6a348413fcee872437d' },
+  albumRed: { uri: 'https://i.scdn.co/image/ab67616d0000b27346943aca98a3cf38fee2689e' },
+  albumBlue: { uri: 'https://misc.scdn.co/your-episodes/SE-640.png' },
+  albumNeon: { uri: 'https://misc.scdn.co/liked-songs/liked-songs-640.png' },
+  albumDark: { uri: 'https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8495534159114ea6222b98b370' },
+  artist: { uri: 'https://i.scdn.co/image/ab6761610000e5eb6f8f8d13be17bf486219edc7' },
+  artistCircle: { uri: 'https://i.scdn.co/image/ab6761610000e5eb6f8f8d13be17bf486219edc7' },
+  playerCover: { uri: 'https://i.scdn.co/image/ab67616d0000b273feef5b9537d7b52555a42f17' },
 };    
 
 export const quickItems = [
