@@ -1,20 +1,23 @@
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import IconButton from '../components/IconButton';
+import BackButton from '../components/BackButton';
 import MiniPlayer from '../components/MiniPlayer';
 import { ASSETS, libraryItems } from '../data/media';
 import { colors, radius } from '../theme';
 
-export default function ProfileScreen({ navigation }) {
+export default function ProfileScreen() {
+  const router = useRouter();
   return (
     <View style={styles.root}>
       <LinearGradient colors={['#EC6196', '#77344D', colors.background]} locations={[0, 0.31, 0.58]} style={StyleSheet.absoluteFill} />
       <SafeAreaView style={{ flex: 1 }} edges={['top']}>
         <ScrollView contentContainerStyle={styles.content}>
-          <IconButton name="arrow-left" onPress={() => navigation.goBack()} style={styles.back} />
+          <BackButton style={styles.back} />
           <View style={styles.profileRow}>
             <Image source={ASSETS.profile} style={styles.avatar} />
             <View style={{ flex: 1 }}><Text style={styles.name}>anna</Text><Text style={styles.stats}>6 seguidores • 50 seguindo</Text></View>
@@ -26,7 +29,7 @@ export default function ProfileScreen({ navigation }) {
           </View>
           <View style={styles.sectionHeader}><Text style={styles.sectionTitle}>Playlists</Text><Text style={styles.manage}>✎  Gerenciar</Text></View>
           {libraryItems.slice(0, 4).map((item) => (
-            <Pressable key={item.id} onPress={() => navigation.navigate(item.target)} style={styles.playlistRow}>
+            <Pressable key={item.id} onPress={() => router.push(item.href)} style={styles.playlistRow}>
               <Image source={item.image} style={styles.playlistImage} />
               <View style={{ flex: 1 }}><Text numberOfLines={1} style={styles.playlistTitle}>{item.title}</Text><Text style={styles.playlistSub}>{item.subtitle}</Text></View>
               <MaterialCommunityIcons name="dots-vertical" size={22} color={colors.muted} />
@@ -34,7 +37,7 @@ export default function ProfileScreen({ navigation }) {
           ))}
           <Pressable style={styles.allButton}><Text style={styles.allText}>Ver todas as playlists</Text></Pressable>
         </ScrollView>
-        <MiniPlayer navigation={navigation} />
+        <MiniPlayer />
       </SafeAreaView>
     </View>
   );

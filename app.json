@@ -18,7 +18,14 @@
       "bundleIdentifier": "com.guimello.spotifyexpo"
     },
     "plugins": [
-      "expo-status-bar"
-    ]
+      "expo-status-bar",
+      "expo-router",
+      "expo-splash-screen"
+    ],
+    "scheme": "spotifyexpo",
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    }
   }
 }

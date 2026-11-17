@@ -1,24 +1,32 @@
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import { Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import IconButton from '../components/IconButton';
+import BackButton from '../components/BackButton';
 import MiniPlayer from '../components/MiniPlayer';
 import TrackRow from '../components/TrackRow';
-import { ASSETS, tracks } from '../data/media';
+import { demoArtists } from '../data/media';
+import UnavailableContent from '../components/UnavailableContent';
 import { colors, radius } from '../theme';
 
-export default function ArtistScreen({ navigation }) {
+export default function ArtistScreen() {
+  const router = useRouter();
+  const { id } = useLocalSearchParams();
+  const artist = demoArtists.find((item) => item.id === id);
+
+  if (!artist) return <UnavailableContent title="Artista não encontrado" />;
   return (
     <View style={styles.root}>
       <ScrollView contentContainerStyle={styles.content}>
-        <ImageBackground source={ASSETS.artist} style={styles.hero} imageStyle={{ opacity: 0.78 }}>
+        <ImageBackground source={artist.image} style={styles.hero} imageStyle={{ opacity: 0.78 }}>
           <LinearGradient colors={['rgba(0,0,0,0.15)', 'rgba(0,0,0,0.08)', colors.background]} style={StyleSheet.absoluteFill} />
           <SafeAreaView edges={['top']} style={styles.heroSafe}>
-            <IconButton name="arrow-left" onPress={() => navigation.goBack()} style={styles.back} />
+            <BackButton style={styles.back} />
             <View style={styles.heroText}>
-              <Text style={styles.artistName}>Pierce The Veil</Text>
+              <Text style={styles.artistName}>{artist.title}</Text>
               <View style={styles.verified}><MaterialCommunityIcons name="check-decagram" size={17} color="#3D91F4" /><Text style={styles.verifiedText}>Verificado pelo Spotify</Text></View>
             </View>
           </SafeAreaView>
@@ -29,14 +37,14 @@ export default function ArtistScreen({ navigation }) {
             <Pressable style={styles.follow}><Text style={styles.followText}>Seguindo</Text></Pressable>
             <IconButton name="dots-vertical" size={25} color={colors.muted} />
             <MaterialCommunityIcons name="shuffle-variant" size={27} color={colors.muted} style={{ marginLeft: 'auto' }} />
-            <Pressable onPress={() => navigation.navigate('Player')} style={styles.play}><MaterialCommunityIcons name="play" size={35} color={colors.black} /></Pressable>
+            <Pressable onPress={() => router.push('/player')} style={styles.play}><MaterialCommunityIcons name="play" size={35} color={colors.black} /></Pressable>
           </View>
           <View style={styles.tabs}><Text style={styles.tabActive}>Músicas</Text><Text style={styles.tab}>Eventos</Text><Text style={styles.tab}>Sobre</Text></View>
           <Text style={styles.sectionTitle}>Mais ouvidas</Text>
-          {tracks.slice(0, 5).map((track, index) => <TrackRow key={track.id} track={track} index={index} showIndex liked={index === 0} onPress={() => navigation.navigate('Player')} />)}
+          {artist.tracks.map((track, index) => <TrackRow key={track.id} track={track} index={index} showIndex liked={index === 0} onPress={() => router.push('/player')} />)}
         </View>
       </ScrollView>
-      <MiniPlayer navigation={navigation} />
+      <MiniPlayer />
     </View>
   );
 }

@@ -4,31 +4,24 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import IconButton from '../components/IconButton';
+import BackButton from '../components/BackButton';
 import { ASSETS } from '../data/media';
 import { colors, radius } from '../theme';
 
-export default function PlayerScreen({ navigation }) {
+export default function PlayerScreen() {
   const [playing, setPlaying] = useState(true);
   const [liked, setLiked] = useState(true);
-
-  const goToHome = () => {
-    navigation.navigate('Main', {
-      screen: 'HomeTab',
-      params: { screen: 'Home' },
-    });
-  };
 
   return (
     <LinearGradient colors={['#8C8C8C', '#5D5D5D', '#202020']} style={styles.root}>
       <SafeAreaView style={styles.safe}>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
           <View style={styles.header}>
-            <IconButton
+            <BackButton
               name="chevron-down"
               size={32}
-              onPress={goToHome}
               style={styles.backButton}
-              accessibilityLabel="Voltar para a Home"
+              accessibilityLabel="Fechar player"
             />
             <View><Text style={styles.context}>TOCANDO DA PLAYLIST</Text><Text style={styles.contextTitle}>daily</Text></View>
             <IconButton name="dots-vertical" />

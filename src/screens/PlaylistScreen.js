@@ -1,46 +1,54 @@
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import IconButton from '../components/IconButton';
+import BackButton from '../components/BackButton';
 import MiniPlayer from '../components/MiniPlayer';
 import TrackRow from '../components/TrackRow';
-import { ASSETS, tracks } from '../data/media';
+import { ASSETS, demoPlaylists } from '../data/media';
+import UnavailableContent from '../components/UnavailableContent';
 import { colors, radius } from '../theme';
 
-export default function PlaylistScreen({ navigation }) {
+export default function PlaylistScreen() {
+  const router = useRouter();
+  const { id } = useLocalSearchParams();
+  const playlist = demoPlaylists.find((item) => item.id === id);
+
+  if (!playlist) return <UnavailableContent title="Playlist não encontrada" />;
   return (
     <View style={styles.root}>
       <LinearGradient colors={['#686868', '#292929', colors.background]} locations={[0, 0.38, 0.72]} style={StyleSheet.absoluteFill} />
       <SafeAreaView style={styles.safe} edges={['top']}>
         <ScrollView contentContainerStyle={styles.content}>
           <View style={styles.topbar}>
-            <IconButton name="arrow-left" onPress={() => navigation.goBack()} />
+            <BackButton />
             <View style={styles.search}><MaterialCommunityIcons name="magnify" size={18} color={colors.text} /><Text style={styles.searchText}>Procurar nesta playlist</Text></View>
           </View>
-          <Image source={ASSETS.daily} style={styles.cover} />
-          <Text style={styles.title}>daily</Text>
+          <Image source={playlist.image} style={styles.cover} />
+          <Text style={styles.title}>{playlist.title}</Text>
           <View style={styles.ownerRow}><Image source={ASSETS.profile} style={styles.ownerAvatar} /><Text style={styles.owner}>anna</Text></View>
-          <Text style={styles.meta}>Playlist • 5h 38min</Text>
+          <Text style={styles.meta}>Playlist • {playlist.tracks.length} músicas</Text>
           <View style={styles.actions}>
             <IconButton name="download-circle-outline" size={28} color={colors.muted} />
             <IconButton name="share-variant-outline" size={26} color={colors.muted} />
             <IconButton name="dots-vertical" size={26} color={colors.muted} />
             <MaterialCommunityIcons name="shuffle-variant" size={28} color={colors.green} style={{ marginLeft: 'auto' }} />
-            <Pressable onPress={() => navigation.navigate('Player')} style={styles.play}><MaterialCommunityIcons name="play" size={34} color={colors.black} /></Pressable>
+            <Pressable onPress={() => router.push('/player')} style={styles.play}><MaterialCommunityIcons name="play" size={34} color={colors.black} /></Pressable>
           </View>
           <View style={styles.pills}>
             <View style={styles.pill}><MaterialCommunityIcons name="plus" size={18} color={colors.text} /><Text style={styles.pillText}>Adicionar</Text></View>
             <View style={styles.pill}><MaterialCommunityIcons name="tune-variant" size={18} color={colors.text} /><Text style={styles.pillText}>Mixar</Text></View>
           </View>
           <View style={styles.list}>
-            {[...tracks, { id: '12', title: 'I Caught Myself', artist: 'Paramore' }].map((track, index) => (
-              <TrackRow key={track.id} track={track} index={index} liked={index < 3} onPress={() => navigation.navigate('Player')} />
+            {playlist.tracks.map((track, index) => (
+              <TrackRow key={track.id} track={track} index={index} liked={index < 3} onPress={() => router.push('/player')} />
             ))}
           </View>
         </ScrollView>
-        <MiniPlayer navigation={navigation} />
+        <MiniPlayer />
       </SafeAreaView>
     </View>
   );

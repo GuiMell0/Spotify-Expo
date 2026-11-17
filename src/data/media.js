@@ -14,28 +14,28 @@ export const ASSETS = {
 };    
 
 export const quickItems = [
-  { id: '1', title: 'daily', image: ASSETS.daily, target: 'Playlist' },
-  { id: '2', title: 'my heart', image: ASSETS.heart, target: 'Playlist' },
-  { id: '3', title: 'Pierce The Veil', image: ASSETS.artist, target: 'Artist' },
-  { id: '4', title: 'As suas músicas mais ouvidas', image: ASSETS.albumRed, target: 'Playlist' },
-  { id: '5', title: 'No Repeat', image: ASSETS.albumNeon, target: 'Playlist' },
-  { id: '6', title: 'all songs', image: ASSETS.albumDark, target: 'Album' },
+  { id: '1', title: 'daily', image: ASSETS.daily, href: '/playlist/daily' },
+  { id: '2', title: 'my heart', image: ASSETS.heart, href: '/playlist/my-heart' },
+  { id: '3', title: 'Pierce The Veil', image: ASSETS.artist, href: '/artist/pierce-the-veil' },
+  { id: '4', title: 'As suas músicas mais ouvidas', image: ASSETS.albumRed, href: '/playlist/mais-ouvidas' },
+  { id: '5', title: 'No Repeat', image: ASSETS.albumNeon, href: '/playlist/no-repeat' },
+  { id: '6', title: 'all songs', image: ASSETS.albumDark, href: '/playlist/all-songs' },
 ];
 
 export const homeAlbums = [
-  { id: '1', title: "Mix de Pierce The Veil", subtitle: 'Pierce The Veil, Paramore e mais', image: ASSETS.collide, target: 'Playlist' },
-  { id: '2', title: 'Misadventures', subtitle: 'Pierce The Veil', image: ASSETS.misadventures, target: 'Album' },
-  { id: '3', title: 'This Is Paramore', subtitle: 'Os maiores sucessos', image: ASSETS.albumRed, target: 'Playlist' },
-  { id: '4', title: 'Rock Mix', subtitle: 'Slipknot, System of a Down e mais', image: ASSETS.albumDark, target: 'Playlist' },
+  { id: '1', title: "Mix de Pierce The Veil", subtitle: 'Pierce The Veil, Paramore e mais', image: ASSETS.collide, href: '/playlist/mix-pierce-the-veil' },
+  { id: '2', title: 'Misadventures', subtitle: 'Pierce The Veil', image: ASSETS.misadventures, href: '/album/misadventures' },
+  { id: '3', title: 'This Is Paramore', subtitle: 'Os maiores sucessos', image: ASSETS.albumRed, href: '/playlist/this-is-paramore' },
+  { id: '4', title: 'Rock Mix', subtitle: 'Slipknot, System of a Down e mais', image: ASSETS.albumDark, href: '/playlist/rock-mix' },
 ];
 
 export const libraryItems = [
-  { id: '1', title: 'daily', subtitle: 'Playlist • anna', image: ASSETS.daily, target: 'Playlist' },
-  { id: '2', title: 'my heart', subtitle: 'Playlist • anna', image: ASSETS.heart, target: 'Playlist' },
-  { id: '3', title: 'all songs', subtitle: 'Playlist • anna', image: ASSETS.albumDark, target: 'Playlist' },
-  { id: '4', title: 'Misadventures', subtitle: 'Álbum • Pierce The Veil', image: ASSETS.misadventures, target: 'Album' },
-  { id: '5', title: 'Pierce The Veil', subtitle: 'Artista', image: ASSETS.artistCircle, target: 'Artist', round: true },
-  { id: '6', title: 'No Repeat', subtitle: 'Playlist • Spotify', image: ASSETS.albumNeon, target: 'Playlist' },
+  { id: '1', title: 'daily', subtitle: 'Playlist • anna', image: ASSETS.daily, href: '/playlist/daily' },
+  { id: '2', title: 'my heart', subtitle: 'Playlist • anna', image: ASSETS.heart, href: '/playlist/my-heart' },
+  { id: '3', title: 'all songs', subtitle: 'Playlist • anna', image: ASSETS.albumDark, href: '/playlist/all-songs' },
+  { id: '4', title: 'Misadventures', subtitle: 'Álbum • Pierce The Veil', image: ASSETS.misadventures, href: '/album/misadventures' },
+  { id: '5', title: 'Pierce The Veil', subtitle: 'Artista', image: ASSETS.artistCircle, href: '/artist/pierce-the-veil', round: true },
+  { id: '6', title: 'No Repeat', subtitle: 'Playlist • Spotify', image: ASSETS.albumNeon, href: '/playlist/no-repeat' },
 ];
 
 export const tracks = [
@@ -51,3 +51,25 @@ export const tracks = [
   { id: '10', title: 'Sambuka', artist: 'Pierce The Veil', duration: '2:36' },
   { id: '11', title: 'Song For Isabelle', artist: 'Pierce The Veil', duration: '4:50' },
 ];
+
+// Catálogo temporário da P1 para validar IDs antes da integração Spotify.
+export const demoAlbums = [
+  { id: 'misadventures', title: 'Misadventures', image: ASSETS.misadventures, artistId: 'pierce-the-veil', artist: 'Pierce The Veil', artistImage: ASSETS.artistCircle, date: '13 mai. 2016', tracks },
+];
+
+export const demoArtists = [
+  { id: 'pierce-the-veil', title: 'Pierce The Veil', image: ASSETS.artist, tracks: tracks.slice(0, 5) },
+];
+
+export const demoPlaylists = Object.values(
+  [...quickItems, ...homeAlbums, ...libraryItems]
+    .filter((item) => item.href.startsWith('/playlist/'))
+    .reduce((result, item) => {
+      const id = item.href.split('/').pop();
+      result[id] = {
+        id, title: item.title, image: item.image,
+        tracks: [...tracks, { id: '12', title: 'I Caught Myself', artist: 'Paramore' }],
+      };
+      return result;
+    }, {})
+);

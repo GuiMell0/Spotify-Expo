@@ -20,9 +20,9 @@ A primeira entrega é o planejamento solicitado. A01 não implementa funcionalid
 
 O projeto possui 9 telas: Login, Home, Busca, Biblioteca, Playlist, Álbum, Artista, Player e Perfil.
 
-A base instalada é Expo 57.0.24, React 19.2.3 e React Native 0.86.3. Os componentes já utilizam StyleSheet e Flexbox, mas existem estilos inline e botões demonstrativos.
+A P1 foi auditada com Expo 57.0.24, React 19.2.3 e React Native 0.86.3. Na A02, o Expo foi alinhado em 57.0.33, mantendo o SDK 57. Os componentes já utilizam StyleSheet e Flexbox, mas existem estilos inline e botões demonstrativos.
 
-A entrada atual é App.js, com React Navigation em src/navigation/AppNavigation.js. Expo Router não está instalado. O catálogo está em src/data/media.js, com IDs fictícios e imagens remotas. Busca, curtidas e player são demonstrações sem persistência ou autenticação real.
+Na P1, a entrada era App.js, com React Navigation em src/navigation/AppNavigation.js. A02 substituiu essa estrutura por Expo Router em app/. O catálogo está em src/data/media.js, com IDs fictícios e imagens remotas. Busca, curtidas e player são demonstrações sem persistência ou autenticação real.
 
 Não foram disponibilizados slides de aula neste atendimento; o anexo recebido é a imagem com os requisitos. AsyncStorage será usado conforme solicitado, e o material da disciplina poderá orientar ajustes quando estiver disponível.
 
@@ -40,12 +40,12 @@ Na migração, configurar main como expo-router/entry no package.json, adicionar
 
 ## Telas previstas
 
-Estas rotas são metas, ainda não existem nesta primeira entrega. Os grupos entre parênteses organizam as abas sem compor o endereço público.
+As 9 telas da P1 já possuem rotas na A02; as demais continuam como metas. Os grupos entre parênteses organizam as abas sem compor o endereço público.
 
 | Nº | Tela | Arquivo de rota previsto | Entrada navegável |
 | --- | --- | --- | --- |
 | 1 | Login | app/login.js | Abertura sem sessão |
-| 2 | Início | app/(tabs)/index.js | Aba Início |
+| 2 | Início | app/(tabs)/home.js | Aba Início |
 | 3 | Buscar | app/(tabs)/search.js | Aba Buscar |
 | 4 | Biblioteca | app/(tabs)/library.js | Aba Biblioteca |
 | 5 | Álbum | app/album/[id].js | Resultado ou card de álbum |
@@ -66,7 +66,7 @@ Callback e página de rota inexistente serão utilitários e não entram na cont
 
 ## Etapas da Ana — 15 commits
 
-Status inicial: A01 preparada para revisão e commit; A02–A15 pendentes.
+Status: A01 commitada; A02 implementada e validada por bundles Android/web, compatibilidade Expo e 9 cenários no navegador. Aguardando teste físico no Android e commit da Ana. A03–A15 pendentes.
 
 | Etapa | Mensagem de commit | Entrega e critério de aceite |
 | --- | --- | --- |
@@ -124,8 +124,8 @@ Executar depois de A15. O [roteiro da dupla](ROTEIRO-DUPLA.md) contém as instru
 ## Checklist de aceite da P2
 
 - [ ] Todas as telas e componentes usam StyleSheet e Flexbox, mantendo a identidade Spotify.
-- [ ] app/ é a origem das rotas, com Tabs, Stack e IDs dinâmicos.
-- [ ] package.json usa expo-router/entry e não há entrada antiga concorrente.
+- [x] app/ é a origem das rotas, com Tabs, Stack e IDs dinâmicos.
+- [x] package.json usa expo-router/entry e não há entrada antiga concorrente.
 - [ ] Login real no Android e cancelamento tratados.
 - [ ] Sessão restaurada; renovação e logout funcionam sem loop.
 - [ ] Artistas, álbuns, faixas, playlists e busca vêm da Spotify Web API.

@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -9,7 +10,8 @@ import MiniPlayer from '../components/MiniPlayer';
 import { ASSETS, homeAlbums, quickItems } from '../data/media';
 import { colors, radius } from '../theme';
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen() {
+  const router = useRouter();
   const [filter, setFilter] = useState('Tudo');
   const { width } = useWindowDimensions();
   const cardWidth = Math.min(155, (width - 47) / 2.25);
@@ -20,7 +22,7 @@ export default function HomeScreen({ navigation }) {
       <SafeAreaView style={styles.safe} edges={['top']}>
         <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
           <View style={styles.topbar}>
-            <Pressable onPress={() => navigation.navigate('Profile')}>
+            <Pressable accessibilityRole="button" accessibilityLabel="Abrir perfil" onPress={() => router.push('/profile')}>
               <Image source={ASSETS.profile} style={styles.avatar} />
             </Pressable>
             <View style={styles.chips}>
@@ -32,7 +34,7 @@ export default function HomeScreen({ navigation }) {
 
           <View style={styles.quickGrid}>
             {quickItems.map((item) => (
-              <Pressable key={item.id} onPress={() => navigation.navigate(item.target)} style={styles.quickCard}>
+              <Pressable key={item.id} onPress={() => router.push(item.href)} style={styles.quickCard}>
                 <Image source={item.image} style={styles.quickImage} />
                 <Text numberOfLines={2} style={styles.quickTitle}>{item.title}</Text>
                 <MaterialCommunityIcons name="dots-horizontal" size={18} color={colors.muted} style={styles.quickDots} />
@@ -40,22 +42,23 @@ export default function HomeScreen({ navigation }) {
             ))}
           </View>
 
-          <Section title="Seus mixes mais ouvidos" items={homeAlbums} navigation={navigation} cardWidth={cardWidth} />
-          <Section title="Feito para anna" items={[...homeAlbums].reverse()} navigation={navigation} cardWidth={cardWidth} />
+          <Section title="Seus mixes mais ouvidos" items={homeAlbums} cardWidth={cardWidth} />
+          <Section title="Feito para anna" items={[...homeAlbums].reverse()} cardWidth={cardWidth} />
         </ScrollView>
-        <MiniPlayer navigation={navigation} />
+        <MiniPlayer />
       </SafeAreaView>
     </View>
   );
 }
 
-function Section({ title, items, navigation, cardWidth }) {
+function Section({ title, items, cardWidth }) {
+  const router = useRouter();
   return (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>{title}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingRight: 6 }}>
         {items.map((item) => (
-          <MediaCard key={item.id} item={item} width={cardWidth} onPress={() => navigation.navigate(item.target)} />
+          <MediaCard key={item.id} item={item} width={cardWidth} onPress={() => router.push(item.href)} />
         ))}
       </ScrollView>
     </View>

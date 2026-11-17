@@ -1,13 +1,15 @@
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { ASSETS } from '../data/media';
 import { colors, radius } from '../theme';
 
-export default function MiniPlayer({ navigation }) {
+export default function MiniPlayer() {
+  const router = useRouter();
   return (
     <Pressable
-      onPress={() => navigation.navigate('Player')}
+      onPress={() => router.push('/player')}
       style={({ pressed }) => [styles.container, pressed && { opacity: 0.9 }]}
       accessibilityRole="button"
       accessibilityLabel="Abrir player de Bedless"

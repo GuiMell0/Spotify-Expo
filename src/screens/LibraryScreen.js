@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -8,7 +9,8 @@ import MiniPlayer from '../components/MiniPlayer';
 import { ASSETS, libraryItems } from '../data/media';
 import { colors } from '../theme';
 
-export default function LibraryScreen({ navigation }) {
+export default function LibraryScreen() {
+  const router = useRouter();
   const [filter, setFilter] = useState('Playlists');
   const { width } = useWindowDimensions();
   // Dois cards + margens internas do MediaCard dentro dos 14 px laterais.
@@ -19,7 +21,7 @@ export default function LibraryScreen({ navigation }) {
       <SafeAreaView style={styles.safe} edges={['top']}>
         <ScrollView contentContainerStyle={styles.content}>
           <View style={styles.header}>
-            <Pressable onPress={() => navigation.navigate('Profile')}><Image source={ASSETS.profile} style={styles.avatar} /></Pressable>
+            <Pressable accessibilityRole="button" accessibilityLabel="Abrir perfil" onPress={() => router.push('/profile')}><Image source={ASSETS.profile} style={styles.avatar} /></Pressable>
             <Text style={styles.title}>Sua Biblioteca</Text>
             <MaterialCommunityIcons name="magnify" size={27} color={colors.text} style={{ marginLeft: 'auto' }} />
             <MaterialCommunityIcons name="plus" size={30} color={colors.text} style={{ marginLeft: 17 }} />
@@ -38,11 +40,11 @@ export default function LibraryScreen({ navigation }) {
           </View>
           <View style={styles.grid}>
             {libraryItems.map((item) => (
-              <MediaCard key={item.id} item={item} width={cardWidth} onPress={() => navigation.navigate(item.target)} />
+              <MediaCard key={item.id} item={item} width={cardWidth} onPress={() => router.push(item.href)} />
             ))}
           </View>
         </ScrollView>
-        <MiniPlayer navigation={navigation} />
+        <MiniPlayer />
       </SafeAreaView>
     </View>
   );

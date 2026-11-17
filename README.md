@@ -2,15 +2,15 @@
 
 ## Evolução para a P2
 
-A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de Ana Carolina e 15 de Guilherme. Esta primeira etapa entrega o planejamento; as funcionalidades descritas abaixo ainda refletem a P1.
+A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de Ana Carolina e 15 de Guilherme. A01 entregou o planejamento. A02 migrou as 9 telas para Expo Router; o catálogo, o login e o player continuam demonstrativos.
 
 - [Roteiro completo, divisão dos commits e checklist da P2](docs/P2-ROTEIRO.md)
 - [Configuração da Spotify Web API e testes no Android](docs/SPOTIFY-SETUP.md)
 - [Roteiro de continuidade para Guilherme](docs/ROTEIRO-DUPLA.md)
 
-A próxima etapa migra a navegação para Expo Router. A integração prevista usa OAuth com PKCE, AsyncStorage para dados locais e pelo menos 12 telas, com meta de 17. O status de cada requisito deve ser conferido no roteiro.
+A próxima etapa configura o ambiente Spotify e o desenvolvimento Android. A integração prevista usa OAuth com PKCE, AsyncStorage para dados locais e pelo menos 12 telas, com meta de 17. O status de cada requisito deve ser conferido no roteiro.
 
-## Estado atual — P1
+## Estado atual — P2 em desenvolvimento
 
 Aplicativo mobile que reproduz visualmente partes da interface do Spotify utilizando React Native e Expo. O aplicativo foi desenvolvido para a disciplina de Aplicativos Híbridos.
 
@@ -21,7 +21,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 ## Principais recursos:
 
 - Telas navegáveis;
-- Navegação por abas e pilhas com React Navigation;
+- Navegação por abas e pilhas com Expo Router;
 - Login demonstrativo, sem autenticação real;
 - Busca local por músicas e playlists;
 - Biblioteca com filtros visuais;
@@ -41,7 +41,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 | Playlist | Capa, informações, controles e lista de músicas. |
 | Álbum | Informações do álbum, artista, ações e faixas. |
 | Artista | Imagem de destaque, seguidores, abas e músicas populares. |
-| Player | Capa, progresso, controles de reprodução, curtida e retorno à Home. |
+| Player | Capa, progresso e controles demonstrativos, com retorno à tela de origem. |
 | Perfil | Dados do usuário e listagem de playlists. |
 
 ## Tecnologias utilizadas
@@ -50,7 +50,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 - React 19;
 - React Native 0.86;
 - Expo SDK 57;
-- React Navigation 7;
+- Expo Router 57;
 - Expo Linear Gradient;
 - Expo Status Bar;
 - Expo Vector Icons;
@@ -114,6 +114,42 @@ Se a conexão pela rede local não funcionar, tente:
 ```bash
 npx expo start --tunnel
 ```
+
+## Navegação implementada na A02
+
+A entrada é expo-router/entry, com layouts em app/_layout.js e app/(tabs)/_layout.js. App.js e o navegador antigo foram removidos. A rota / redireciona para o login demonstrativo; seus botões abrem /home. Não há proteção de sessão nesta etapa.
+
+- Abas: /home, /search e /library.
+- Detalhes: /album/[id], /artist/[id], /playlist/[id].
+- Perfil: /profile; player modal: /player.
+- Links desconhecidos e IDs ausentes do catálogo exibem uma mensagem com retorno ao início.
+- O botão Voltar retorna à origem; se não houver histórico, abre /home.
+- As telas de detalhe ficam no Stack acima das abas. Ao voltar, a aba e seu conteúdo são preservados.
+
+O catálogo da P1 ainda é temporário. Exemplos para conferir: /album/misadventures, /artist/pierce-the-veil, /playlist/daily e /playlist/my-heart. Os IDs serão substituídos pelos IDs reais nas integrações futuras.
+
+### Verificações da A02
+
+Validação em 17/11/2026:
+
+- Bundle Android/Hermes: npx expo export --platform android --output-dir dist-check/android --max-workers 2 — aprovado.
+- Bundle web: npx expo export --platform web --output-dir dist-check/web --max-workers 2 — aprovado.
+- Compatibilidade: npx expo install --check — dependências atualizadas.
+- Navegador Edge em viewport móvel: 9 cenários aprovados, sem exceções JavaScript ou avisos de navegação. Incluem as 9 telas, ícones, IDs distintos, links diretos, IDs inválidos, retorno do player e preservação da pesquisa.
+- Expo alinhado em 57.0.33 e Splash Screen em 57.0.11 durante a migração.
+- Os artefatos e a verificação temporária ficam em dist-check/, ignorada pelo Git.
+- Teste físico no Android: pendente de execução pela Ana, conforme os passos abaixo.
+
+### Teste manual no Android
+
+1. Reinicie o Metro após a mudança de entrada: npx expo start --clear.
+2. Abra no Expo Go nesta etapa e toque no login demonstrativo.
+3. Visite as três abas; abra uma playlist, o álbum, o artista e o perfil.
+4. Em Buscar, pesquise Misadventures e abra o resultado.
+5. Abra o player de uma tela de detalhes; feche e confirme o retorno à tela de origem.
+6. Confira o botão Voltar e o gesto/botão do Android sem retornar ao login depois de entrar.
+
+O teste de OAuth passará a exigir development build nas próximas etapas. Consulte docs/SPOTIFY-SETUP.md.
 
 ## Limitações atuais
 

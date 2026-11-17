@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -5,7 +6,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, radius } from '../theme';
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen() {
+  const router = useRouter();
   return (
     <LinearGradient colors={['#193724', '#121212', '#000000']} style={styles.container}>
       <SafeAreaView style={styles.safe}>
@@ -16,14 +18,14 @@ export default function LoginScreen({ navigation }) {
         </View>
 
         <View style={styles.actions}>
-          <Pressable onPress={() => navigation.replace('Main')} style={styles.primaryButton}>
+          <Pressable onPress={() => router.replace('/home')} style={styles.primaryButton}>
             <Text style={styles.primaryText}>Entrar no Spotify</Text>
           </Pressable>
-          <Pressable onPress={() => navigation.replace('Main')} style={styles.outlineButton}>
+          <Pressable onPress={() => router.replace('/home')} style={styles.outlineButton}>
             <MaterialCommunityIcons name="google" size={22} color={colors.text} />
             <Text style={styles.outlineText}>Continuar com Google</Text>
           </Pressable>
-          <Pressable onPress={() => navigation.replace('Main')} style={styles.outlineButton}>
+          <Pressable onPress={() => router.replace('/home')} style={styles.outlineButton}>
             <MaterialCommunityIcons name="apple" size={24} color={colors.text} />
             <Text style={styles.outlineText}>Continuar com Apple</Text>
           </Pressable>

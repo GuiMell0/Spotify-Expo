@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -7,15 +8,16 @@ import { ASSETS, homeAlbums } from '../data/media';
 import { colors, radius } from '../theme';
 
 const categories = [
-  { title: 'Música', color: '#DC148C', image: ASSETS.albumRed, target: 'Playlist' },
-  { title: 'Podcasts', color: '#006450', image: ASSETS.albumBlue, target: 'Playlist' },
-  { title: 'Eventos ao vivo', color: '#8400E7', image: ASSETS.artist, target: 'Artist' },
-  { title: 'Feito para você', color: '#1E3264', image: ASSETS.albumNeon, target: 'Playlist' },
-  { title: 'Lançamentos', color: '#E8115B', image: ASSETS.misadventures, target: 'Album' },
-  { title: 'Rock', color: '#8D67AB', image: ASSETS.albumDark, target: 'Artist' },
+  { title: 'Música', color: '#DC148C', image: ASSETS.albumRed, href: '/playlist/rock-mix' },
+  { title: 'Podcasts', color: '#006450', image: ASSETS.albumBlue, href: '/playlist/daily' },
+  { title: 'Eventos ao vivo', color: '#8400E7', image: ASSETS.artist, href: '/artist/pierce-the-veil' },
+  { title: 'Feito para você', color: '#1E3264', image: ASSETS.albumNeon, href: '/playlist/no-repeat' },
+  { title: 'Lançamentos', color: '#E8115B', image: ASSETS.misadventures, href: '/album/misadventures' },
+  { title: 'Rock', color: '#8D67AB', image: ASSETS.albumDark, href: '/artist/pierce-the-veil' },
 ];
 
-export default function SearchScreen({ navigation }) {
+export default function SearchScreen() {
+  const router = useRouter();
   const [query, setQuery] = useState('');
   const results = homeAlbums.filter((item) => `${item.title} ${item.subtitle}`.toLowerCase().includes(query.toLowerCase()));
 
@@ -44,7 +46,7 @@ export default function SearchScreen({ navigation }) {
             <View style={styles.results}>
               <Text style={styles.sectionTitle}>Resultados</Text>
               {results.map((item) => (
-                <Pressable key={item.id} onPress={() => navigation.navigate(item.target)} style={styles.resultRow}>
+                <Pressable key={item.id} onPress={() => router.push(item.href)} style={styles.resultRow}>
                   <Image source={item.image} style={styles.resultImage} />
                   <View style={{ flex: 1 }}>
                     <Text style={styles.resultTitle}>{item.title}</Text>
@@ -60,7 +62,7 @@ export default function SearchScreen({ navigation }) {
               <Text style={styles.sectionTitle}>Navegar por todas as seções</Text>
               <View style={styles.grid}>
                 {categories.map((category) => (
-                  <Pressable key={category.title} onPress={() => navigation.navigate(category.target)} style={[styles.category, { backgroundColor: category.color }]}>
+                  <Pressable key={category.title} onPress={() => router.push(category.href)} style={[styles.category, { backgroundColor: category.color }]}>
                     <Text style={styles.categoryTitle}>{category.title}</Text>
                     <Image source={category.image} style={styles.categoryImage} />
                   </Pressable>
@@ -69,7 +71,7 @@ export default function SearchScreen({ navigation }) {
             </>
           )}
         </ScrollView>
-        <MiniPlayer navigation={navigation} />
+        <MiniPlayer />
       </SafeAreaView>
     </View>
   );
