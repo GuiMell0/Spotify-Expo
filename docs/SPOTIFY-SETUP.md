@@ -1,6 +1,6 @@
 # Configuração Spotify — P2
 
-A03 prepara o ambiente, o modelo de variáveis e o perfil EAS para Android. A Ana escolheu APK pela nuvem, forneceu o Client ID e confirmou spotifyexpo-login://callback salvo no painel. O Client ID foi preenchido somente no .env local. Login real é a A04; geração/instalação do APK e teste com a conta continuam pendentes.
+A03 prepara o ambiente, o modelo de variáveis e o perfil EAS para Android. A Ana escolheu APK pela nuvem, forneceu o Client ID e confirmou spotifyexpo-login://callback salvo no painel. O Client ID foi preenchido somente no .env local. A04 implementou o login PKCE e a consulta de confirmação em /me. Geração/instalação do APK e teste com a conta real continuam pendentes.
 
 ## O que já sabemos
 
@@ -25,7 +25,7 @@ Se o painel rejeitar o retorno nativo, envie a mensagem exata antes de mudar a c
 
 ## Client ID e token de acesso são diferentes
 
-Client ID identifica o aplicativo e fica em Settings no Dashboard. Um valor copiado de const token em exemplos da API é um token de acesso da sessão; ele não deve ser preenchido no campo Client ID. O login PKCE da A04 obterá tokens, e a sessão da A05 cuidará da renovação.
+Client ID identifica o aplicativo e fica em Settings no Dashboard. Um valor copiado de const token em exemplos da API é um token de acesso da sessão; ele não deve ser preenchido no campo Client ID. O login PKCE da A04 obtém tokens em memória; a A05 implementará armazenamento seguro e renovação.
 
 ## Retorno para Android e navegador
 
@@ -53,7 +53,7 @@ O .env.example é versionado e mantém o Client ID vazio. O .env pessoal desta m
 
 Preencha a primeira linha com o Client ID do painel. Depois da mudança, encerre o Metro e execute npm run dev -- --clear (ou npm run start:go -- --clear para a demonstração), garantindo a leitura da configuração atual. Em outra máquina, copie o modelo sem substituir um .env existente.
 
-src/config/spotify.mjs seleciona e valida os campos da plataforma. Android exige o retorno correspondente ao scheme do build. Web usa /callback com HTTPS ou HTTP em loopback explícito; localhost não é aceito. A tela indica configuração pendente ou preenchida, sem realizar autenticação.
+src/config/spotify.mjs seleciona e valida os campos da plataforma. Android exige o retorno correspondente ao scheme do build. Web usa /callback com HTTPS ou HTTP em loopback explícito; localhost não é aceito. Desde A04, a tela permite o login quando o ambiente estiver pronto e orienta sobre configuração, Expo Go ou origem web incompatível.
 
 Não colocar Client Secret ou tokens em EXPO_PUBLIC, arquivos versionados ou logs. Referência: [variáveis do Expo](https://docs.expo.dev/guides/environment-variables/).
 
@@ -62,6 +62,22 @@ Não colocar Client Secret ou tokens em EXPO_PUBLIC, arquivos versionados ou log
 A Ana escolheu EAS, com APK gerado na nuvem. Siga o [guia Android/EAS](ANDROID-EAS.md) para entrar na conta Expo, vincular o projeto, gerar e instalar o APK e executar npm run dev.
 
 O perfil development de eas.json e expo-dev-client já estão configurados. O APK ainda precisa ser gerado e instalado pela Ana. Expo Go pode exibir a demonstração, mas o teste OAuth exige o build de desenvolvimento. Referência: [autenticação no Expo](https://docs.expo.dev/guides/authentication/).
+
+## Testar o login real da A04
+
+1. Gere e instale o APK de desenvolvimento atualizado pelo [guia EAS](ANDROID-EAS.md). A04 adicionou expo-auth-session e expo-crypto; um APK antigo não inclui essas bibliotecas.
+2. Execute npm run dev -- --clear e abra o aplicativo de desenvolvimento no Android.
+3. Toque em Entrar com Spotify. Faça login na janela do Spotify e aceite as permissões.
+4. Ao retornar, a Home deve mostrar Conta Spotify conectada. A conta é confirmada em /me; o catálogo ainda é demonstrativo nesta etapa.
+5. Confira o cancelamento pela janela de autorização e, se disponível na tela, por Cancelar entrada. No Android, pode ser necessário fechar a aba do Chrome antes de outra tentativa.
+6. No Perfil, use Sair da conta. A entrada deve reaparecer, sem permitir voltar às telas privadas.
+7. Reabrir o aplicativo exige novo login na A04: a sessão ainda está só em memória. A05 implementará a restauração e renovação.
+
+Se receber acesso negado, confira Users Management e o Premium do proprietário. O app solicita user-read-private, playlist-read-private e playlist-read-collaborative. Não solicita permissões de reprodução nesta etapa.
+
+Para teste real pelo navegador, cadastre também http://127.0.0.1:8081/callback no painel Spotify, inicie o Expo web nessa porta e abra exatamente http://127.0.0.1:8081. A origem precisa corresponder à do retorno; localhost e outro endereço não completam essa sessão. Referência: [AuthSession no Expo](https://docs.expo.dev/guides/authentication/).
+
+Os testes automatizados validam o fluxo com respostas simuladas. A validação real no Android depende do APK e da interação da Ana com a conta Spotify.
 
 ## Contrato da implementação
 

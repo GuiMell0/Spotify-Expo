@@ -9,9 +9,11 @@ import MediaCard from '../components/MediaCard';
 import MiniPlayer from '../components/MiniPlayer';
 import { ASSETS, homeAlbums, quickItems } from '../data/media';
 import { colors, radius } from '../theme';
+import { useSession } from '../contexts/SessionContext';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { isDemo } = useSession();
   const [filter, setFilter] = useState('Tudo');
   const { width } = useWindowDimensions();
   const cardWidth = Math.min(155, (width - 47) / 2.25);
@@ -32,6 +34,7 @@ export default function HomeScreen() {
             </View>
           </View>
 
+          <Text style={styles.sessionLabel}>{isDemo ? 'Modo demonstração' : 'Conta Spotify conectada'}</Text>
           <View style={styles.quickGrid}>
             {quickItems.map((item) => (
               <Pressable key={item.id} onPress={() => router.push(item.href)} style={styles.quickCard}>
@@ -72,6 +75,7 @@ const styles = StyleSheet.create({
   topbar: { flexDirection: 'row', alignItems: 'center', marginTop: 8, marginBottom: 16 },
   avatar: { width: 34, height: 34, borderRadius: 17, marginRight: 9, borderWidth: 1, borderColor: '#767676' },
   chips: { flexDirection: 'row', gap: 7 },
+  sessionLabel: { color: colors.muted, fontSize: 12, marginBottom: 12 },
   quickGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', gap: 8 },
   quickCard: { width: '48.8%', minHeight: 58, backgroundColor: '#2A2A2A', borderRadius: radius.sm, flexDirection: 'row', alignItems: 'center', overflow: 'hidden' },
   quickImage: { width: 58, height: 58, backgroundColor: colors.surface },

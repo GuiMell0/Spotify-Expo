@@ -9,13 +9,13 @@ A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de An
 - [Geração e instalação do APK Android pelo EAS](docs/ANDROID-EAS.md)
 - [Roteiro de continuidade para Guilherme](docs/ROTEIRO-DUPLA.md)
 
-A03 preparou as variáveis Spotify e o perfil de desenvolvimento Android pelo EAS. A próxima etapa implementa login real com PKCE. A integração prevista usa OAuth com PKCE, AsyncStorage para dados locais e pelo menos 12 telas, com meta de 17. O status de cada requisito deve ser conferido no roteiro.
+A04 implementou o login Spotify com PKCE e sessão em memória. A próxima etapa salva e renova a sessão. A integração prevista usa OAuth com PKCE, AsyncStorage para dados locais e pelo menos 12 telas, com meta de 17. O status de cada requisito deve ser conferido no roteiro.
 
 ## Estado atual — P2 em desenvolvimento
 
 Aplicativo mobile que reproduz visualmente partes da interface do Spotify utilizando React Native e Expo. O aplicativo foi desenvolvido para a disciplina de Aplicativos Híbridos.
 
-O projeto é um mock de interface: não possui backend, reprodução real de áudio, autenticação, persistência de dados ou integração com a API do Spotify. As telas e interações foram desenvolvidas para demonstrar componentes, navegação e construção de interfaces híbridas.
+O projeto está evoluindo da interface da P1 para a P2. A04 implementa autenticação Spotify por PKCE e confirmação da conta em /me. Catálogo, player e conteúdo do perfil ainda usam dados demonstrativos. Persistência da sessão, catálogo real e armazenamento local continuam nas próximas etapas.
 
 Repositório: https://github.com/GuiMell0/Spotify-Expo
 
@@ -23,7 +23,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 
 - Telas navegáveis;
 - Navegação por abas e pilhas com Expo Router;
-- Login demonstrativo, sem autenticação real;
+- Login Spotify com PKCE, tratamento de falhas e demonstração explícita;
 - Busca local por músicas e playlists;
 - Biblioteca com filtros visuais;
 - Páginas de playlist, álbum, artista e perfil;
@@ -35,7 +35,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 
 | Tela | Descrição |
 | --- | --- |
-| Login | Entrada demonstrativa com botões do Spotify, Google e Apple. |
+| Login | Entrada Spotify por PKCE, cancelamento, mensagens de erro e acesso explícito à demonstração. |
 | Home | Atalhos, filtros, playlists e seções horizontais de conteúdo. |
 | Busca | Campo de pesquisa local, resultados e categorias musicais. |
 | Biblioteca | Filtros, ordenação e grade de playlists, álbuns e artistas. |
@@ -52,6 +52,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 - React Native 0.86;
 - Expo SDK 57;
 - Expo Router 57;
+- Expo AuthSession e Expo Crypto;
 - Expo Linear Gradient;
 - Expo Status Bar;
 - Expo Vector Icons;
@@ -126,7 +127,7 @@ npm run start:go -- --tunnel
 
 ## Navegação implementada na A02
 
-A entrada é expo-router/entry, com layouts em app/_layout.js e app/(tabs)/_layout.js. App.js e o navegador antigo foram removidos. A rota / redireciona para o login demonstrativo; seus botões abrem /home. Não há proteção de sessão nesta etapa.
+A entrada é expo-router/entry, com layouts em app/_layout.js e app/(tabs)/_layout.js. App.js e o navegador antigo foram removidos. Desde A04, / encaminha para o login ou para /home conforme a sessão. As rotas de conteúdo exigem login ou escolha explícita de demonstração.
 
 - Abas: /home, /search e /library.
 - Detalhes: /album/[id], /artist/[id], /playlist/[id].
@@ -163,13 +164,13 @@ O teste de OAuth passará a exigir development build nas próximas etapas. Consu
 ## Ambiente preparado na A03
 
 - .env.example: modelo compartilhado; .env pessoal ignorado pelo Git.
-- Client ID e retornos validados por plataforma; a tela informa configuração pendente sem impedir a demonstração.
+- Client ID e retornos validados por plataforma; desde A04, a tela orienta quando há configuração ou ambiente incompatível com o login.
 - eas.json: perfil development com APK Android e expo-dev-client.
 - Scripts: npm run dev, npm run start:go e alternativa npm run android:local.
 - Schemes: spotifyexpo para navegação e spotifyexpo-login para autenticação.
 - npm run test:config verifica retornos, campos incompletos e seleção de plataforma.
 
-Para criar o app no Spotify e preencher o Client ID, siga [o passo a passo](docs/SPOTIFY-SETUP.md). Para vincular sua conta Expo e gerar o APK, siga [o guia EAS](docs/ANDROID-EAS.md). A03 configura o processo; login real e geração/instalação do APK ainda dependem das próximas ações.
+Para criar o app no Spotify e preencher o Client ID, siga [o passo a passo](docs/SPOTIFY-SETUP.md). Para vincular sua conta Expo e gerar o APK, siga [o guia EAS](docs/ANDROID-EAS.md). A03 configura o processo; A04 implementa o login. A geração e instalação do APK e o teste com a conta real seguem pendentes.
 
 ### Verificações da A03
 
@@ -186,15 +187,40 @@ Validação em 17/11/2026:
 
 Ao alterar o .env, encerre o Metro anterior e use npm run dev -- --clear; para a demonstração no Expo Go, npm run start:go -- --clear. Para exportar novamente após trocar variáveis, use --clear em npx expo export, evitando configuração antiga em cache.
 
+## Login implementado na A04
+
+O botão Entrar com Spotify usa Authorization Code com PKCE S256. A URL e o verificador são preparados antes do clique. O retorno confere state, troca o código e confirma a conta com GET /me. O aplicativo não utiliza Client Secret nem tokens copiados manualmente.
+
+- /callback conclui ou orienta reiniciar uma tentativa expirada.
+- A janela de login, a troca de código e a consulta da conta têm cancelamento e limites de espera.
+- Permissão recusada, state incorreto, conta sem acesso, token inválido e rede indisponível geram mensagens legíveis.
+- Os botões falsos Google e Apple foram removidos. Explorar demonstração é uma entrada separada e identificada na Home.
+- As telas de conteúdo são protegidas; Sair da conta ou Sair da demonstração está no Perfil.
+- A sessão fica somente em memória na A04. Reabrir/recarregar o app exige nova entrada; armazenamento seguro e renovação serão feitos na A05.
+- O catálogo e o perfil de conteúdo ainda são da P1; o indicador Conta Spotify conectada confirma a autenticação.
+
+### Verificações da A04
+
+- npm run test:config: 8 testes aprovados.
+- npm run test:auth: 14 testes aprovados.
+- Compatibilidade Expo e bundles Android/Hermes e web aprovados.
+- Edge com Spotify simulado: 12 cenários aprovados, sem exceções JavaScript. Cobrem PKCE S256, janela, cancelamento seguido de nova entrada, recusa, state incorreto, token inválido, 403, logout e callback sem tentativa.
+- Os testes simulados não acessam a conta real. Teste físico com Spotify real: pendente da Ana e de um APK atualizado.
+- Artefatos e ferramenta de navegador ficam em dist-check/a04/, ignorada pelo Git.
+
+Para testar com a conta, siga [a configuração Spotify](docs/SPOTIFY-SETUP.md) e [o guia do APK](docs/ANDROID-EAS.md). Expo Go permite a demonstração; a entrada real no Android exige o development build atualizado. Como A04 adicionou bibliotecas nativas, um APK anterior precisa ser gerado novamente.
+
+A reprodução permanece nas etapas do Guilherme, conforme confirmado pela Ana. Até A15, o foco é conta, catálogo, busca, favoritas e histórico.
+
 ## Limitações atuais
 
-- Não existe autenticação real;
+- O login implementado aguarda validação manual com a conta real no APK Android;
 - Não há backend ou banco de dados;
 - O aplicativo não reproduz arquivos de áudio;
 - Curtidas, filtros e controles são estados visuais locais;
 - Os dados não permanecem salvos após reiniciar o aplicativo;
 - Algumas imagens dependem de conexão com a internet;
-- Não existe integração oficial com a API do Spotify.
+- O catálogo ainda usa dados da P1; a API já é utilizada na autenticação e consulta de /me; as consultas de catálogo virão nas etapas A07–A11.
 
 ## Integrantes
 

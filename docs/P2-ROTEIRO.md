@@ -22,7 +22,7 @@ O projeto possui 9 telas: Login, Home, Busca, Biblioteca, Playlist, Álbum, Arti
 
 A P1 foi auditada com Expo 57.0.24, React 19.2.3 e React Native 0.86.3. Na A02, o Expo foi alinhado em 57.0.33, mantendo o SDK 57. Os componentes já utilizam StyleSheet e Flexbox, mas existem estilos inline e botões demonstrativos.
 
-Na P1, a entrada era App.js, com React Navigation em src/navigation/AppNavigation.js. A02 substituiu essa estrutura por Expo Router em app/. O catálogo está em src/data/media.js, com IDs fictícios e imagens remotas. Busca, curtidas e player são demonstrações sem persistência ou autenticação real.
+Na P1, a entrada era App.js, com React Navigation em src/navigation/AppNavigation.js. A02 substituiu essa estrutura por Expo Router em app/. O catálogo está em src/data/media.js, com IDs fictícios e imagens remotas. Na P1, busca, curtidas e player eram demonstrações sem persistência ou autenticação. A04 implementa a autenticação; catálogo e persistência continuam nas etapas seguintes.
 
 Não foram disponibilizados slides de aula neste atendimento; o anexo recebido é a imagem com os requisitos. AsyncStorage será usado conforme solicitado, e o material da disciplina poderá orientar ajustes quando estiver disponível.
 
@@ -66,7 +66,7 @@ Callback e página de rota inexistente serão utilitários e não entram na cont
 
 ## Etapas da Ana — 15 commits
 
-Status: A01 e A02 commitadas. A03 implementada e validada: 8 testes do validador, compatibilidade Expo, configuração nativa Android, bundles Android/web e 10 cenários no navegador. Aguardando commit da Ana. A Ana escolheu EAS, forneceu o Client ID e confirmou o retorno Android no painel. APK e teste físico com a conta pendentes. A04–A15 pendentes.
+Status: A01–A03 commitadas. A04 implementada e validada por 22 testes unitários, 12 cenários de navegador com Spotify simulado e bundles Android/web, com PKCE, sessão em memória e rotas protegidas; aguardando commit da Ana e teste real com APK atualizado. A05–A15 pendentes. Client ID e retorno Android já foram configurados. A Ana confirmou manter a reprodução na parte do Guilherme.
 
 | Etapa | Mensagem de commit | Entrega e critério de aceite |
 | --- | --- | --- |

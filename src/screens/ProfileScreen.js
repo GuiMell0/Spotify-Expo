@@ -9,9 +9,11 @@ import BackButton from '../components/BackButton';
 import MiniPlayer from '../components/MiniPlayer';
 import { ASSETS, libraryItems } from '../data/media';
 import { colors, radius } from '../theme';
+import { useSession } from '../contexts/SessionContext';
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const { signOut, isDemo } = useSession();
   return (
     <View style={styles.root}>
       <LinearGradient colors={['#EC6196', '#77344D', colors.background]} locations={[0, 0.31, 0.58]} style={StyleSheet.absoluteFill} />
@@ -35,6 +37,7 @@ export default function ProfileScreen() {
               <MaterialCommunityIcons name="dots-vertical" size={22} color={colors.muted} />
             </Pressable>
           ))}
+          <Pressable accessibilityRole="button" onPress={signOut} style={styles.allButton}><Text style={styles.allText}>{isDemo ? 'Sair da demonstração' : 'Sair da conta'}</Text></Pressable>
           <Pressable style={styles.allButton}><Text style={styles.allText}>Ver todas as playlists</Text></Pressable>
         </ScrollView>
         <MiniPlayer />

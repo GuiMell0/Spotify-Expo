@@ -6,7 +6,9 @@
     "@expo/ui": "~57.0.19",
     "@expo/vector-icons": "^15.0.2",
     "expo": "~57.0.33",
+    "expo-auth-session": "~57.0.17",
     "expo-constants": "~57.0.24",
+    "expo-crypto": "~57.0.4",
     "expo-dev-client": "~57.0.21",
     "expo-device": "~57.0.2",
     "expo-font": "~57.0.4",
@@ -43,7 +45,8 @@
     "dev": "expo start --dev-client",
     "start:go": "expo start --go",
     "android:local": "expo run:android --device",
-    "test:config": "node --test tests/spotify-config.test.mjs"
+    "test:config": "node --test tests/spotify-config.test.mjs",
+    "test:auth": "node --test tests/spotify-auth.test.mjs"
   },
   "private": true
 }

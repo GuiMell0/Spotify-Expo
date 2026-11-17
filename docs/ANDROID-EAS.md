@@ -1,6 +1,6 @@
-# Android com EAS — guia da A03
+# Android com EAS — preparação A03 e login A04
 
-A Ana escolheu gerar o APK na nuvem. O projeto já inclui expo-dev-client, os schemes de navegação e autenticação e o perfil development em eas.json. O APK ainda não foi gerado ou instalado.
+A Ana escolheu gerar o APK na nuvem. O projeto já inclui expo-dev-client, os schemes, o perfil development em eas.json e, desde A04, expo-auth-session e expo-crypto. O APK ainda não foi gerado ou instalado.
 
 ## 1. Preparar o Spotify e a configuração local
 
@@ -32,7 +32,7 @@ Se o EAS solicitar uma chave Android para este projeto novo, selecione a geraç�
 
 O perfil usa developmentClient, distribuição internal e buildType apk. Ele gera um aplicativo instalável para desenvolvimento. Referência: [configuração do EAS](https://docs.expo.dev/build/eas-json/).
 
-A03 configura o processo. As próximas etapas adicionam bibliotecas nativas para autenticação e sessão, o que exigirá gerar outro APK. Você pode aguardar essas etapas antes do primeiro build para reduzir recompilações.
+A04 adicionou as bibliotecas nativas do login: gere um APK atualizado para testar esta etapa. A05 ainda incluirá armazenamento seguro; se optar por aguardar A05 antes do primeiro build, a validação real do login ficará pendente até lá.
 
 ## 4. Instalar e abrir no Android
 
@@ -50,11 +50,13 @@ Se a rede local bloquear a conexão, tente:
 
 O tunnel transporta a conexão com o Metro; o retorno OAuth continua sendo spotifyexpo-login://callback.
 
-## 5. Como conferir a A03
+## 5. Como conferir a configuração e a A04
 
-- Sem Client ID, o login mostra Configuração Spotify pendente e permite explorar a demonstração.
-- Com Client ID e retorno válidos, mostra Configuração Spotify preenchida. Isso confirma somente a configuração local; não testa credenciais na API.
-- O login real será implementado na A04.
+- Sem configuração válida, o login mostra orientação e permite a demonstração.
+- No Expo Go, a entrada real permanece bloqueada com orientação para usar o APK de desenvolvimento.
+- No APK atualizado, Entrar com Spotify abre a autorização; após o retorno válido, a Home mostra Conta Spotify conectada.
+- Teste também cancelamento e Sair da conta no Perfil. O passo a passo está em SPOTIFY-SETUP.md.
+- Reabrir o aplicativo exige nova entrada na A04; a A05 implementará a restauração da sessão.
 - A geração e instalação do APK só ficam confirmadas depois de executar os passos acima.
 - Ao adicionar bibliotecas nativas ou alterar schemes/plugins, gere e instale outro APK. Alterações comuns no JavaScript usam o Metro.
 
@@ -76,11 +78,10 @@ Se optar por compilar neste computador depois, configure Android Studio, SDK And
 
 ## Mensagem para retomar no chat
 
-    Fiz o commit A03.
-    Client ID: [informar somente o identificador público]
-    Retorno aceito no Spotify: [informar]
+    Fiz o commit A04.
+    Login real no APK testado: [sim/não; informar o erro se houver]
     Projeto vinculado à conta Expo: [sim/não]
     APK gerado/instalado: [sim/não; pode aguardar as bibliotecas nativas]
-    Continue somente a A04 e pare antes do próximo commit.
+    Continue somente a A05 e pare antes do próximo commit.
 
 Se algum comando falhar, informe o comando e a mensagem completa, sem credenciais de conta ou tokens.
