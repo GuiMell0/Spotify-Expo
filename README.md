@@ -1,5 +1,17 @@
 # Spotify Mock - React Native + Expo
 
+## Evolução para a P2
+
+A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de Ana Carolina e 15 de Guilherme. Esta primeira etapa entrega o planejamento; as funcionalidades descritas abaixo ainda refletem a P1.
+
+- [Roteiro completo, divisão dos commits e checklist da P2](docs/P2-ROTEIRO.md)
+- [Configuração da Spotify Web API e testes no Android](docs/SPOTIFY-SETUP.md)
+- [Roteiro de continuidade para Guilherme](docs/ROTEIRO-DUPLA.md)
+
+A próxima etapa migra a navegação para Expo Router. A integração prevista usa OAuth com PKCE, AsyncStorage para dados locais e pelo menos 12 telas, com meta de 17. O status de cada requisito deve ser conferido no roteiro.
+
+## Estado atual — P1
+
 Aplicativo mobile que reproduz visualmente partes da interface do Spotify utilizando React Native e Expo. O aplicativo foi desenvolvido para a disciplina de Aplicativos Híbridos.
 
 O projeto é um mock de interface: não possui backend, reprodução real de áudio, autenticação, persistência de dados ou integração com a API do Spotify. As telas e interações foram desenvolvidas para demonstrar componentes, navegação e construção de interfaces híbridas.
