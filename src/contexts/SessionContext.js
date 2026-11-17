@@ -1,10 +1,12 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Platform } from 'react-native';
+import { AppState, Platform } from 'react-native';
 import { isRunningInExpoGo } from 'expo';
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
 import { getSpotifyConfig } from '../config/spotify.mjs';
-import { authErrorMessage, completeSpotifyLogin, getLoginBlocker, SPOTIFY_DISCOVERY, SPOTIFY_SCOPES, SpotifyAuthError } from '../services/spotifyAuth.mjs';
+import { authErrorMessage, completeSpotifyLogin, refreshSpotifySession, getLoginBlocker, SPOTIFY_DISCOVERY, SPOTIFY_SCOPES, SpotifyAuthError } from '../services/spotifyAuth.mjs';
+import { createSessionManager } from '../services/sessionManager.mjs';
+import { createSessionStorage } from '../storage/sessionStorage';
 
 if (Platform.OS === 'web' && typeof window !== 'undefined' && window.location.pathname === '/callback') {
   // O SDK verifica origem e retorno antes de avisar a janela que iniciou o login.
@@ -20,6 +22,11 @@ export function SessionProvider({ children }) {
     expoGo: Platform.OS !== 'web' && isRunningInExpoGo(),
     origin: Platform.OS === 'web' && typeof window !== 'undefined' ? window.location.origin : undefined,
   });
+  const [isRestoring, setIsRestoring] = useState(true);
+  const [isEndingSession, setIsEndingSession] = useState(false);
+  const [logoutBlocked, setLogoutBlocked] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [canRetryRestore, setCanRetryRestore] = useState(false);
   const [session, setSession] = useState(null);
   const [isDemo, setIsDemo] = useState(false);
   const [request, setRequest] = useState(null);
@@ -31,29 +38,79 @@ export function SessionProvider({ children }) {
   const alive = useRef(true);
   const [isBrowserOpen, setIsBrowserOpen] = useState(false);
 
+  const manager = useMemo(() => createSessionManager({
+    clientId: config.clientId,
+    storage: createSessionStorage(config.clientId, {
+      enabled: config.isConfigured && Platform.OS === 'android' && !isRunningInExpoGo(),
+    }),
+    refreshSession: refreshSpotifySession,
+    onChange: setSession,
+    onRefreshing: setIsRefreshing,
+  }), [config]);
+
+  const reportSessionError = useCallback(error => {
+    if (!alive.current || error.code === 'cancelled') return;
+    setMessage(authErrorMessage(error));
+    setCanRetryRestore(!['reauth_required', 'unauthorized', 'forbidden'].includes(error.code));
+  }, []);
+
+  const restoreSession = useCallback(async () => {
+    setIsRestoring(true);
+    setMessage(null);
+    setCanRetryRestore(false);
+    try { await manager.restore(); }
+    catch (error) { reportSessionError(error); }
+    finally { if (alive.current) setIsRestoring(false); }
+  }, [manager, reportSessionError]);
+
   useEffect(() => {
-    if (blocker || session || isDemo) return undefined;
+    let mounted = true;
+    manager.restore().catch(error => {
+      if (mounted) reportSessionError(error);
+    }).finally(() => { if (mounted) setIsRestoring(false); });
+    return () => { mounted = false; };
+  }, [manager, reportSessionError]);
+
+  const getAccessToken = useCallback(async options => {
+    try { return await manager.getAccessToken(options); }
+    catch (error) { reportSessionError(error); throw error; }
+  }, [manager, reportSessionError]);
+
+  useEffect(() => {
+    if (!session || isDemo) return undefined;
+    const refresh = () => { getAccessToken().catch(() => {}); };
+    // Uma tentativa ao vencer; falhas exigem retorno ao app ou repetição manual.
+    const timer = setTimeout(refresh, Math.max(0, session.expiresAt - Date.now()));
+    const subscription = AppState.addEventListener('change', state => { if (state === 'active') refresh(); });
+    return () => { clearTimeout(timer); subscription.remove(); };
+  }, [session, isDemo, getAccessToken]);
+
+  useEffect(() => {
+    if (blocker || session || isDemo || isRestoring || isEndingSession || logoutBlocked) return undefined;
     let mounted = true;
     let timer;
-    setRequest(null);
-    setStatus('preparing');
     const deadline = new Promise((_, reject) => {
       timer = setTimeout(() => reject(new SpotifyAuthError('preparation', 'Não foi possível preparar a entrada. Tente novamente.')), 10000);
     });
-    Promise.race([deadline, AuthSession.loadAsync({
-      clientId: config.clientId,
-      redirectUri: config.redirectUri,
-      responseType: AuthSession.ResponseType.Code,
-      usePKCE: true,
-      codeChallengeMethod: AuthSession.CodeChallengeMethod.S256,
-      scopes: SPOTIFY_SCOPES,
-    }, SPOTIFY_DISCOVERY)]).then(prepared => {
-      if (mounted) { setRequest(prepared); setStatus('ready'); }
+    Promise.resolve().then(() => {
+      if (!mounted) return null;
+      setRequest(null);
+      setStatus('preparing');
+      return Promise.race([deadline, AuthSession.loadAsync({
+        clientId: config.clientId,
+        redirectUri: config.redirectUri,
+        responseType: AuthSession.ResponseType.Code,
+        usePKCE: true,
+        codeChallengeMethod: AuthSession.CodeChallengeMethod.S256,
+        scopes: SPOTIFY_SCOPES,
+      }, SPOTIFY_DISCOVERY)]);
+    }).then(prepared => {
+      if (mounted && prepared) { setRequest(prepared); setStatus('ready'); }
     }).catch(error => {
       if (mounted) { setStatus('error'); setMessage(authErrorMessage(error)); }
     }).finally(() => clearTimeout(timer));
     return () => { mounted = false; clearTimeout(timer); };
-  }, [blocker, config, generation, session, isDemo]);
+  }, [blocker, config, generation, session, isDemo, isRestoring, isEndingSession, logoutBlocked]);
 
   const stopAttempt = useCallback(() => {
     const attempt = activeAttempt.current;
@@ -73,8 +130,8 @@ export function SessionProvider({ children }) {
 
   useEffect(() => {
     alive.current = true;
-    return () => { alive.current = false; stopAttempt(); };
-  }, [stopAttempt]);
+    return () => { alive.current = false; stopAttempt(); manager.deactivate(); };
+  }, [stopAttempt, manager]);
 
   const cancelSignIn = useCallback(() => {
     stopAttempt();
@@ -87,7 +144,7 @@ export function SessionProvider({ children }) {
   }, [stopAttempt]);
 
   const signIn = useCallback(async () => {
-    if (blocker || !request || activeAttempt.current || pendingBrowser.current || session || isDemo) return;
+    if (isRestoring || isEndingSession || logoutBlocked || blocker || !request || activeAttempt.current || pendingBrowser.current || session || isDemo) return;
     const attempt = { controller: new AbortController(), cancel: null, timer: null };
     const interrupted = new Promise(resolve => { attempt.cancel = () => resolve({ type: 'cancel' }); });
     activeAttempt.current = attempt;
@@ -125,7 +182,9 @@ export function SessionProvider({ children }) {
       });
       if (activeAttempt.current !== attempt) return;
       if (authenticated) {
-        setSession(authenticated);
+        await manager.accept(authenticated, { signal: attempt.controller.signal });
+        if (activeAttempt.current !== attempt) return;
+        setCanRetryRestore(false);
         setIsDemo(false);
         setMessage(null);
         setStatus('authenticated');
@@ -143,25 +202,35 @@ export function SessionProvider({ children }) {
         setGeneration(value => value + 1);
       }
     }
-  }, [blocker, request, config, session, isDemo, cancelSignIn]);
+  }, [blocker, request, config, session, isDemo, cancelSignIn, manager, isRestoring, isEndingSession, logoutBlocked]);
 
   const startDemo = useCallback(() => {
     stopAttempt();
-    setSession(null);
+    manager.deactivate();
+    setCanRetryRestore(false);
     setIsDemo(true);
     setMessage(null);
     setStatus('demo');
-  }, [stopAttempt]);
+  }, [stopAttempt, manager]);
 
-  const signOut = useCallback(() => {
+  const signOut = useCallback(async () => {
     stopAttempt();
-    setSession(null);
+    setIsEndingSession(true);
+    setCanRetryRestore(false);
     setIsDemo(false);
     setRequest(null);
     setMessage(null);
     setStatus('idle');
-    setGeneration(value => value + 1);
-  }, [stopAttempt]);
+    try {
+      await manager.clear();
+      setLogoutBlocked(false);
+    } catch {
+      setLogoutBlocked(true);
+      setMessage('Não foi possível apagar a sessão salva. Toque em Limpar sessão novamente antes de entrar em outra conta.');
+    } finally {
+      if (alive.current) { setIsEndingSession(false); setGeneration(value => value + 1); }
+    }
+  }, [stopAttempt, manager]);
 
   const retryPreparation = useCallback(() => {
     setMessage(null);
@@ -170,11 +239,12 @@ export function SessionProvider({ children }) {
 
   const value = {
     session, isDemo, status, message, blocker, isBrowserOpen,
+    isRestoring, isEndingSession, logoutBlocked, isRefreshing, canRetryRestore,
     canAccess: Boolean(session) || isDemo,
     isBusy: ['authenticating', 'exchanging'].includes(status),
     isPreparing: status === 'preparing',
-    isReady: Boolean(request) && !blocker && !isBrowserOpen,
-    signIn, cancelSignIn, startDemo, signOut, retryPreparation,
+    isReady: Boolean(request) && !blocker && !isBrowserOpen && !logoutBlocked && !isRestoring && !isEndingSession,
+    signIn, cancelSignIn, startDemo, signOut, retryPreparation, restoreSession, getAccessToken,
   };
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }

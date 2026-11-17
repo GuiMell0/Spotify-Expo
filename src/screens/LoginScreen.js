@@ -8,7 +8,7 @@ import { colors, radius } from '../theme';
 import { useSession } from '../contexts/SessionContext';
 
 export default function LoginScreen() {
-  const { canAccess, isBusy, isPreparing, isReady, isBrowserOpen, blocker, message, status, signIn, cancelSignIn, startDemo, retryPreparation } = useSession();
+  const { canAccess, logoutBlocked, canRetryRestore, restoreSession, signOut, isBusy, isPreparing, isReady, isBrowserOpen, blocker, message, status, signIn, cancelSignIn, startDemo, retryPreparation } = useSession();
   if (canAccess) return <Redirect href="/home" />;
   const loginDisabled = Boolean(blocker) || !isReady || isBusy;
 
@@ -24,6 +24,8 @@ export default function LoginScreen() {
           <View style={styles.actions}>
             {!!blocker && <Text style={styles.notice}>{blocker}</Text>}
             {!!message && <Text accessibilityRole="alert" accessibilityLiveRegion="polite" style={styles.message}>{message}</Text>}
+            {canRetryRestore && <Pressable accessibilityRole="button" onPress={restoreSession} style={styles.secondaryButton}><Text style={styles.secondaryText}>Tentar restaurar sessão</Text></Pressable>}
+            {logoutBlocked && <Pressable accessibilityRole="button" onPress={signOut} style={styles.secondaryButton}><Text style={styles.secondaryText}>Limpar sessão novamente</Text></Pressable>}
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="Entrar com Spotify"
@@ -37,7 +39,7 @@ export default function LoginScreen() {
             </Pressable>
             {isBusy && <Pressable accessibilityRole="button" onPress={cancelSignIn} style={styles.secondaryButton}><Text style={styles.secondaryText}>Cancelar entrada</Text></Pressable>}
             {isBrowserOpen && !isBusy && <Text style={styles.notice}>Aguardando o fechamento da janela de autorização…</Text>}
-            {!isBusy && !isPreparing && !isReady && !isBrowserOpen && !blocker && (
+            {!isBusy && !isPreparing && !isReady && !isBrowserOpen && !blocker && !logoutBlocked && (
               <Pressable accessibilityRole="button" onPress={retryPreparation} style={styles.secondaryButton}><Text style={styles.secondaryText}>Preparar entrada novamente</Text></Pressable>
             )}
             <Pressable accessibilityRole="button" disabled={isBusy} onPress={startDemo} style={[styles.secondaryButton, isBusy && styles.disabled]}>

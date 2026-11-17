@@ -1,6 +1,6 @@
 # Configuração Spotify — P2
 
-A03 prepara o ambiente, o modelo de variáveis e o perfil EAS para Android. A Ana escolheu APK pela nuvem, forneceu o Client ID e confirmou spotifyexpo-login://callback salvo no painel. O Client ID foi preenchido somente no .env local. A04 implementou o login PKCE e a consulta de confirmação em /me. Geração/instalação do APK e teste com a conta real continuam pendentes.
+A03 prepara o ambiente, o modelo de variáveis e o perfil EAS para Android. A Ana escolheu APK pela nuvem, forneceu o Client ID e confirmou spotifyexpo-login://callback salvo no painel. O Client ID foi preenchido somente no .env local. A04 implementou o login PKCE e a consulta de confirmação em /me. A05 adiciona SecureStore no Android, restauração e renovação. Geração/instalação do APK e teste com a conta real continuam pendentes.
 
 ## O que já sabemos
 
@@ -25,7 +25,7 @@ Se o painel rejeitar o retorno nativo, envie a mensagem exata antes de mudar a c
 
 ## Client ID e token de acesso são diferentes
 
-Client ID identifica o aplicativo e fica em Settings no Dashboard. Um valor copiado de const token em exemplos da API é um token de acesso da sessão; ele não deve ser preenchido no campo Client ID. O login PKCE da A04 obtém tokens em memória; a A05 implementará armazenamento seguro e renovação.
+Client ID identifica o aplicativo e fica em Settings no Dashboard. Um valor copiado de const token em exemplos da API é um token de acesso da sessão; ele não deve ser preenchido no campo Client ID. O login PKCE obtém tokens automaticamente; desde A05, o Android usa armazenamento seguro e renovação. No navegador, os tokens continuam apenas em memória.
 
 ## Retorno para Android e navegador
 
@@ -63,15 +63,21 @@ A Ana escolheu EAS, com APK gerado na nuvem. Siga o [guia Android/EAS](ANDROID-E
 
 O perfil development de eas.json e expo-dev-client já estão configurados. O APK ainda precisa ser gerado e instalado pela Ana. Expo Go pode exibir a demonstração, mas o teste OAuth exige o build de desenvolvimento. Referência: [autenticação no Expo](https://docs.expo.dev/guides/authentication/).
 
-## Testar o login real da A04
+## Testar login e sessão reais — A04/A05
 
-1. Gere e instale o APK de desenvolvimento atualizado pelo [guia EAS](ANDROID-EAS.md). A04 adicionou expo-auth-session e expo-crypto; um APK antigo não inclui essas bibliotecas.
+1. Gere e instale o APK de desenvolvimento atualizado pelo [guia EAS](ANDROID-EAS.md). A04 adicionou expo-auth-session e expo-crypto; A05 adicionou expo-secure-store. Um APK anterior precisa ser gerado novamente.
 2. Execute npm run dev -- --clear e abra o aplicativo de desenvolvimento no Android.
 3. Toque em Entrar com Spotify. Faça login na janela do Spotify e aceite as permissões.
 4. Ao retornar, a Home deve mostrar Conta Spotify conectada. A conta é confirmada em /me; o catálogo ainda é demonstrativo nesta etapa.
 5. Confira o cancelamento pela janela de autorização e, se disponível na tela, por Cancelar entrada. No Android, pode ser necessário fechar a aba do Chrome antes de outra tentativa.
 6. No Perfil, use Sair da conta. A entrada deve reaparecer, sem permitir voltar às telas privadas.
-7. Reabrir o aplicativo exige novo login na A04: a sessão ainda está só em memória. A05 implementará a restauração e renovação.
+7. Entre novamente. Feche completamente o aplicativo e reabra pelo development build com o Metro disponível: a Home deve abrir sem repetir a autorização.
+8. Depois de o token vencer (normalmente cerca de uma hora), retorne ao aplicativo com internet: a sessão deve ser renovada. Não altere tokens manualmente para testar.
+9. Para conferir falha transitória, reabra com token já vencido e sem internet: aguarde a mensagem de conexão; reconecte e use Tentar restaurar sessão. Não deve haver tentativas em ciclo.
+10. Use Sair da conta, feche e reabra: o login deve continuar aparecendo. Se houver erro de exclusão, use Limpar sessão novamente.
+11. Para testar revogação, remova a autorização deste aplicativo na conta Spotify; na próxima renovação o app deve pedir novo login. Sair da conta no aplicativo apaga a sessão local e não revoga a autorização no Spotify.
+
+A persistência da sessão é própria do Android. No navegador e no Expo Go não gravamos tokens; recarregar exige nova entrada. O armazenamento seguro guarda credenciais, enquanto AsyncStorage será usado para curtidas, histórico e playlists nas próximas etapas. Referências: [SecureStore](https://docs.expo.dev/versions/v57.0.0/sdk/securestore/) e [renovação PKCE do Spotify](https://developer.spotify.com/documentation/web-api/tutorials/refreshing-tokens).
 
 Se receber acesso negado, confira Users Management e o Premium do proprietário. O app solicita user-read-private, playlist-read-private e playlist-read-collaborative. Não solicita permissões de reprodução nesta etapa.
 
@@ -87,7 +93,7 @@ Os testes automatizados validam o fluxo com respostas simuladas. A validação r
 - Tokens e vencimento restaurados no Android pelo SecureStore.
 - Renovação compartilhada entre chamadas concorrentes, com limite de nova tentativa.
 - Timeout nas requisições e saída de carregamento em todos os caminhos.
-- Logout apaga a sessão; os dados locais ficam separados por conta.
+- Logout apaga a sessão Android e bloqueia respostas antigas; erros de exclusão são informados. A separação dos dados de biblioteca por conta será implementada na A12.
 - Escopos mínimos para perfil e leitura das playlists; favoritas e playlists locais não precisam de permissão de escrita Spotify.
 - Validar endpoints com a conta real antes de confirmar a integração.
 

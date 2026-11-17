@@ -2,20 +2,20 @@
 
 ## Evolução para a P2
 
-A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de Ana Carolina e 15 de Guilherme. A01 entregou o planejamento. A02 migrou as 9 telas para Expo Router; o catálogo, o login e o player continuam demonstrativos.
+A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de Ana Carolina e 15 de Guilherme. A01 entregou o planejamento. A02 migrou as 9 telas para Expo Router; o catálogo e o player continuam demonstrativos. A04 adicionou login Spotify.
 
 - [Roteiro completo, divisão dos commits e checklist da P2](docs/P2-ROTEIRO.md)
 - [Configuração da Spotify Web API](docs/SPOTIFY-SETUP.md)
 - [Geração e instalação do APK Android pelo EAS](docs/ANDROID-EAS.md)
 - [Roteiro de continuidade para Guilherme](docs/ROTEIRO-DUPLA.md)
 
-A04 implementou o login Spotify com PKCE e sessão em memória. A próxima etapa salva e renova a sessão. A integração prevista usa OAuth com PKCE, AsyncStorage para dados locais e pelo menos 12 telas, com meta de 17. O status de cada requisito deve ser conferido no roteiro.
+A04 implementou o login Spotify com PKCE; A05 adiciona persistência segura no Android, restauração e renovação. A integração prevista usa OAuth com PKCE, AsyncStorage para dados locais e pelo menos 12 telas, com meta de 17. O status de cada requisito deve ser conferido no roteiro.
 
 ## Estado atual — P2 em desenvolvimento
 
 Aplicativo mobile que reproduz visualmente partes da interface do Spotify utilizando React Native e Expo. O aplicativo foi desenvolvido para a disciplina de Aplicativos Híbridos.
 
-O projeto está evoluindo da interface da P1 para a P2. A04 implementa autenticação Spotify por PKCE e confirmação da conta em /me. Catálogo, player e conteúdo do perfil ainda usam dados demonstrativos. Persistência da sessão, catálogo real e armazenamento local continuam nas próximas etapas.
+O projeto está evoluindo da interface da P1 para a P2. A04 implementa autenticação Spotify por PKCE e confirmação da conta em /me. Catálogo, player e conteúdo do perfil ainda usam dados demonstrativos. A05 salva a sessão Android com SecureStore e renova tokens. Catálogo real e dados locais com AsyncStorage continuam nas próximas etapas.
 
 Repositório: https://github.com/GuiMell0/Spotify-Expo
 
@@ -24,6 +24,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 - Telas navegáveis;
 - Navegação por abas e pilhas com Expo Router;
 - Login Spotify com PKCE, tratamento de falhas e demonstração explícita;
+- Sessão Android persistente no SecureStore, renovação compartilhada e logout;
 - Busca local por músicas e playlists;
 - Biblioteca com filtros visuais;
 - Páginas de playlist, álbum, artista e perfil;
@@ -52,7 +53,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 - React Native 0.86;
 - Expo SDK 57;
 - Expo Router 57;
-- Expo AuthSession e Expo Crypto;
+- Expo AuthSession, Expo Crypto e Expo SecureStore;
 - Expo Linear Gradient;
 - Expo Status Bar;
 - Expo Vector Icons;
@@ -212,13 +213,35 @@ Para testar com a conta, siga [a configuração Spotify](docs/SPOTIFY-SETUP.md) 
 
 A reprodução permanece nas etapas do Guilherme, conforme confirmado pela Ana. Até A15, o foco é conta, catálogo, busca, favoritas e histórico.
 
+## Sessão implementada na A05
+
+- Android: tokens, vencimento e identificação mínima da conta ficam no SecureStore, separados pelo Client ID. A tela inicial aguarda a leitura antes de liberar as rotas.
+- Reabrir com token válido dispensa nova autorização. A renovação ocorre próximo ao vencimento, no vencimento ou ao voltar ao app, sem repetição automática após uma falha.
+- Chamadas concorrentes compartilham a renovação. Um novo refresh token é salvo quando enviado; quando não é enviado, o anterior é preservado.
+- Revogação exige novo login. Falha de rede preserva o registro e oferece Tentar restaurar sessão; a demonstração continua sendo uma escolha explícita.
+- Logout remove o registro e impede respostas atrasadas de reabrir a conta. Falha de exclusão é informada com Limpar sessão novamente.
+- Navegador e Expo Go usam apenas memória. Recarregar o navegador exige nova entrada; tokens não são gravados em localStorage nem AsyncStorage.
+- A06 poderá usar getAccessToken do contexto para as consultas autenticadas. O catálogo da P1 permanece nesta etapa.
+- Esta etapa adiciona expo-secure-store e seu plugin. Gere e instale outro APK caso já tenha um anterior: [guia Android/EAS](docs/ANDROID-EAS.md).
+
+### Verificações da A05
+
+- npm run test:session: 31 testes aprovados de restauração, rotação, revogação, concorrência, cancelamento, armazenamento e timeout.
+- npm run test:auth e npm run test:config: 22 testes anteriores aprovados.
+- Bundles Android/Hermes e web gerados com sucesso.
+- Edge com Spotify simulado: 15 cenários aprovados, incluindo expiração, renovação, recuperação manual após falha de rede e acesso revogado. Sem exceções JavaScript.
+- npm run lint aprovado; configuração ESLint adicionada e pequenos problemas de importação/sintaxe da P1 corrigidos sem alterar a interface.
+- npx expo install --check aprovado. Introspecção confirma o plugin e as regras Android de backup do SecureStore.
+- O teste no aparelho com SecureStore e a conta Spotify real ainda depende da Ana; ver [passo a passo](docs/SPOTIFY-SETUP.md).
+- Ferramentas temporárias e artefatos ficam em dist-check/a05/, ignorada pelo Git.
+
 ## Limitações atuais
 
 - O login implementado aguarda validação manual com a conta real no APK Android;
 - Não há backend ou banco de dados;
 - O aplicativo não reproduz arquivos de áudio;
 - Curtidas, filtros e controles são estados visuais locais;
-- Os dados não permanecem salvos após reiniciar o aplicativo;
+- Curtidas e histórico ainda não persistem; a sessão Android já possui armazenamento seguro na A05;
 - Algumas imagens dependem de conexão com a internet;
 - O catálogo ainda usa dados da P1; a API já é utilizada na autenticação e consulta de /me; as consultas de catálogo virão nas etapas A07–A11.
 

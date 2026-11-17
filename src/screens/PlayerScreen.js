@@ -46,7 +46,7 @@ export default function PlayerScreen() {
             <MaterialCommunityIcons name="devices" size={22} color={colors.text} />
             <View style={{ flexDirection: 'row', gap: 22 }}><MaterialCommunityIcons name="share-variant-outline" size={22} color={colors.text} /><MaterialCommunityIcons name="playlist-music-outline" size={24} color={colors.text} /></View>
           </View>
-          <View style={styles.lyrics}><View><Text style={styles.lyricsTitle}>Letra</Text><Text style={styles.lyricsText}>"Why the fuck am I falling apart?"</Text></View><MaterialCommunityIcons name="arrow-expand" size={22} color={colors.text} /></View>
+          <View style={styles.lyrics}><View><Text style={styles.lyricsTitle}>Letra</Text><Text style={styles.lyricsText}>{"\"Why the fuck am I falling apart?\""}</Text></View><MaterialCommunityIcons name="arrow-expand" size={22} color={colors.text} /></View>
         </ScrollView>
       </SafeAreaView>
     </LinearGradient>

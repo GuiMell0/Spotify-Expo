@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text } from 'react-native';
 import { colors, radius } from '../theme';
 
 export default function MediaCard({ item, onPress, width = 148 }) {

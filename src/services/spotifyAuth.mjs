@@ -40,7 +40,7 @@ export function readAuthorizationCode(result, expectedState) {
   return params.code;
 }
 
-async function requestJson(url, options, { fetchImpl, signal, timeoutMs }) {
+async function requestJson(url, options, { fetchImpl, signal, timeoutMs, reauthOnUnauthorized = false }) {
   const controller = new AbortController();
   let timer;
   let onAbort;
@@ -61,6 +61,7 @@ async function requestJson(url, options, { fetchImpl, signal, timeoutMs }) {
         if (signal?.aborted) throw new SpotifyAuthError('cancelled', 'Entrada cancelada.');
         const response = await fetchImpl(url, { ...options, signal: controller.signal });
         if (!response.ok) {
+          if (reauthOnUnauthorized && [400, 401].includes(response.status)) throw new SpotifyAuthError('reauth_required', 'Sua sessão Spotify expirou ou foi revogada. Entre novamente.');
           if (response.status === 403) throw new SpotifyAuthError('forbidden', 'A conta não tem acesso a este aplicativo. Confira Users Management no painel Spotify e o Premium do proprietário.');
           if (response.status === 429) throw new SpotifyAuthError('rate_limited', 'O Spotify limitou as solicitações. Aguarde antes de tentar novamente.');
           if ([400, 401].includes(response.status)) throw new SpotifyAuthError('unauthorized', 'O Spotify não aceitou esta entrada. Confira o Client ID e o retorno cadastrado e tente novamente.');
@@ -116,5 +117,27 @@ export async function completeSpotifyLogin({
       displayName: typeof user.display_name === 'string' && user.display_name ? user.display_name : user.id,
       imageUrl: Array.isArray(user.images) ? user.images.find(image => typeof image?.url === 'string')?.url ?? null : null,
     },
+  };
+}
+
+export async function refreshSpotifySession({
+  session, clientId, signal, fetchImpl = globalThis.fetch, timeoutMs = 15000, now = Date.now,
+}) {
+  if (!session?.refreshToken) throw new SpotifyAuthError('reauth_required', 'Sua sessão não pode ser renovada. Entre novamente no Spotify.');
+  const token = await requestJson(SPOTIFY_DISCOVERY.tokenEndpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', Accept: 'application/json' },
+    body: new URLSearchParams({ grant_type: 'refresh_token', refresh_token: session.refreshToken, client_id: clientId }).toString(),
+  }, { fetchImpl, signal, timeoutMs, reauthOnUnauthorized: true });
+  if (!token || typeof token.access_token !== 'string' || !/^\S+$/.test(token.access_token)
+    || !/^Bearer$/i.test(token.token_type ?? '') || !Number.isFinite(token.expires_in) || token.expires_in <= 0) {
+    throw new SpotifyAuthError('invalid_token', 'O Spotify retornou uma renovação inválida. Tente novamente.');
+  }
+  return {
+    ...session,
+    accessToken: token.access_token,
+    refreshToken: typeof token.refresh_token === 'string' && token.refresh_token ? token.refresh_token : session.refreshToken,
+    expiresAt: now() + token.expires_in * 1000,
+    scope: typeof token.scope === 'string' ? token.scope : session.scope,
   };
 }

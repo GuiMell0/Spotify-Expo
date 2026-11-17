@@ -1,5 +1,6 @@
 import React from 'react';
 import { DarkTheme, Stack, ThemeProvider } from 'expo-router';
+import SessionLoadingScreen from '../src/screens/SessionLoadingScreen';
 import { StatusBar } from 'expo-status-bar';
 import { colors } from '../src/theme';
 import { SessionProvider, useSession } from '../src/contexts/SessionContext';
@@ -10,7 +11,8 @@ const navigationTheme = {
 };
 
 function RootNavigator() {
-  const { canAccess } = useSession();
+  const { canAccess, isRestoring, isEndingSession } = useSession();
+  if (isRestoring || isEndingSession) return <SessionLoadingScreen ending={isEndingSession} />;
   return (
     <ThemeProvider value={navigationTheme}>
       <StatusBar style="light" />
