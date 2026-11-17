@@ -20,9 +20,18 @@
     "plugins": [
       "expo-status-bar",
       "expo-router",
-      "expo-splash-screen"
+      "expo-splash-screen",
+      [
+        "expo-dev-client",
+        {
+          "launchMode": "most-recent"
+        }
+      ]
     ],
-    "scheme": "spotifyexpo",
+    "scheme": [
+      "spotifyexpo",
+      "spotifyexpo-login"
+    ],
     "web": {
       "bundler": "metro",
       "output": "single"

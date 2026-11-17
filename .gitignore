@@ -13,3 +13,16 @@ yarn-error.log*
 *.p12
 *.key
 *.mobileprovision
+
+# Configuração pessoal; versionar somente o modelo.
+.env
+.env.*
+!.env.example
+
+# Projetos nativos gerados pelo Expo e artefatos de build.
+/android/
+/ios/
+*.apk
+*.aab
+*.keystore
+credentials.json

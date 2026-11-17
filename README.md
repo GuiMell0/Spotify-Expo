@@ -5,10 +5,11 @@
 A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de Ana Carolina e 15 de Guilherme. A01 entregou o planejamento. A02 migrou as 9 telas para Expo Router; o catálogo, o login e o player continuam demonstrativos.
 
 - [Roteiro completo, divisão dos commits e checklist da P2](docs/P2-ROTEIRO.md)
-- [Configuração da Spotify Web API e testes no Android](docs/SPOTIFY-SETUP.md)
+- [Configuração da Spotify Web API](docs/SPOTIFY-SETUP.md)
+- [Geração e instalação do APK Android pelo EAS](docs/ANDROID-EAS.md)
 - [Roteiro de continuidade para Guilherme](docs/ROTEIRO-DUPLA.md)
 
-A próxima etapa configura o ambiente Spotify e o desenvolvimento Android. A integração prevista usa OAuth com PKCE, AsyncStorage para dados locais e pelo menos 12 telas, com meta de 17. O status de cada requisito deve ser conferido no roteiro.
+A03 preparou as variáveis Spotify e o perfil de desenvolvimento Android pelo EAS. A próxima etapa implementa login real com PKCE. A integração prevista usa OAuth com PKCE, AsyncStorage para dados locais e pelo menos 12 telas, com meta de 17. O status de cada requisito deve ser conferido no roteiro.
 
 ## Estado atual — P2 em desenvolvimento
 
@@ -96,11 +97,19 @@ Instale as dependências:
 npm install
 ```
 
-Inicie o Expo:
+Para a demonstração no Expo Go:
 
 ```bash
-npx expo start
+npm run start:go
 ```
+
+Para o APK de desenvolvimento instalado no Android:
+
+```bash
+npm run dev
+```
+
+A geração do APK pelo EAS está em [docs/ANDROID-EAS.md](docs/ANDROID-EAS.md).
 
 No celular:
 
@@ -112,7 +121,7 @@ No celular:
 Se a conexão pela rede local não funcionar, tente:
 
 ```bash
-npx expo start --tunnel
+npm run start:go -- --tunnel
 ```
 
 ## Navegação implementada na A02
@@ -142,7 +151,7 @@ Validação em 17/11/2026:
 
 ### Teste manual no Android
 
-1. Reinicie o Metro após a mudança de entrada: npx expo start --clear.
+1. Reinicie o Metro após a mudança de entrada: npm run start:go -- --clear.
 2. Abra no Expo Go nesta etapa e toque no login demonstrativo.
 3. Visite as três abas; abra uma playlist, o álbum, o artista e o perfil.
 4. Em Buscar, pesquise Misadventures e abra o resultado.
@@ -150,6 +159,32 @@ Validação em 17/11/2026:
 6. Confira o botão Voltar e o gesto/botão do Android sem retornar ao login depois de entrar.
 
 O teste de OAuth passará a exigir development build nas próximas etapas. Consulte docs/SPOTIFY-SETUP.md.
+
+## Ambiente preparado na A03
+
+- .env.example: modelo compartilhado; .env pessoal ignorado pelo Git.
+- Client ID e retornos validados por plataforma; a tela informa configuração pendente sem impedir a demonstração.
+- eas.json: perfil development com APK Android e expo-dev-client.
+- Scripts: npm run dev, npm run start:go e alternativa npm run android:local.
+- Schemes: spotifyexpo para navegação e spotifyexpo-login para autenticação.
+- npm run test:config verifica retornos, campos incompletos e seleção de plataforma.
+
+Para criar o app no Spotify e preencher o Client ID, siga [o passo a passo](docs/SPOTIFY-SETUP.md). Para vincular sua conta Expo e gerar o APK, siga [o guia EAS](docs/ANDROID-EAS.md). A03 configura o processo; login real e geração/instalação do APK ainda dependem das próximas ações.
+
+### Verificações da A03
+
+Validação em 17/11/2026:
+
+- npm run test:config: 8 testes aprovados, incluindo campo vazio, token usado por engano como Client ID, retorno inválido e seleção de plataforma.
+- npx expo install --check: dependências compatíveis.
+- npx expo config --type introspect: schemes spotifyexpo, spotifyexpo-login e do launcher de desenvolvimento registrados no Android, sem gerar projeto nativo.
+- Bundles Android/Hermes e web gerados com sucesso em dist-check/a03/.
+- Edge em viewport móvel: 10 cenários aprovados, sem exceções JavaScript ou avisos de navegação.
+- Mensagens de configuração pendente e preenchida verificadas; Client ID informado aplicado apenas ao .env local.
+- Modelo .env.example compartilhável e .env pessoal ignorado pelo Git.
+- Geração/instalação do APK pelo EAS e autenticação real da conta continuam pendentes.
+
+Ao alterar o .env, encerre o Metro anterior e use npm run dev -- --clear; para a demonstração no Expo Go, npm run start:go -- --clear. Para exportar novamente após trocar variáveis, use --clear em npx expo export, evitando configuração antiga em cache.
 
 ## Limitações atuais
 

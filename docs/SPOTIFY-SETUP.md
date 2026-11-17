@@ -1,6 +1,6 @@
 # Configuração Spotify — P2
 
-Este guia prepara etapas futuras. A01 altera apenas documentação; ainda não há login real, arquivo de ambiente ou development build configurado.
+A03 prepara o ambiente, o modelo de variáveis e o perfil EAS para Android. A Ana escolheu APK pela nuvem, forneceu o Client ID e confirmou spotifyexpo-login://callback salvo no painel. O Client ID foi preenchido somente no .env local. Login real é a A04; geração/instalação do APK e teste com a conta continuam pendentes.
 
 ## O que já sabemos
 
@@ -8,18 +8,28 @@ A Ana possui Premium e vai testar no Android. O fluxo escolhido é Authorization
 
 Client Credentials é apropriado para comunicação de servidor com servidor, sem acesso à conta do usuário; exigiria manter o segredo em um backend. Não será usado diretamente no aplicativo. Referência: [autorização Spotify](https://developer.spotify.com/documentation/web-api/concepts/authorization).
 
-## Passos que dependem da Ana
+## Criar o aplicativo no Spotify
 
-1. Entrar no [Dashboard Spotify for Developers](https://developer.spotify.com/dashboard) com a conta Premium.
-2. Criar um aplicativo para o projeto acadêmico, preenchendo nome, descrição e os termos exigidos pelo formulário. Selecionar Web API quando essa opção for apresentada.
-3. Abrir as configurações e copiar o Client ID. O painel também fornece o Client Secret, mas não é necessário copiá-lo para este projeto. Referência: [cadastro de apps](https://developer.spotify.com/documentation/web-api/concepts/apps).
-4. Cadastrar os retornos de autenticação descritos abaixo. O valor utilizado no código precisa corresponder ao cadastrado.
-5. Em Settings > Users Management, permitir acesso às contas usadas pela dupla e, se necessário, à do avaliador. Novos apps em Development Mode aceitam até cinco usuários autorizados e exigem Premium do proprietário. Uma conta fora da lista pode conseguir login e ainda receber 403 na API. Referência: [modo de desenvolvimento](https://developer.spotify.com/documentation/web-api/concepts/quota-modes).
-6. Informar no chat somente o Client ID, os retornos aceitos pelo painel e se o Android Studio já está instalado. Não enviar senha, Client Secret, código OAuth ou tokens.
+1. Abra o [Dashboard](https://developer.spotify.com/dashboard) com a conta Premium.
+2. Clique em Create app. Use nome Spotify Expo P2 e descrição Aplicativo acadêmico da disciplina de Aplicativos Híbridos.
+3. Se houver Website, use https://github.com/GuiMell0/Spotify-Expo. Marque Web API e aceite os termos.
+4. Em Redirect URIs, adicione spotifyexpo-login://callback e salve. Para teste web, adicione também http://127.0.0.1:8081/callback. Os campos podem aparecer na criação ou em Settings/Edit Settings.
+5. Copie o Client ID e preencha EXPO_PUBLIC_SPOTIFY_CLIENT_ID no .env local. O Client Secret fica no painel e não será usado no aplicativo.
+6. Se surgir um campo Android Package, use com.guimello.spotifyexpo, conforme app.json.
+
+Referência: [cadastro de apps Spotify](https://developer.spotify.com/documentation/web-api/concepts/apps).
+
+Em Settings > Users Management, adicione as contas da dupla que testarão o app; inclua a do avaliador se necessário. Apps novos em Development Mode admitem até cinco usuários autorizados e exigem Premium do proprietário. Referência: [acesso em desenvolvimento](https://developer.spotify.com/documentation/web-api/concepts/quota-modes).
+
+Se o painel rejeitar o retorno nativo, envie a mensagem exata antes de mudar a configuração. Para a A04, informe somente o Client ID e o retorno aceito.
+
+## Client ID e token de acesso são diferentes
+
+Client ID identifica o aplicativo e fica em Settings no Dashboard. Um valor copiado de const token em exemplos da API é um token de acesso da sessão; ele não deve ser preenchido no campo Client ID. O login PKCE da A04 obterá tokens, e a sessão da A05 cuidará da renovação.
 
 ## Retorno para Android e navegador
 
-Na etapa A03, preparar o scheme exclusivo spotifyexpo-login. O retorno nativo proposto é:
+A03 registra spotifyexpo-login como scheme de autenticação, mantendo spotifyexpo para a navegação geral. O retorno nativo configurado é:
 
     spotifyexpo-login://callback
 
@@ -33,31 +43,25 @@ Abrir o aplicativo usando 127.0.0.1 e a mesma porta, em vez de localhost. Endere
 
 Não usar 127.0.0.1 do celular para apontar ao computador. O retorno web acima é para o navegador do computador; o Android utilizará o retorno nativo configurado no build.
 
-## Variáveis previstas para A03
+## Variáveis implementadas na A03
 
-O arquivo .env.example será versionado com valores de exemplo. O arquivo .env pessoal ficará fora do Git:
+O .env.example é versionado e mantém o Client ID vazio. O .env pessoal desta máquina recebeu o Client ID informado pela Ana e é ignorado pelo Git. O modelo é:
 
-    EXPO_PUBLIC_SPOTIFY_CLIENT_ID=seu_client_id
+    EXPO_PUBLIC_SPOTIFY_CLIENT_ID=
     EXPO_PUBLIC_SPOTIFY_REDIRECT_URI_ANDROID=spotifyexpo-login://callback
     EXPO_PUBLIC_SPOTIFY_REDIRECT_URI_WEB=http://127.0.0.1:8081/callback
 
-Esses nomes ainda são uma proposta de configuração. O código será implementado para selecionar o retorno conforme a plataforma. Reiniciar o Metro depois de alterar variáveis.
+Preencha a primeira linha com o Client ID do painel. Depois da mudança, encerre o Metro e execute npm run dev -- --clear (ou npm run start:go -- --clear para a demonstração), garantindo a leitura da configuração atual. Em outra máquina, copie o modelo sem substituir um .env existente.
 
-Não criar variável EXPO_PUBLIC para Client Secret: valores desse tipo são incluídos no aplicativo. Tokens também não vão para arquivos versionados nem logs.
+src/config/spotify.mjs seleciona e valida os campos da plataforma. Android exige o retorno correspondente ao scheme do build. Web usa /callback com HTTPS ou HTTP em loopback explícito; localhost não é aceito. A tela indica configuração pendente ou preenchida, sem realizar autenticação.
 
-## Como testar OAuth no Android
+Não colocar Client Secret ou tokens em EXPO_PUBLIC, arquivos versionados ou logs. Referência: [variáveis do Expo](https://docs.expo.dev/guides/environment-variables/).
 
-Expo Go não oferece o scheme personalizado necessário para esse teste de autenticação. A partir de A03, usar um development build com expo-dev-client. Referência: [autenticação no Expo](https://docs.expo.dev/guides/authentication/).
+## Como preparar o Android
 
-Caminho principal no Windows:
+A Ana escolheu EAS, com APK gerado na nuvem. Siga o [guia Android/EAS](ANDROID-EAS.md) para entrar na conta Expo, vincular o projeto, gerar e instalar o APK e executar npm run dev.
 
-1. Informar se já existe Android Studio, SDK Android e dispositivo/emulador configurados.
-2. Aguardar A03 preparar as dependências e a configuração nativa.
-3. Com o ambiente Android instalado, gerar e instalar o aplicativo de desenvolvimento com npx expo run:android.
-4. Para iniciar o Metro nas execuções seguintes, usar npx expo start --dev-client.
-5. Abrir o development build instalado, iniciar o login pelo botão e conferir o retorno ao aplicativo.
-
-Se não houver ambiente Android local, preparar a alternativa de build pelo EAS com a própria conta Expo quando chegarmos a A03. A instalação do APK, login na conta e aceite de permissões dependem da Ana. O guia será atualizado com os comandos adequados ao caminho escolhido.
+O perfil development de eas.json e expo-dev-client já estão configurados. O APK ainda precisa ser gerado e instalado pela Ana. Expo Go pode exibir a demonstração, mas o teste OAuth exige o build de desenvolvimento. Referência: [autenticação no Expo](https://docs.expo.dev/guides/authentication/).
 
 ## Contrato da implementação
 

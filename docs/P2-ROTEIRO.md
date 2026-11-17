@@ -66,7 +66,7 @@ Callback e página de rota inexistente serão utilitários e não entram na cont
 
 ## Etapas da Ana — 15 commits
 
-Status: A01 commitada; A02 implementada e validada por bundles Android/web, compatibilidade Expo e 9 cenários no navegador. Aguardando teste físico no Android e commit da Ana. A03–A15 pendentes.
+Status: A01 e A02 commitadas. A03 implementada e validada: 8 testes do validador, compatibilidade Expo, configuração nativa Android, bundles Android/web e 10 cenários no navegador. Aguardando commit da Ana. A Ana escolheu EAS, forneceu o Client ID e confirmou o retorno Android no painel. APK e teste físico com a conta pendentes. A04–A15 pendentes.
 
 | Etapa | Mensagem de commit | Entrega e critério de aceite |
 | --- | --- | --- |
@@ -113,7 +113,7 @@ Executar depois de A15. O [roteiro da dupla](ROTEIRO-DUPLA.md) contém as instru
 ## Decisões para manter o aplicativo funcional
 
 1. Usar OAuth Authorization Code com PKCE. Nunca incluir Client Secret no bundle.
-2. A Ana confirmou Spotify Premium e teste principal no Android. Preparar development build para OAuth; Expo Go pode servir antes dessa integração.
+2. A Ana confirmou Premium, Android e APK pelo EAS. A03 prepara o development build; [guia de instalação](ANDROID-EAS.md). Expo Go pode servir para a demonstração antes do OAuth.
 3. Armazenar preferências, curtidas, histórico e playlists locais em AsyncStorage. Separar dados por usuário. Guardar tokens no SecureStore no Android.
 4. Substituir mocks gradualmente; ao final, nenhum catálogo fictício deve alimentar as telas de produção.
 5. Tratar ausência de internet e credenciais com ações claras. Não trocar silenciosamente API com erro por dados fictícios.
