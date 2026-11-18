@@ -1,19 +1,15 @@
+import { SpotifyAuthError, SpotifyApiError } from './spotifyErrors.mjs';
+import { createSpotifyApiClient } from './spotifyApi.mjs';
+export { SpotifyAuthError } from './spotifyErrors.mjs';
+
 export const SPOTIFY_DISCOVERY = {
   authorizationEndpoint: 'https://accounts.spotify.com/authorize',
   tokenEndpoint: 'https://accounts.spotify.com/api/token',
 };
 export const SPOTIFY_SCOPES = ['user-read-private', 'playlist-read-private', 'playlist-read-collaborative'];
 
-export class SpotifyAuthError extends Error {
-  constructor(code, message) {
-    super(message);
-    this.name = 'SpotifyAuthError';
-    this.code = code;
-  }
-}
-
 export function authErrorMessage(error) {
-  if (error instanceof SpotifyAuthError) return error.message;
+  if (error instanceof SpotifyAuthError || error instanceof SpotifyApiError) return error.message;
   if (error?.code === 'ERR_WEB_BROWSER_BLOCKED') return 'Permita a abertura da janela de login no navegador e tente novamente.';
   return 'Não foi possível entrar no Spotify. Confira a conexão e tente novamente.';
 }
@@ -103,9 +99,8 @@ export async function completeSpotifyLogin({
     throw new SpotifyAuthError('invalid_token', 'O Spotify retornou uma sessão inválida. Inicie o login novamente.');
   }
   const expiresAt = now() + token.expires_in * 1000;
-  const user = await requestJson('https://api.spotify.com/v1/me', {
-    headers: { Accept: 'application/json', Authorization: 'Bearer ' + token.access_token },
-  }, { fetchImpl, signal, timeoutMs });
+  const api = createSpotifyApiClient({ getAccessToken: async () => token.access_token, fetchImpl, timeoutMs });
+  const user = await api.get('/me', { signal, retryUnauthorized: false });
   if (!user || typeof user.id !== 'string' || !user.id) throw new SpotifyAuthError('invalid_profile', 'Não foi possível identificar a conta Spotify. Inicie novamente.');
   return {
     accessToken: token.access_token,

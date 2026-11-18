@@ -5,6 +5,7 @@ import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
 import { getSpotifyConfig } from '../config/spotify.mjs';
 import { authErrorMessage, completeSpotifyLogin, refreshSpotifySession, getLoginBlocker, SPOTIFY_DISCOVERY, SPOTIFY_SCOPES, SpotifyAuthError } from '../services/spotifyAuth.mjs';
+import { createSpotifyApiClient } from '../services/spotifyApi.mjs';
 import { createSessionManager } from '../services/sessionManager.mjs';
 import { createSessionStorage } from '../storage/sessionStorage';
 
@@ -47,6 +48,37 @@ export function SessionProvider({ children }) {
     onChange: setSession,
     onRefreshing: setIsRefreshing,
   }), [config]);
+
+  const invalidateApiSession = useCallback(async ({ sessionVersion }) => {
+    if (manager.getSessionVersion() !== sessionVersion) return;
+    setIsEndingSession(true);
+    const clearing = manager.clear();
+    const clearedVersion = manager.getSessionVersion();
+    try {
+      await clearing;
+      if (manager.getSessionVersion() !== clearedVersion) return;
+      setMessage('Sua sessão Spotify expirou. Entre novamente para continuar.');
+      setLogoutBlocked(false);
+    } catch {
+      if (manager.getSessionVersion() !== clearedVersion) return;
+      setLogoutBlocked(true);
+      setMessage('Não foi possível apagar a sessão salva. Toque em Limpar sessão novamente antes de entrar em outra conta.');
+    } finally {
+      setIsEndingSession(false);
+      if (manager.getSessionVersion() === clearedVersion) {
+        setCanRetryRestore(false);
+        setRequest(null);
+        setStatus('idle');
+        setGeneration(value => value + 1);
+      }
+    }
+  }, [manager]);
+
+  const api = useMemo(() => createSpotifyApiClient({
+    getAccessToken: manager.getAccessToken,
+    getSessionVersion: manager.getSessionVersion,
+    onUnauthorized: invalidateApiSession,
+  }), [manager, invalidateApiSession]);
 
   const reportSessionError = useCallback(error => {
     if (!alive.current || error.code === 'cancelled') return;
@@ -238,7 +270,7 @@ export function SessionProvider({ children }) {
   }, []);
 
   const value = {
-    session, isDemo, status, message, blocker, isBrowserOpen,
+    session, api, isDemo, status, message, blocker, isBrowserOpen,
     isRestoring, isEndingSession, logoutBlocked, isRefreshing, canRetryRestore,
     canAccess: Boolean(session) || isDemo,
     isBusy: ['authenticating', 'exchanging'].includes(status),

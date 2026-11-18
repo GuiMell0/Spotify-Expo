@@ -6,6 +6,7 @@ A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de An
 
 - [Roteiro completo, divisão dos commits e checklist da P2](docs/P2-ROTEIRO.md)
 - [Configuração da Spotify Web API](docs/SPOTIFY-SETUP.md)
+- [Cliente HTTP e tratamento de erros — A06](docs/SPOTIFY-API.md)
 - [Geração e instalação do APK Android pelo EAS](docs/ANDROID-EAS.md)
 - [Roteiro de continuidade para Guilherme](docs/ROTEIRO-DUPLA.md)
 
@@ -234,6 +235,14 @@ A reprodução permanece nas etapas do Guilherme, conforme confirmado pela Ana. 
 - npx expo install --check aprovado. Introspecção confirma o plugin e as regras Android de backup do SecureStore.
 - O teste no aparelho com SecureStore e a conta Spotify real ainda depende da Ana; ver [passo a passo](docs/SPOTIFY-SETUP.md).
 - Ferramentas temporárias e artefatos ficam em dist-check/a05/, ignorada pelo Git.
+
+## Cliente da API implementado na A06
+
+A consulta /me do login já usa o cliente centralizado. Ele obtém o token da sessão, codifica parâmetros, limita a espera, renova e repete uma vez após 401 e distingue permissões, conteúdo indisponível, limite e cota. Respostas antigas são descartadas após sair ou trocar de conta.
+
+A tela de login reutiliza ApiFeedback para mensagens e recuperação. O catálogo e a busca continuam demonstrativos até A07–A11. O contrato para as próximas telas e os comandos de validação estão no [guia do cliente API](docs/SPOTIFY-API.md).
+
+Validação da A06: 78 testes unitários aprovados (25 do cliente API e 53 anteriores), lint aprovado, bundles Android/Hermes e web gerados e 18 cenários Edge com Spotify simulado aprovados, sem exceções JavaScript. O teste no Android com a conta real continua pendente.
 
 ## Limitações atuais
 

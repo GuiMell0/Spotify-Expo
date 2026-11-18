@@ -1,4 +1,4 @@
-import { SpotifyAuthError } from './spotifyAuth.mjs';
+import { SpotifyAuthError } from './spotifyErrors.mjs';
 
 const cancelled = () => new SpotifyAuthError('cancelled', 'A sessão foi encerrada ou substituída.');
 const storageError = () => new SpotifyAuthError('storage', 'Não foi possível acessar a sessão salva no dispositivo. Tente novamente.');
@@ -93,9 +93,11 @@ export function createSessionManager({
     }
   }
 
-  function getAccessToken({ forceRefresh = false } = {}) {
+  function getAccessToken({ forceRefresh = false, rejectedToken } = {}) {
     if (flight?.version === epoch) return flight.promise;
     if (!current) return Promise.reject(new SpotifyAuthError('reauth_required', 'Entre no Spotify para continuar.'));
+    // Um 401 atrasado do token antigo aproveita a renovação já concluída.
+    if (forceRefresh && rejectedToken && current.accessToken !== rejectedToken) forceRefresh = false;
     if (!forceRefresh && current.expiresAt > now() + skewMs) return Promise.resolve(current.accessToken);
     const session = current;
     const version = epoch;
@@ -158,6 +160,7 @@ export function createSessionManager({
   return {
     accept, restore, clear, deactivate, getAccessToken,
     getSession: () => current,
+    getSessionVersion: () => epoch,
     persistent: storage.persistent,
   };
 }

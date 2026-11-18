@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, radius } from '../theme';
+import ApiFeedback from '../components/ApiFeedback';
 import { useSession } from '../contexts/SessionContext';
 
 export default function LoginScreen() {
@@ -23,9 +24,7 @@ export default function LoginScreen() {
           </View>
           <View style={styles.actions}>
             {!!blocker && <Text style={styles.notice}>{blocker}</Text>}
-            {!!message && <Text accessibilityRole="alert" accessibilityLiveRegion="polite" style={styles.message}>{message}</Text>}
-            {canRetryRestore && <Pressable accessibilityRole="button" onPress={restoreSession} style={styles.secondaryButton}><Text style={styles.secondaryText}>Tentar restaurar sessão</Text></Pressable>}
-            {logoutBlocked && <Pressable accessibilityRole="button" onPress={signOut} style={styles.secondaryButton}><Text style={styles.secondaryText}>Limpar sessão novamente</Text></Pressable>}
+            <ApiFeedback message={message} onRetry={logoutBlocked ? signOut : canRetryRestore ? restoreSession : undefined} retryLabel={logoutBlocked ? 'Limpar sessão novamente' : 'Tentar restaurar sessão'} />
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="Entrar com Spotify"
@@ -62,7 +61,6 @@ const styles = StyleSheet.create({
   subtitle: { color: colors.muted, fontSize: 15, lineHeight: 22, textAlign: 'center', marginTop: 16, maxWidth: 300 },
   actions: { paddingBottom: 30, gap: 12 },
   notice: { color: colors.muted, backgroundColor: colors.surface, padding: 14, borderRadius: radius.md, fontSize: 13, lineHeight: 20 },
-  message: { color: colors.text, backgroundColor: colors.surface, padding: 14, borderRadius: radius.md, fontSize: 13, lineHeight: 20 },
   primaryButton: { backgroundColor: colors.green, borderRadius: radius.pill, minHeight: 54, paddingHorizontal: 18, flexDirection: 'row', gap: 10, alignItems: 'center', justifyContent: 'center' },
   primaryText: { color: colors.black, fontWeight: '800', fontSize: 15 },
   secondaryButton: { minHeight: 50, borderRadius: radius.pill, borderWidth: 1, borderColor: '#727272', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 16 },
