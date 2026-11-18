@@ -2,7 +2,7 @@
 
 ## Evolução para a P2
 
-A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de Ana Carolina e 15 de Guilherme. O aplicativo já usa Expo Router, login Spotify e sessão segura. A08 conectou a busca; A09 conectou a Home; A10 conectou os álbuns e suas faixas; A11 conectou artistas e discografia; A12 adicionou a base de armazenamento local; A13 conectou curtidas persistentes; A14 adicionou histórico e tela de buscas recentes; A15 integra a Biblioteca com esses dados e preferências persistentes. A continuidade G01–G15 fica com Guilherme.
+A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de Ana Carolina e 15 de Guilherme. O aplicativo já usa Expo Router, login Spotify e sessão segura. A08 conectou a busca; A09 conectou a Home; A10 conectou os álbuns e suas faixas; A11 conectou artistas e discografia; A12 adicionou a base de armazenamento local; A13 conectou curtidas persistentes; A14 adicionou histórico e tela de buscas recentes; A15 integra a Biblioteca com esses dados e preferências persistentes. A G01 inicia a continuidade com criação e listagem de playlists locais; as demais etapas permanecem no roteiro.
 
 - [Roteiro completo, divisão dos commits e checklist da P2](docs/P2-ROTEIRO.md)
 - [Configuração da Spotify Web API](docs/SPOTIFY-SETUP.md)
@@ -16,6 +16,7 @@ A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de An
 - [Curtidas persistentes e teste no Android — A13](docs/MUSICAS-CURTIDAS.md)
 - [Histórico persistente e buscas recentes — A14](docs/BUSCAS-RECENTES.md)
 - [Biblioteca integrada e passagem para a dupla — A15](docs/BIBLIOTECA.md)
+- [Criação de playlists locais — G01](docs/PLAYLISTS-LOCAIS.md)
 - [Geração e instalação do APK Android pelo EAS](docs/ANDROID-EAS.md)
 - [Roteiro de continuidade para Guilherme](docs/ROTEIRO-DUPLA.md)
 
@@ -27,7 +28,7 @@ A04 implementou o login Spotify com PKCE; A05 adiciona persistência segura no A
 
 Aplicativo mobile que reproduz visualmente partes da interface do Spotify utilizando React Native e Expo. O aplicativo foi desenvolvido para a disciplina de Aplicativos Híbridos.
 
-O projeto está evoluindo da interface da P1 para a P2. A conta usa OAuth com PKCE e sessão segura no Android. Home e busca consultam o Spotify. A rota de álbum carrega os detalhes e as faixas do ID solicitado, com paginação e acesso ao artista. A rota de artista carrega nome, imagem disponível e discografia com álbuns e singles. A base local por conta já salva curtidas na busca, no álbum e nos detalhes da faixa, com uma tela própria de favoritas. O histórico também é salvo por conta e pode ser reutilizado ou removido na tela de buscas recentes. A Biblioteca reúne as curtidas e buscas salvas, com filtros e preferências de ordem e visualização. Playlists locais/remotas completas, perfil e player continuam nas etapas do Guilherme.
+O projeto está evoluindo da interface da P1 para a P2. A conta usa OAuth com PKCE e sessão segura no Android. Home e busca consultam o Spotify. A rota de álbum carrega os detalhes e as faixas do ID solicitado, com paginação e acesso ao artista. A rota de artista carrega nome, imagem disponível e discografia com álbuns e singles. A base local por conta já salva curtidas na busca, no álbum e nos detalhes da faixa, com uma tela própria de favoritas. O histórico também é salvo por conta e pode ser reutilizado ou removido na tela de buscas recentes. A Biblioteca reúne as curtidas e buscas salvas, com filtros e preferências de ordem e visualização. A G01 permite criar playlists locais e encontrá-las na Biblioteca. Detalhes e edição locais, playlists remotas completas, perfil e player continuam nas próximas etapas.
 
 Repositório: https://github.com/GuiMell0/Spotify-Expo
 
@@ -41,6 +42,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 - Curtidas locais persistentes, corações sincronizados e tela de músicas curtidas;
 - Histórico local com até 20 termos, reutilização, remoção e limpeza confirmada;
 - Biblioteca local com filtros funcionais, ordenação e grade/lista persistentes;
+- Criação de playlists locais, com nomes validados, IDs próprios e resumos na Biblioteca;
 - Páginas de playlist, álbum, artista e perfil;
 - Mini-player demonstrativo nas telas ainda não refatoradas; integração prevista para G12;
 - Detalhes de faixa real com curtida e link Spotify; player demonstrativo nas telas ainda não refatoradas;
@@ -54,6 +56,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 | Home | Temas Brasil, Rock e Indie com músicas, álbuns e artistas reais, cache e atualização. |
 | Busca | Pesquisa Spotify com filtros, paginação e resultados reais; demonstração local separada. |
 | Biblioteca | Músicas curtidas e buscas locais, atalhos, filtros, ordenação e visualização persistentes. |
+| Criar playlist local | Formulário com validação, gravação por conta e retorno à Biblioteca após confirmação. |
 | Músicas curtidas | Favoritas salvas por conta neste aparelho, remoção, estado vazio e abertura dos metadados da faixa. |
 | Buscas recentes | Histórico por conta, nova busca por toque, remoção individual e limpeza com confirmação. |
 | Playlist | Prévia da entidade real quando disponível; detalhes completos e faixas ficam para G05. Demonstração da P1 separada. |
@@ -337,6 +340,14 @@ A Biblioteca autenticada substitui os cards fictícios da P1 por músicas curtid
 Preferências só mudam após confirmar a gravação, sem sobrescrever outras coleções. Falhas oferecem recuperação pelo aviso global. Contrato e teste final no [guia da Biblioteca](docs/BIBLIOTECA.md). O [roteiro da dupla](docs/ROTEIRO-DUPLA.md) está atualizado para G01–G15.
 
 Validação: 260 testes unitários (16 novos), lint e bundles Android/web aprovados. 39 cenários de navegador com Spotify simulado aprovados (19 da Biblioteca e 20 de regressão do histórico), sem exceções JavaScript. São 11 telas principais; as telas adicionais serão criadas pelo Guilherme.
+
+## Criação de playlists locais na G01
+
+Biblioteca → Criar playlist abre /local-playlist/new. O nome é validado e a playlist vazia recebe ID próprio e datas; a gravação usa o mesmo registro local por conta, preservando curtidas, recentes e preferências.
+
+A Biblioteca mostra os resumos salvos e oferece o filtro Playlists. A G01 acrescenta a décima segunda tela principal; detalhes por ID, inclusão de faixas e edição continuam em G02–G04. Contrato e próximos passos no [guia de playlists locais](docs/PLAYLISTS-LOCAIS.md).
+
+Validação da G01: 280 testes unitários (20 novos), lint e bundles Android/web aprovados. 39 cenários de navegador com Spotify simulado aprovados (20 de criação e 19 de regressão da Biblioteca), sem exceções JavaScript. O teste físico do APK permanece reservado para o projeto completo.
 
 ## Limitações atuais
 

@@ -7,11 +7,12 @@ Planejamento iniciado em 17/11/2026 após leitura do README, código e imagem do
 - Ana Carolina: 15 novos commits, A01 a A15.
 - Guilherme: 15 novos commits, G01 a G15, depois das etapas da Ana.
 - Histórico inicial: 29 commits (14 da Ana e 15 do Guilherme), incluindo um merge.
-- Previsão final: 59 commits (29 da Ana e 30 do Guilherme). Mesmo desconsiderando o merge, supera o mínimo de 40.
+- Previsão final: 59 commits. A distribuição original previa 29 da Ana e 30 do Guilherme; conferir a distribuição efetiva pelo histórico antes da entrega.
 - Branch atual: main. A mesma branch pode ser utilizada, trabalhando em sequência.
 - A cada etapa: implementar somente seu escopo, verificar, entregar mensagem e comandos de commit e parar até a confirmação.
 - Decisão da Ana em 18/11/2026: gerar e testar o APK apenas na validação final do projeto. Manter testes unitários, navegador simulado e bundles locais durante os commits; não considerar o teste físico aprovado antes da conferência real.
 - Os integrantes fazem seus próprios commits e pushes, com suas identidades Git. Não reescrever o histórico da P1.
+- Atualização na G01: Ana informou que também fará a parte planejada para a dupla. Manter os identificadores G01–G15 para organizar as funcionalidades; eles não comprovam autoria nem garantem o balanceamento exigido. Registrar a autoria real e conferir esse requisito na entrega.
 - Os títulos abaixo são propostas; se o escopo mudar, atualizar a mensagem para refletir a alteração real.
 - Não criar commits vazios nem dividir uma alteração apenas para aumentar a contagem.
 
@@ -67,7 +68,7 @@ Callback e página de rota inexistente serão utilitários e não entram na cont
 
 ## Etapas da Ana — 15 commits
 
-Status: A01–A14 commitadas. A15 implementada e validada: Biblioteca conectada a curtidas e buscas locais, filtros funcionais, ordem e grade/lista persistentes; 260 testes unitários, lint e bundles Android/web aprovados. 39 cenários de navegador com Spotify simulado aprovados (19 da Biblioteca e 20 de regressão do histórico), sem exceções JavaScript. Aguardando o último commit da Ana, A15. São 11 telas principais. A continuidade G01–G15 está detalhada no roteiro da dupla, atualizado com o código entregue. Por preferência da Ana, gerar e testar o APK apenas quando o projeto completo estiver pronto; a verificação física permanece pendente. Reprodução continua nas etapas do Guilherme.
+Status: A01–A15 commitadas. A15 implementada e validada: Biblioteca conectada a curtidas e buscas locais, filtros funcionais, ordem e grade/lista persistentes; 260 testes unitários, lint e bundles Android/web aprovados. 39 cenários de navegador com Spotify simulado aprovados (19 da Biblioteca e 20 de regressão do histórico), sem exceções JavaScript. A15 conferida no Git no início da G01. A entrega A15 tinha 11 telas principais; G01 acrescenta a décima segunda. A continuidade G01–G15 está detalhada no roteiro da dupla, atualizado com o código entregue. Por preferência da Ana, gerar e testar o APK apenas quando o projeto completo estiver pronto; a verificação física permanece pendente. Reprodução continua nas etapas do Guilherme.
 
 | Etapa | Mensagem de commit | Entrega e critério de aceite |
 | --- | --- | --- |
@@ -91,7 +92,7 @@ A15 conclui a parte implementada da Ana: API real para Home, busca, álbuns, art
 
 ## Etapas do Guilherme — 15 commits
 
-Executar depois de A15. O [roteiro da dupla](ROTEIRO-DUPLA.md) contém as instruções para retomar no chat.
+A15 está commitada. G01 implementada e validada: tela de criação de playlists locais, validação de nome, UUID próprio, persistência por conta e resumos com filtro na Biblioteca. 280 testes unitários, lint e bundles Android/web aprovados. 39 cenários de navegador com Spotify simulado aprovados (20 de criação e 19 de regressão da Biblioteca), sem exceções JavaScript. Aguardando commit G01; G02 permanece pendente. São 12 telas principais navegáveis. Teste físico do APK somente na conclusão do projeto completo. O [roteiro da dupla](ROTEIRO-DUPLA.md) orienta a continuidade; o [guia da G01](PLAYLISTS-LOCAIS.md) descreve o contrato.
 
 | Etapa | Mensagem de commit | Entrega e critério de aceite |
 | --- | --- | --- |
@@ -134,7 +135,7 @@ Executar depois de A15. O [roteiro da dupla](ROTEIRO-DUPLA.md) contém as instru
 - [ ] Falhas de rede, autorização e limites encerram o carregamento.
 - [ ] Favoritas, recentes, playlists e preferências persistem após reinício.
 - [ ] Dados de usuários diferentes não se misturam.
-- [ ] Pelo menos 12 telas distintas possuem entradas navegáveis; meta: 17.
+- [x] Pelo menos 12 telas distintas possuem entradas navegáveis: 12 na G01; meta final: 17.
 - [ ] Código de produção não depende de src/data/media.js.
 - [ ] Validar dependências com Expo e compilar os bundles; registrar comandos e resultados reais.
 - [ ] Percorrer manualmente os fluxos no Android, incluindo voltar e teclado.

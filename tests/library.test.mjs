@@ -32,7 +32,7 @@ test('biblioteca vazia ou não hidratada não inventa itens', () => {
 });
 test('combina músicas e buscas pela data sem alterar o registro', () => {
   const data = seed(), before = JSON.stringify(data);
-  assert.deepEqual(listLibraryItems(data).map(item => item.title), ['Zulu', 'Brasil', 'Águas']);
+  assert.deepEqual(listLibraryItems(data).map(item => item.title), ['Zulu', 'Brasil', 'Águas', 'Minha seleção']);
   assert.equal(JSON.stringify(data), before);
 });
 test('filtros retornam somente o tipo solicitado', () => {
@@ -40,7 +40,7 @@ test('filtros retornam somente o tipo solicitado', () => {
   assert.deepEqual(listLibraryItems(seed(), { filter: 'searches' }).map(item => item.title), ['Brasil']);
 });
 test('ordenação por título considera acentos em português', () => {
-  assert.deepEqual(listLibraryItems(seed(), { sort: 'title' }).map(item => item.title), ['Águas', 'Brasil', 'Zulu']);
+  assert.deepEqual(listLibraryItems(seed(), { sort: 'title' }).map(item => item.title), ['Águas', 'Brasil', 'Minha seleção', 'Zulu']);
 });
 test('preferência persistida define ordem padrão e opção explícita prevalece', () => {
   const data = changeLibraryPreference(seed(), 'librarySort', 'title');
@@ -55,9 +55,10 @@ test('empates são estáveis mesmo quando a entrada muda de ordem', () => {
 test('tipos distintos com título igual têm chaves e destinos independentes', () => {
   const data = { ...seed(), recentSearches: [{ term: 'Águas', searchedAt: 20 }] };
   const items = listLibraryItems(data);
-  assert.equal(new Set(items.map(item => item.key)).size, 3);
+  assert.equal(new Set(items.map(item => item.key)).size, 4);
   assert.equal(items.find(item => item.type === 'track').track.href.startsWith('/player?trackId='), true);
   assert.equal(items.find(item => item.type === 'search').term, 'Águas');
+  assert.equal(items.find(item => item.type === 'local-playlist').playlist.id, 'local-1');
 });
 test('buscas antigas equivalentes não são duplicadas na biblioteca', () => {
   const data = { ...emptyLocalData(), recentSearches: [{ term: 'Rock  nacional', searchedAt: 1 }, { term: 'rock nacional', searchedAt: 2 }] };

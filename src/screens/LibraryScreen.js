@@ -51,8 +51,8 @@ function SavedLibraryScreen() {
   function empty() {
     if (loading) return <View style={styles.empty}><ActivityIndicator color={colors.green} /><Text style={styles.description}>Carregando sua biblioteca…</Text></View>;
     if (state.status === 'error') return <View style={styles.empty}><Text style={styles.description}>Não foi possível carregar sua biblioteca. Use Tentar novamente no aviso acima.</Text></View>;
-    const title = filter === 'tracks' ? 'Nenhuma música curtida' : filter === 'searches' ? 'Nenhuma busca recente' : 'Sua biblioteca começa aqui';
-    return <View style={styles.empty}><MaterialCommunityIcons name="bookshelf" size={48} color={colors.muted} /><Text style={styles.emptyTitle}>{title}</Text><Text style={styles.emptyDescription}>Busque no Spotify e curta suas músicas. As favoritas e buscas confirmadas ficam salvas neste aparelho.</Text><Pressable accessibilityRole="button" onPress={() => router.navigate('/search')} style={styles.action}><Text style={styles.actionText}>Buscar músicas</Text></Pressable></View>;
+    const title = filter === 'tracks' ? 'Nenhuma música curtida' : filter === 'searches' ? 'Nenhuma busca recente' : filter === 'playlists' ? 'Nenhuma playlist local' : 'Sua biblioteca começa aqui';
+    return <View style={styles.empty}><MaterialCommunityIcons name="bookshelf" size={48} color={colors.muted} /><Text style={styles.emptyTitle}>{title}</Text><Text style={styles.emptyDescription}>Crie uma playlist ou busque no Spotify e curta suas músicas. Seus dados ficam salvos neste aparelho.</Text><Pressable accessibilityRole="button" onPress={() => router.navigate('/search')} style={styles.action}><Text style={styles.actionText}>Buscar músicas</Text></Pressable></View>;
   }
 
   return <View style={styles.root}><SafeAreaView style={styles.safe} edges={['top']}>
@@ -61,7 +61,8 @@ function SavedLibraryScreen() {
       keyboardShouldPersistTaps="handled"
       ListHeaderComponent={<View style={styles.header}>
         <View style={styles.topbar}><Pressable accessibilityRole="button" accessibilityLabel="Abrir perfil" onPress={() => router.push('/profile')} style={styles.avatar}>{session?.user.imageUrl ? <Image source={{ uri: session.user.imageUrl }} style={styles.avatarImage} /> : <Text style={styles.initial}>{initial}</Text>}</Pressable><Text accessibilityRole="header" style={styles.title}>Sua Biblioteca</Text><Pressable accessibilityRole="button" accessibilityLabel="Buscar no Spotify" onPress={() => router.navigate('/search')} style={styles.iconButton}><MaterialCommunityIcons name="magnify" size={26} color={colors.text} /></Pressable></View>
-        <Text style={styles.description}>Suas músicas e buscas salvas neste aparelho</Text>
+        <Text style={styles.description}>Suas músicas, playlists e buscas neste aparelho</Text>
+        <Pressable accessibilityRole="button" accessibilityLabel="Criar playlist local" accessibilityState={{ disabled: !canSave }} disabled={!canSave} onPress={() => router.push('/local-playlist/new')} style={[styles.create, !canSave && styles.disabled]}><MaterialCommunityIcons name="plus" size={23} color={colors.black} /><Text style={styles.createText}>Criar playlist</Text></Pressable>
         <View style={styles.shortcuts}><LikedTracksShortcut /><RecentSearchesShortcut /></View>
         <View style={styles.filters}>{LIBRARY_FILTERS.map(item => <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={'Filtrar biblioteca: ' + item.label} accessibilityState={{ selected: filter === item.id }} onPress={() => setFilter(item.id)} style={[styles.chip, filter === item.id && styles.selected]}><Text style={[styles.chipText, filter === item.id && styles.selectedText]}>{item.label}</Text></Pressable>)}</View>
         <View style={styles.toolbar}><Pressable accessibilityRole="button" accessibilityLabel={'Ordenar biblioteca por ' + (sort === 'recent' ? 'título' : 'recentes')} accessibilityState={{ disabled: !canSave }} disabled={!canSave} onPress={() => preference('librarySort', sort === 'recent' ? 'title' : 'recent')} style={[styles.sortButton, !canSave && styles.disabled]}><MaterialCommunityIcons name="swap-vertical" size={23} color={colors.text} /><Text style={styles.sortText}>{sort === 'recent' ? 'Recentes' : 'Título'}</Text></Pressable><Pressable accessibilityRole="button" accessibilityLabel={'Visualizar biblioteca em ' + (view === 'grid' ? 'lista' : 'grade')} accessibilityState={{ disabled: !canSave }} disabled={!canSave} onPress={() => preference('libraryView', view === 'grid' ? 'list' : 'grid')} style={[styles.iconButton, !canSave && styles.disabled]}><MaterialCommunityIcons name={view === 'grid' ? 'view-list' : 'view-grid-outline'} size={25} color={colors.text} /></Pressable></View>
@@ -70,12 +71,16 @@ function SavedLibraryScreen() {
         {state.status === 'error' && entries.length > 0 && <Text style={styles.description}>Esta é a última biblioteca carregada. Recarregue os dados pelo aviso acima.</Text>}
       </View>}
       ListEmptyComponent={empty}
-      renderItem={({ item }) => <Pressable accessibilityRole="button" accessibilityLabel={(item.type === 'track' ? 'Abrir música da biblioteca ' : 'Repetir busca da biblioteca ') + item.title} onPress={() => open(item)} style={({ pressed }) => [styles.item, view === 'grid' ? styles.gridItem : styles.listItem, pressed && styles.pressed]}>
-        {item.image ? <Image source={item.image} resizeMode="contain" style={styles.art} /> : <View style={[styles.art, styles.placeholder]}><MaterialCommunityIcons name={item.type === 'track' ? 'music-note' : 'history'} size={30} color={item.type === 'track' ? colors.green : colors.muted} /></View>}
-        <View style={styles.info}><Text numberOfLines={2} style={styles.itemTitle}>{item.title}</Text><Text numberOfLines={2} style={styles.subtitle}>{item.subtitle}</Text></View>
-      </Pressable>}
+      renderItem={({ item }) => item.type === 'local-playlist'
+        ? <View accessible accessibilityLabel={'Playlist local ' + item.title + ', ' + item.playlist.tracks.length + ' músicas'} style={[styles.item, view === 'grid' ? styles.gridItem : styles.listItem]}><LibraryItemContent item={item} /></View>
+        : <Pressable accessibilityRole="button" accessibilityLabel={(item.type === 'track' ? 'Abrir música da biblioteca ' : 'Repetir busca da biblioteca ') + item.title} onPress={() => open(item)} style={({ pressed }) => [styles.item, view === 'grid' ? styles.gridItem : styles.listItem, pressed && styles.pressed]}><LibraryItemContent item={item} /></Pressable>}
+
     />
   </SafeAreaView></View>;
+}
+
+function LibraryItemContent({ item }) {
+  return <>{item.image ? <Image source={item.image} resizeMode="contain" style={styles.art} /> : <View style={[styles.art, styles.placeholder]}><MaterialCommunityIcons name={item.type === 'track' ? 'music-note' : item.type === 'local-playlist' ? 'playlist-music' : 'history'} size={30} color={item.type === 'track' ? colors.green : colors.muted} /></View>}<View style={styles.info}><Text numberOfLines={2} style={styles.itemTitle}>{item.title}</Text><Text numberOfLines={2} style={styles.subtitle}>{item.subtitle}</Text></View></>;
 }
 
 const styles = StyleSheet.create({
@@ -99,5 +104,7 @@ const styles = StyleSheet.create({
   empty: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 30, gap: 16 },
   emptyTitle: { color: colors.text, fontSize: 21, fontWeight: '800', textAlign: 'center' }, emptyDescription: { color: colors.muted, fontSize: 14, lineHeight: 22, textAlign: 'center' },
   action: { minHeight: 48, paddingHorizontal: 24, justifyContent: 'center', borderRadius: radius.pill, backgroundColor: colors.green },
+  create: { minHeight: 48, paddingHorizontal: 16, paddingVertical: 10, backgroundColor: colors.green, borderRadius: radius.pill, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
+  createText: { color: colors.black, fontSize: 14, fontWeight: '800' },
   actionText: { color: colors.black, fontSize: 14, fontWeight: '800' },
 });

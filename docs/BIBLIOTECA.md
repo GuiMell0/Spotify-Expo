@@ -1,5 +1,7 @@
 # Biblioteca integrada — A15
 
+Atualização G01: a Biblioteca também apresenta resumos de playlists locais e o botão Criar playlist. Consulte [PLAYLISTS-LOCAIS.md](PLAYLISTS-LOCAIS.md) para o contrato atual; os detalhes abaixo registram a entrega original A15.
+
 A Biblioteca autenticada usa os dados locais da conta. Os exemplos da P1 ficam em DemoLibraryScreen, acessível apenas pela demonstração explícita.
 
 ## Funcionalidades
