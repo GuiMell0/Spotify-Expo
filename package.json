@@ -62,7 +62,8 @@
     "test:likes": "node --test tests/liked-tracks.test.mjs",
     "test:recents": "node --test tests/recent-searches.test.mjs",
     "test:library": "node --test tests/library.test.mjs",
-    "test:playlists": "node --test tests/local-playlists.test.mjs"
+    "test:playlists": "node --test tests/local-playlists.test.mjs",
+    "test:playlist-details": "node --test tests/local-playlist-details.test.mjs"
   },
   "private": true
 }

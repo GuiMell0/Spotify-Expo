@@ -1,5 +1,7 @@
 # Playlists locais — G01
 
+Atualização G02: os cards já abrem os [detalhes por ID](DETALHES-PLAYLIST-LOCAL.md). O conteúdo abaixo registra a criação entregue na G01; inclusão e edição de músicas continuam em G03/G04.
+
 A G01 acrescenta /local-playlist/new, acessível pelo botão Criar playlist da Biblioteca autenticada. O aplicativo passa a ter 12 telas principais navegáveis.
 
 ## O que funciona nesta etapa

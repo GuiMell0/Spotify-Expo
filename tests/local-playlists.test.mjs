@@ -80,7 +80,7 @@ test('biblioteca inclui resumo local e filtro exclusivo sem confundir com Spotif
   const [item] = listLibraryItems(data, { filter: 'playlists' });
   assert.equal(item.type, 'local-playlist'); assert.equal(item.key, 'local-playlist:local-one');
   assert.equal(item.title, 'Para estudar'); assert.equal(item.subtitle, 'Playlist local · 0 músicas');
-  assert.equal(item.href, undefined);
+  assert.equal(item.href, '/local-playlist/local-one');
   assert.deepEqual(listLibraryItems(data, { filter: 'tracks' }), []);
   assert.deepEqual(listLibraryItems(data, { filter: 'searches' }), []);
 });

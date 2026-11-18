@@ -6,7 +6,7 @@ Este roteiro foi atualizado com a implementação da A15. Usar depois que a Ana 
 
 ## Continuidade iniciada
 
-A15 foi conferida no Git (32125e6). Ana solicitou executar também a parte planejada para a dupla neste atendimento. G01 está implementada e validada e aguarda commit: 280 testes unitários, lint, bundles Android/web e 39 cenários de navegador simulados aprovados. Os detalhes continuam em G02, ainda não iniciada. O status dos testes e commits está no roteiro principal. Os identificadores G mantêm a sequência de funcionalidades; a autoria efetiva deve permanecer verdadeira e o balanceamento deve ser conferido antes da entrega.
+A15 foi conferida no Git (32125e6). Ana solicitou executar também a parte planejada para a dupla neste atendimento. G01 foi commitada (8d69537). G02 está implementada e validada e aguarda commit: 298 testes unitários, lint, bundles Android/web e 39 cenários de navegador simulados aprovados. A inclusão de músicas continua em G03, ainda não iniciada. O status dos testes e commits está no roteiro principal. Os identificadores G mantêm a sequência de funcionalidades; a autoria efetiva deve permanecer verdadeira e o balanceamento deve ser conferido antes da entrega.
 
 ## Preparar a continuidade
 
@@ -45,7 +45,7 @@ O perfil e partes das telas de playlist/player ainda preservam a P1. Não reutil
 | Dados locais | src/contexts/LocalDataContext.js: useLocalData() retorna localData e state. |
 | Atualização segura | localData.update(current => novoRegistro); callback síncrono recebe a versão atual na fila. Não substituir por estado antigo. |
 | Schema e limites | src/storage/localDataSchema.mjs; manter versão 1 se usar os campos já previstos. |
-| Biblioteca | src/screens/LibraryScreen.js e src/services/library.mjs; dados atuais: track/search/local-playlist; este último ainda é um resumo sem link. |
+| Biblioteca | src/screens/LibraryScreen.js e src/services/library.mjs; dados atuais: track/search/local-playlist; local-playlist já possui destino para os detalhes desde G02. |
 | Curtidas e recentes | hooks useLikedTracks/useRecentSearches e serviços likedTracks.mjs/recentSearches.mjs. |
 | Seleção de entidade | search.rememberEntity(item) conserva os metadados para abrir detalhes. |
 | Rotas | app/_layout.js e app/(tabs)/_layout.js; componentes de tela ficam em src/screens. |
@@ -63,7 +63,7 @@ Registro local por usuário:
 
 O envelope com version e accountId é responsabilidade do repositório. IDs de playlists locais são próprios; não usá-los nas rotas de playlists Spotify. O schema valida até 50 playlists, 300 faixas por playlist, nome de até 80 caracteres e ID de até 100. Usar modelos normalizados de faixas, sem tokens ou páginas da API.
 
-G01 criou a tela /local-playlist/new e o acesso funcional pela Biblioteca, com validação e gravação pelo repositório existente. O filtro Playlists e os resumos locais já estão conectados; consultar [PLAYLISTS-LOCAIS.md](PLAYLISTS-LOCAIS.md). G02 implementa /local-playlist/[id] e conecta os cards aos detalhes. Ampliar os filtros e listLibraryItems conforme as rotas ficarem prontas. Não introduzir links para telas inexistentes. G07 poderá acrescentar artistas acompanhados do mesmo modo.
+G01 criou a tela /local-playlist/new e o acesso funcional pela Biblioteca, com validação e gravação pelo repositório existente. O filtro Playlists e os resumos locais já estão conectados; consultar [PLAYLISTS-LOCAIS.md](PLAYLISTS-LOCAIS.md). G02 implementou /local-playlist/[id] e conectou os cards aos detalhes; consultar [DETALHES-PLAYLIST-LOCAL.md](DETALHES-PLAYLIST-LOCAL.md). Ampliar os filtros e listLibraryItems conforme as rotas ficarem prontas. Não introduzir links para telas inexistentes. G07 poderá acrescentar artistas acompanhados do mesmo modo.
 
 A15 preserva preferences.displayName ao salvar as preferências da Biblioteca; G09 deve conectar o apelido local às telas desejadas, sem alterar o nome da conta Spotify. As preferências libraryView/librarySort já funcionam e não devem ser reimplementadas em outro armazenamento.
 

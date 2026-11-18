@@ -2,7 +2,7 @@
 
 ## Evolução para a P2
 
-A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de Ana Carolina e 15 de Guilherme. O aplicativo já usa Expo Router, login Spotify e sessão segura. A08 conectou a busca; A09 conectou a Home; A10 conectou os álbuns e suas faixas; A11 conectou artistas e discografia; A12 adicionou a base de armazenamento local; A13 conectou curtidas persistentes; A14 adicionou histórico e tela de buscas recentes; A15 integra a Biblioteca com esses dados e preferências persistentes. A G01 inicia a continuidade com criação e listagem de playlists locais; as demais etapas permanecem no roteiro.
+A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de Ana Carolina e 15 de Guilherme. O aplicativo já usa Expo Router, login Spotify e sessão segura. A08 conectou a busca; A09 conectou a Home; A10 conectou os álbuns e suas faixas; A11 conectou artistas e discografia; A12 adicionou a base de armazenamento local; A13 conectou curtidas persistentes; A14 adicionou histórico e tela de buscas recentes; A15 integra a Biblioteca com esses dados e preferências persistentes. A G01 adicionou criação e listagem de playlists locais; a G02 conecta seus detalhes por ID. As demais etapas permanecem no roteiro.
 
 - [Roteiro completo, divisão dos commits e checklist da P2](docs/P2-ROTEIRO.md)
 - [Configuração da Spotify Web API](docs/SPOTIFY-SETUP.md)
@@ -17,6 +17,7 @@ A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de An
 - [Histórico persistente e buscas recentes — A14](docs/BUSCAS-RECENTES.md)
 - [Biblioteca integrada e passagem para a dupla — A15](docs/BIBLIOTECA.md)
 - [Criação de playlists locais — G01](docs/PLAYLISTS-LOCAIS.md)
+- [Detalhes de playlists locais por ID — G02](docs/DETALHES-PLAYLIST-LOCAL.md)
 - [Geração e instalação do APK Android pelo EAS](docs/ANDROID-EAS.md)
 - [Roteiro de continuidade para Guilherme](docs/ROTEIRO-DUPLA.md)
 
@@ -28,7 +29,7 @@ A04 implementou o login Spotify com PKCE; A05 adiciona persistência segura no A
 
 Aplicativo mobile que reproduz visualmente partes da interface do Spotify utilizando React Native e Expo. O aplicativo foi desenvolvido para a disciplina de Aplicativos Híbridos.
 
-O projeto está evoluindo da interface da P1 para a P2. A conta usa OAuth com PKCE e sessão segura no Android. Home e busca consultam o Spotify. A rota de álbum carrega os detalhes e as faixas do ID solicitado, com paginação e acesso ao artista. A rota de artista carrega nome, imagem disponível e discografia com álbuns e singles. A base local por conta já salva curtidas na busca, no álbum e nos detalhes da faixa, com uma tela própria de favoritas. O histórico também é salvo por conta e pode ser reutilizado ou removido na tela de buscas recentes. A Biblioteca reúne as curtidas e buscas salvas, com filtros e preferências de ordem e visualização. A G01 permite criar playlists locais e encontrá-las na Biblioteca. Detalhes e edição locais, playlists remotas completas, perfil e player continuam nas próximas etapas.
+O projeto está evoluindo da interface da P1 para a P2. A conta usa OAuth com PKCE e sessão segura no Android. Home e busca consultam o Spotify. A rota de álbum carrega os detalhes e as faixas do ID solicitado, com paginação e acesso ao artista. A rota de artista carrega nome, imagem disponível e discografia com álbuns e singles. A base local por conta já salva curtidas na busca, no álbum e nos detalhes da faixa, com uma tela própria de favoritas. O histórico também é salvo por conta e pode ser reutilizado ou removido na tela de buscas recentes. A Biblioteca reúne as curtidas e buscas salvas, com filtros e preferências de ordem e visualização. A G01 permite criar playlists locais e encontrá-las na Biblioteca. A G02 conecta os detalhes locais por ID; inclusão de faixas, edição, playlists remotas completas, perfil e player continuam nas próximas etapas.
 
 Repositório: https://github.com/GuiMell0/Spotify-Expo
 
@@ -56,6 +57,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 | Home | Temas Brasil, Rock e Indie com músicas, álbuns e artistas reais, cache e atualização. |
 | Busca | Pesquisa Spotify com filtros, paginação e resultados reais; demonstração local separada. |
 | Biblioteca | Músicas curtidas e buscas locais, atalhos, filtros, ordenação e visualização persistentes. |
+| Playlist local | Detalhes do ID solicitado, nome, capa, quantidade e consulta às faixas salvas; estados de carregamento, vazio e falha. |
 | Criar playlist local | Formulário com validação, gravação por conta e retorno à Biblioteca após confirmação. |
 | Músicas curtidas | Favoritas salvas por conta neste aparelho, remoção, estado vazio e abertura dos metadados da faixa. |
 | Buscas recentes | Histórico por conta, nova busca por toque, remoção individual e limpeza com confirmação. |
@@ -349,6 +351,14 @@ A Biblioteca mostra os resumos salvos e oferece o filtro Playlists. A G01 acresc
 
 Validação da G01: 280 testes unitários (20 novos), lint e bundles Android/web aprovados. 39 cenários de navegador com Spotify simulado aprovados (20 de criação e 19 de regressão da Biblioteca), sem exceções JavaScript. O teste físico do APK permanece reservado para o projeto completo.
 
+## Detalhes de playlists locais na G02
+
+Os cards da Biblioteca abrem /local-playlist/[id]. A tela mostra nome, capa disponível e quantidade, além das faixas que já existirem no registro local. Uma playlist vazia tem mensagem e acesso à busca; ID ausente, parâmetro inválido e erro de leitura recebem orientações próprias.
+
+A consulta usa os dados da conta atual e funciona sem chamada de catálogo. Adicionar músicas pela interface continua na G03. A G02 acrescenta a décima terceira tela principal. Contrato e conferência final no [guia dos detalhes locais](docs/DETALHES-PLAYLIST-LOCAL.md).
+
+Validação da G02: 298 testes unitários (18 novos), lint e bundles Android/web aprovados. 39 cenários de navegador com Spotify simulado aprovados (19 de detalhes e 20 de regressão da criação), sem exceções JavaScript. O teste físico do APK continua reservado para a conclusão do projeto completo.
+
 ## Limitações atuais
 
 - APK e login Android confirmados pela Ana; busca, Home, álbum e artista novos aguardam conferência no aparelho;
@@ -370,7 +380,3 @@ Validação da G01: 280 testes unitários (20 novos), lint e bundles Android/web
 Este é um projeto acadêmico, sem fins comerciais e sem vínculo oficial com o Spotify.
 
 Spotify, suas marcas, capas, imagens e demais conteúdos pertencem aos seus respectivos titulares. Os elementos visuais são utilizados apenas como referência para estudo de desenvolvimento mobile e construção de interfaces.
-
-## Licença
-
-O repositório inclui um arquivo `LICENSE` baseado na licença MIT. Consulte esse arquivo para conhecer os termos aplicáveis ao código.

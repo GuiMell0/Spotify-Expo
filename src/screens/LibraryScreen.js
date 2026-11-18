@@ -40,7 +40,9 @@ function SavedLibraryScreen() {
     if (item.type === 'track') {
       search.rememberEntity(item.track);
       router.push(item.track.href);
-    } else {
+    } else if (item.type === 'local-playlist') {
+      if (item.href) router.push(item.href);
+    } else if (item.type === 'search') {
       rememberIfReady(item.term);
       search.setFilter('all');
       search.setQuery(item.term);
@@ -71,9 +73,7 @@ function SavedLibraryScreen() {
         {state.status === 'error' && entries.length > 0 && <Text style={styles.description}>Esta é a última biblioteca carregada. Recarregue os dados pelo aviso acima.</Text>}
       </View>}
       ListEmptyComponent={empty}
-      renderItem={({ item }) => item.type === 'local-playlist'
-        ? <View accessible accessibilityLabel={'Playlist local ' + item.title + ', ' + item.playlist.tracks.length + ' músicas'} style={[styles.item, view === 'grid' ? styles.gridItem : styles.listItem]}><LibraryItemContent item={item} /></View>
-        : <Pressable accessibilityRole="button" accessibilityLabel={(item.type === 'track' ? 'Abrir música da biblioteca ' : 'Repetir busca da biblioteca ') + item.title} onPress={() => open(item)} style={({ pressed }) => [styles.item, view === 'grid' ? styles.gridItem : styles.listItem, pressed && styles.pressed]}><LibraryItemContent item={item} /></Pressable>}
+      renderItem={({ item }) => <Pressable accessibilityRole="button" accessibilityLabel={(item.type === 'track' ? 'Abrir música da biblioteca ' : item.type === 'local-playlist' ? 'Abrir playlist local ' : 'Repetir busca da biblioteca ') + item.title} accessibilityState={{ disabled: item.type === 'local-playlist' && !item.href }} disabled={item.type === 'local-playlist' && !item.href} onPress={() => open(item)} style={({ pressed }) => [styles.item, view === 'grid' ? styles.gridItem : styles.listItem, pressed && styles.pressed]}><LibraryItemContent item={item} /></Pressable>}
 
     />
   </SafeAreaView></View>;
