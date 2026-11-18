@@ -60,7 +60,8 @@
     "test:artist": "node --test tests/spotify-artist.test.mjs",
     "test:storage": "node --test tests/local-data.test.mjs",
     "test:likes": "node --test tests/liked-tracks.test.mjs",
-    "test:recents": "node --test tests/recent-searches.test.mjs"
+    "test:recents": "node --test tests/recent-searches.test.mjs",
+    "test:library": "node --test tests/library.test.mjs"
   },
   "private": true
 }

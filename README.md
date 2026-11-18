@@ -2,7 +2,7 @@
 
 ## Evolução para a P2
 
-A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de Ana Carolina e 15 de Guilherme. O aplicativo já usa Expo Router, login Spotify e sessão segura. A08 conectou a busca; A09 conectou a Home; A10 conectou os álbuns e suas faixas; A11 conectou artistas e discografia; A12 adicionou a base de armazenamento local; A13 conectou curtidas persistentes; A14 adiciona histórico e tela de buscas recentes. As próximas entregas estão no roteiro.
+A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de Ana Carolina e 15 de Guilherme. O aplicativo já usa Expo Router, login Spotify e sessão segura. A08 conectou a busca; A09 conectou a Home; A10 conectou os álbuns e suas faixas; A11 conectou artistas e discografia; A12 adicionou a base de armazenamento local; A13 conectou curtidas persistentes; A14 adicionou histórico e tela de buscas recentes; A15 integra a Biblioteca com esses dados e preferências persistentes. A continuidade G01–G15 fica com Guilherme.
 
 - [Roteiro completo, divisão dos commits e checklist da P2](docs/P2-ROTEIRO.md)
 - [Configuração da Spotify Web API](docs/SPOTIFY-SETUP.md)
@@ -15,16 +15,19 @@ A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de An
 - [Armazenamento local e atualização do APK — A12](docs/ARMAZENAMENTO-LOCAL.md)
 - [Curtidas persistentes e teste no Android — A13](docs/MUSICAS-CURTIDAS.md)
 - [Histórico persistente e buscas recentes — A14](docs/BUSCAS-RECENTES.md)
+- [Biblioteca integrada e passagem para a dupla — A15](docs/BIBLIOTECA.md)
 - [Geração e instalação do APK Android pelo EAS](docs/ANDROID-EAS.md)
 - [Roteiro de continuidade para Guilherme](docs/ROTEIRO-DUPLA.md)
 
 A04 implementou o login Spotify com PKCE; A05 adiciona persistência segura no Android, restauração e renovação. A integração prevista usa OAuth com PKCE, AsyncStorage para dados locais e pelo menos 12 telas, com meta de 17. O status de cada requisito deve ser conferido no roteiro.
 
+**APK somente ao final do projeto completo**, conforme decisão da Ana. Durante os commits, usar validações automatizadas e bundles; os guias de instalação ficam como referência para a etapa final.
+
 ## Estado atual — P2 em desenvolvimento
 
 Aplicativo mobile que reproduz visualmente partes da interface do Spotify utilizando React Native e Expo. O aplicativo foi desenvolvido para a disciplina de Aplicativos Híbridos.
 
-O projeto está evoluindo da interface da P1 para a P2. A conta usa OAuth com PKCE e sessão segura no Android. Home e busca consultam o Spotify. A rota de álbum carrega os detalhes e as faixas do ID solicitado, com paginação e acesso ao artista. A rota de artista carrega nome, imagem disponível e discografia com álbuns e singles. A base local por conta já salva curtidas na busca, no álbum e nos detalhes da faixa, com uma tela própria de favoritas. O histórico também é salvo por conta e pode ser reutilizado ou removido na tela de buscas recentes. A integração completa da biblioteca continua na A15; o player permanece nas etapas do Guilherme.
+O projeto está evoluindo da interface da P1 para a P2. A conta usa OAuth com PKCE e sessão segura no Android. Home e busca consultam o Spotify. A rota de álbum carrega os detalhes e as faixas do ID solicitado, com paginação e acesso ao artista. A rota de artista carrega nome, imagem disponível e discografia com álbuns e singles. A base local por conta já salva curtidas na busca, no álbum e nos detalhes da faixa, com uma tela própria de favoritas. O histórico também é salvo por conta e pode ser reutilizado ou removido na tela de buscas recentes. A Biblioteca reúne as curtidas e buscas salvas, com filtros e preferências de ordem e visualização. Playlists locais/remotas completas, perfil e player continuam nas etapas do Guilherme.
 
 Repositório: https://github.com/GuiMell0/Spotify-Expo
 
@@ -37,7 +40,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 - Busca Spotify com filtros, paginação e recuperação de falhas;
 - Curtidas locais persistentes, corações sincronizados e tela de músicas curtidas;
 - Histórico local com até 20 termos, reutilização, remoção e limpeza confirmada;
-- Biblioteca com filtros visuais;
+- Biblioteca local com filtros funcionais, ordenação e grade/lista persistentes;
 - Páginas de playlist, álbum, artista e perfil;
 - Mini-player demonstrativo nas telas ainda não refatoradas; integração prevista para G12;
 - Detalhes de faixa real com curtida e link Spotify; player demonstrativo nas telas ainda não refatoradas;
@@ -50,14 +53,14 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 | Login | Entrada Spotify por PKCE, cancelamento, mensagens de erro e acesso explícito à demonstração. |
 | Home | Temas Brasil, Rock e Indie com músicas, álbuns e artistas reais, cache e atualização. |
 | Busca | Pesquisa Spotify com filtros, paginação e resultados reais; demonstração local separada. |
-| Biblioteca | Filtros, ordenação e grade de playlists, álbuns e artistas. |
+| Biblioteca | Músicas curtidas e buscas locais, atalhos, filtros, ordenação e visualização persistentes. |
 | Músicas curtidas | Favoritas salvas por conta neste aparelho, remoção, estado vazio e abertura dos metadados da faixa. |
 | Buscas recentes | Histórico por conta, nova busca por toque, remoção individual e limpeza com confirmação. |
-| Playlist | Capa, informações, controles e lista de músicas. |
+| Playlist | Prévia da entidade real quando disponível; detalhes completos e faixas ficam para G05. Demonstração da P1 separada. |
 | Álbum | Detalhes e faixas reais por ID, paginação, atualização e navegação ao artista e à faixa. |
 | Artista | Dados reais por ID, discografia paginada de álbuns e singles, atualização e acesso aos álbuns. |
 | Player | Metadados de faixa real, curtida local e link Spotify; player da P1 nas telas ainda não refatoradas. |
-| Perfil | Dados do usuário e listagem de playlists. |
+| Perfil | Interface da P1 e ação de sair; refatoração dos dados reais em G08. |
 
 ## Tecnologias utilizadas
 
@@ -223,7 +226,7 @@ O botão Entrar com Spotify usa Authorization Code com PKCE S256. A URL e o veri
 - Os testes simulados não acessam a conta real. Login real no APK confirmado pela Ana na A08; os demais fluxos no aparelho seguem os guias de teste.
 - Artefatos e ferramenta de navegador ficam em dist-check/a04/, ignorada pelo Git.
 
-Para testar com a conta, siga [a configuração Spotify](docs/SPOTIFY-SETUP.md) e [o guia do APK](docs/ANDROID-EAS.md). Expo Go permite a demonstração; a entrada real no Android exige o development build atualizado. Como A04 adicionou bibliotecas nativas, um APK anterior precisa ser gerado novamente.
+Para testar com a conta, siga [a configuração Spotify](docs/SPOTIFY-SETUP.md) e [o guia do APK](docs/ANDROID-EAS.md). Expo Go permite a demonstração; a entrada real no Android exige um APK próprio atualizado. O perfil preview abre sozinho e development usa Metro. A geração e a conferência física ficam para a conclusão do projeto completo.
 
 A reprodução permanece nas etapas do Guilherme, conforme confirmado pela Ana. Até A15, o foco é conta, catálogo, busca, favoritas e histórico.
 
@@ -236,7 +239,7 @@ A reprodução permanece nas etapas do Guilherme, conforme confirmado pela Ana. 
 - Logout remove o registro e impede respostas atrasadas de reabrir a conta. Falha de exclusão é informada com Limpar sessão novamente.
 - Navegador e Expo Go usam apenas memória. Recarregar o navegador exige nova entrada; tokens não são gravados em localStorage nem AsyncStorage.
 - A06 poderá usar getAccessToken do contexto para as consultas autenticadas. O catálogo da P1 permanece nesta etapa.
-- Esta etapa adiciona expo-secure-store e seu plugin. Gere e instale outro APK caso já tenha um anterior: [guia Android/EAS](docs/ANDROID-EAS.md).
+- Esta etapa adiciona expo-secure-store e seu plugin, que devem estar incluídos no APK final: [guia Android/EAS](docs/ANDROID-EAS.md).
 
 ### Verificações da A05
 
@@ -303,9 +306,9 @@ Validação da A11: 180 testes unitários (21 novos), lint e bundles Android/web
 
 AsyncStorage 2.2.0 foi instalado na versão compatível com o Expo do projeto. A conta possui um registro versionado para curtidas, recentes, playlists, artistas acompanhados e preferências. A base valida os dados, restaura ao entrar e grava alterações em ordem, com isolamento por conta.
 
-Falhas de leitura, registro inválido e versão desconhecida preservam o conteúdo existente. A interface oferece recuperação manual sem bloquear o catálogo. A13–A15 conectarão os controles de curtidas, histórico e biblioteca a essa base; as funcionalidades da dupla também poderão utilizá-la.
+Falhas de leitura, registro inválido e versão desconhecida preservam o conteúdo existente. A interface oferece recuperação manual sem bloquear o catálogo. A13–A15 conectam os controles de curtidas, histórico e biblioteca a essa base; as funcionalidades da dupla também poderão utilizá-la.
 
-A12 adiciona um módulo nativo: gere e instale outro APK de desenvolvimento antes de testar no Android. O [guia do armazenamento](docs/ARMAZENAMENTO-LOCAL.md) descreve o contrato e o passo a passo.
+A12 adiciona um módulo nativo que precisa estar no APK final. Por escolha da Ana, a geração e a instalação ficam para a conclusão do projeto. O [guia do armazenamento](docs/ARMAZENAMENTO-LOCAL.md) descreve o contrato e o passo a passo.
 
 Validação da A12: 210 testes unitários (30 novos), lint, compatibilidade das dependências e bundles Android/web aprovados. 81 cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. APK atualizado e persistência no Android pendentes.
 
@@ -326,6 +329,14 @@ Buscar → Buscas recentes abre a rota /recent-searches. Tocar em um termo volta
 Validação da A14: 244 testes unitários (18 novos), lint e bundles Android/web aprovados. 35 cenários de navegador com Spotify simulado aprovados (20 de histórico e 15 de regressão das curtidas), sem exceções JavaScript. A etapa acrescenta a décima primeira tela principal. O [guia das buscas recentes](docs/BUSCAS-RECENTES.md) descreve os fluxos.
 
 Por decisão da Ana em 18/11/2026, a geração e o teste físico do APK ficam para a validação final do projeto. As verificações automatizadas continuam em cada etapa.
+
+## Biblioteca integrada na A15
+
+A Biblioteca autenticada substitui os cards fictícios da P1 por músicas curtidas e buscas confirmadas da conta. Os atalhos abrem /liked e /recent-searches. Os filtros Tudo, Músicas e Buscas modificam os itens exibidos; ordem Recentes/Título e Grade/Lista são salvas no registro local e restauradas na próxima entrada.
+
+Preferências só mudam após confirmar a gravação, sem sobrescrever outras coleções. Falhas oferecem recuperação pelo aviso global. Contrato e teste final no [guia da Biblioteca](docs/BIBLIOTECA.md). O [roteiro da dupla](docs/ROTEIRO-DUPLA.md) está atualizado para G01–G15.
+
+Validação: 260 testes unitários (16 novos), lint e bundles Android/web aprovados. 39 cenários de navegador com Spotify simulado aprovados (19 da Biblioteca e 20 de regressão do histórico), sem exceções JavaScript. São 11 telas principais; as telas adicionais serão criadas pelo Guilherme.
 
 ## Limitações atuais
 

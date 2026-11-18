@@ -1,6 +1,8 @@
 # Continuação da P2 — Guilherme
 
-Este roteiro é a passagem prevista depois dos 15 commits da Ana. O escopo e os critérios de cada G01–G15 estão na tabela do [roteiro principal](P2-ROTEIRO.md). Antes da passagem real, atualizar este documento conforme a implementação existente.
+Este roteiro foi atualizado com a implementação da A15. Usar depois que a Ana fizer o commit e o push dessa etapa. São 15 novos commits de cada integrante, na mesma branch main, com autoria própria. O escopo e as mensagens de G01–G15 estão no [roteiro principal](P2-ROTEIRO.md).
+
+**Decisão da Ana: gerar e testar o APK somente quando o projeto completo estiver pronto.** Durante G01–G14, validar com testes e bundles, sem exigir instalações a cada commit. O login no Android já foi confirmado anteriormente; os recursos novos e a persistência nativa ainda precisam da validação final.
 
 ## Preparar a continuidade
 
@@ -11,10 +13,61 @@ Este roteiro é a passagem prevista depois dos 15 commits da Ana. O escopo e os 
 5. Verificar a identidade local com git config user.name e git config user.email. Usar o próprio nome e um email vinculado à própria conta GitHub. Não usar o autor da Ana.
 6. Executar npm ci para instalar o lockfile entregue.
 7. Criar o próprio .env a partir do exemplo. Usar o Client ID combinado e ter a própria conta Spotify autorizada pelo dono do app.
-8. Preparar o development build Android conforme o guia atualizado e testar login, busca, álbum, artista, curtidas e recentes.
+8. Executar npm run lint, npm run test:library e os testes das áreas alteradas. Conferir o contrato abaixo. Não gerar APK nessa preparação; a instalação e o teste físico ficam para o encerramento do projeto.
 9. Iniciar G01 e executar somente uma etapa por vez.
 
 Se git pull --ff-only falhar, verificar a divergência e pedir ajuda com a saída do comando. Não usar reset --hard nem forçar push para resolver.
+
+## Código entregue pela Ana
+
+- Expo Router com Tabs, Stack e rotas dinâmicas; 11 telas principais navegáveis. Callback e rota inexistente não contam. A meta final é 17 telas.
+- OAuth PKCE, restauração e renovação de sessão no Android com SecureStore; não incluir Client Secret ou tokens manuais.
+- Cliente HTTP com timeout, renovação limitada, erros legíveis e paginação do catálogo.
+- Home, busca, álbuns, faixas e artistas conectados à API.
+- AsyncStorage por conta, schema versão 1, validação, fila de gravações e aviso de falha recuperável.
+- Curtidas sincronizadas e /liked; histórico de até 20 termos e /recent-searches.
+- Biblioteca com dados reais salvos, filtros, ordem e grade/lista persistentes.
+- Demonstração da P1 separada das telas autenticadas refatoradas.
+
+Ainda faltam CRUD de playlists locais, playlists Spotify completas e sua listagem, artistas acompanhados locais, perfil real, edição local, configurações e fluxo de faixa/mini-player/fila. O aplicativo ainda não reproduz áudio. G11 permite abrir a faixa no Spotify; reprodução integral dentro do clone exige escopo adicional e não é prometida.
+
+O perfil e partes das telas de playlist/player ainda preservam a P1. Não reutilizar contagens, letras ou progresso fictícios como se fossem dados da API. O projeto ainda não cumpre integralmente a P2.
+
+## Arquivos e contratos a reutilizar
+
+| Área | Entrada existente |
+| --- | --- |
+| Conta e catálogo | src/contexts/SessionContext.js: session, api e catalog; serviços e modelos em src/services. |
+| Dados locais | src/contexts/LocalDataContext.js: useLocalData() retorna localData e state. |
+| Atualização segura | localData.update(current => novoRegistro); callback síncrono recebe a versão atual na fila. Não substituir por estado antigo. |
+| Schema e limites | src/storage/localDataSchema.mjs; manter versão 1 se usar os campos já previstos. |
+| Biblioteca | src/screens/LibraryScreen.js e src/services/library.mjs; dados atuais: track/search. |
+| Curtidas e recentes | hooks useLikedTracks/useRecentSearches e serviços likedTracks.mjs/recentSearches.mjs. |
+| Seleção de entidade | search.rememberEntity(item) conserva os metadados para abrir detalhes. |
+| Rotas | app/_layout.js e app/(tabs)/_layout.js; componentes de tela ficam em src/screens. |
+| Android independente | eas.json, perfil preview; instalação somente ao final. |
+
+Registro local por usuário:
+
+    {
+      likedTracks: [{ track, savedAt }],
+      recentSearches: [{ term, searchedAt }],
+      playlists: [{ id, name, createdAt, updatedAt, tracks: [track] }],
+      followedArtists: [{ artist, savedAt }],
+      preferences: { displayName: null, libraryView: 'grid', librarySort: 'recent' }
+    }
+
+O envelope com version e accountId é responsabilidade do repositório. IDs de playlists locais são próprios; não usá-los nas rotas de playlists Spotify. O schema valida até 50 playlists, 300 faixas por playlist, nome de até 80 caracteres e ID de até 100. Usar modelos normalizados de faixas, sem tokens ou páginas da API.
+
+G01 deve criar a tela /local-playlist/new e o acesso funcional pela Biblioteca, com validação e gravação pelo repositório existente. G02 implementa /local-playlist/[id] e conecta os cards aos detalhes. Ampliar os filtros e listLibraryItems conforme as rotas ficarem prontas. Não introduzir links para telas inexistentes. G07 poderá acrescentar artistas acompanhados do mesmo modo.
+
+A15 preserva preferences.displayName ao salvar as preferências da Biblioteca; G09 deve conectar o apelido local às telas desejadas, sem alterar o nome da conta Spotify. As preferências libraryView/librarySort já funcionam e não devem ser reimplementadas em outro armazenamento.
+
+## Situação dos testes na passagem
+
+A15 tem 260 testes unitários aprovados, lint e bundles Android/web aprovados. Também foram aprovados 39 cenários de navegador com Spotify simulado (19 da Biblioteca e 20 de regressão do histórico), sem exceções JavaScript. As simulações não substituem o teste Android com a conta real. Os scripts unitários ficam em tests e package.json; artefatos de navegador em dist-check são temporários, ignorados pelo Git e podem não existir no clone do Guilherme.
+
+Leia [BIBLIOTECA.md](BIBLIOTECA.md), [ARMAZENAMENTO-LOCAL.md](ARMAZENAMENTO-LOCAL.md), [SPOTIFY-CATALOGO.md](SPOTIFY-CATALOGO.md), [MUSICAS-CURTIDAS.md](MUSICAS-CURTIDAS.md) e [BUSCAS-RECENTES.md](BUSCAS-RECENTES.md) conforme a área alterada.
 
 ## Sequência de entregas
 
@@ -42,7 +95,8 @@ Se git pull --ff-only falhar, verificar a divergência e pedir ajuda com a saíd
     Leia README.md, docs/P2-ROTEIRO.md, docs/SPOTIFY-SETUP.md e docs/ROTEIRO-DUPLA.md.
     Confira o Git e as funcionalidades já implementadas.
     Implemente somente G01, seguindo o contrato de dados existente.
-    Valide, informe os arquivos alterados e a mensagem exata do commit.
+    Não gerar APK nem pedir teste no celular até o projeto inteiro estar pronto.
+    Valide com testes e bundles, informe os arquivos alterados e a mensagem exata do commit.
     Pare e aguarde eu fazer o commit e push antes de continuar.
 
 Depois do primeiro commit:
@@ -54,9 +108,17 @@ Repetir com o próximo identificador, consultando o escopo no roteiro principal.
 
 ## Ao terminar cada etapa
 
-Revisar git diff, testar o critério de aceite e conferir git status. Adicionar explicitamente os arquivos daquela etapa. Usar a mensagem da tabela principal, ajustando-a se o conteúdo mudou, e fazer git push origin main.
+Revisar git diff, validar o critério com testes apropriados e conferir git status. A conferência física no Android será feita na validação final. Adicionar explicitamente os arquivos daquela etapa. Usar a mensagem da tabela principal, ajustando-a se o conteúdo mudou, e fazer git push origin main.
 
 Não adicionar .env, tokens, node_modules ou arquivos temporários. Não registrar todos os 15 commits antes de implementar as respectivas funcionalidades.
+
+## Encerramento em G15
+
+1. Concluir as funcionalidades e corrigir falhas encontradas nos testes automatizados.
+2. Conferir as 17 telas previstas e a autoria dos 15 commits novos de cada integrante, preservando o histórico da P1.
+3. Gerar um único APK independente atualizado, com perfil preview, conforme [INSTALAR-NO-CELULAR.md](INSTALAR-NO-CELULAR.md). Um APK antigo não recebe os recursos novos pelo Metro.
+4. Executar no Android os fluxos finais, incluindo login, favoritos/recentes, playlists, preferências, reinício e uso local sem rede. Registrar o que foi realmente conferido e corrigir falhas antes de marcar o checklist.
+5. Gravar o vídeo de até cinco minutos, publicar um link acessível e preparar os links para a entrega individual no AVA.
 
 ## Vídeo de até cinco minutos
 

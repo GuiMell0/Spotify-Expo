@@ -67,7 +67,7 @@ Callback e página de rota inexistente serão utilitários e não entram na cont
 
 ## Etapas da Ana — 15 commits
 
-Status: A01–A13 commitadas. A14 implementada e validada: histórico local com limite de 20 termos, deduplicação, reutilização, remoção e tela /recent-searches; 244 testes unitários, lint e bundles Android/web aprovados. 35 cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Aguardando commit da Ana. A15 pendente. São 11 telas principais. Por preferência da Ana, gerar e testar o APK apenas quando o projeto estiver pronto; a verificação física permanece pendente. Reprodução continua nas etapas do Guilherme.
+Status: A01–A14 commitadas. A15 implementada e validada: Biblioteca conectada a curtidas e buscas locais, filtros funcionais, ordem e grade/lista persistentes; 260 testes unitários, lint e bundles Android/web aprovados. 39 cenários de navegador com Spotify simulado aprovados (19 da Biblioteca e 20 de regressão do histórico), sem exceções JavaScript. Aguardando o último commit da Ana, A15. São 11 telas principais. A continuidade G01–G15 está detalhada no roteiro da dupla, atualizado com o código entregue. Por preferência da Ana, gerar e testar o APK apenas quando o projeto completo estiver pronto; a verificação física permanece pendente. Reprodução continua nas etapas do Guilherme.
 
 | Etapa | Mensagem de commit | Entrega e critério de aceite |
 | --- | --- | --- |
@@ -87,7 +87,7 @@ Status: A01–A13 commitadas. A14 implementada e validada: histórico local com 
 | A14 | feat: salva historico e adiciona buscas recentes | Termos recentes sem duplicatas, limite, remoção e nova busca por toque; persistência após reinício. |
 | A15 | feat: integra biblioteca com favoritos e historico | Biblioteca com atalhos reais, filtros e ordenação dos dados disponíveis; remover itens fictícios dessa tela e preparar entrada das playlists locais. |
 
-A API real e a persistência devem estar utilizáveis ao fim de A15, com 11 telas principais. As playlists e telas adicionais continuam nas etapas do Guilherme.
+A15 conclui a parte implementada da Ana: API real para Home, busca, álbuns, artistas e faixas; curtidas, histórico e preferências persistentes integrados à Biblioteca. São 11 telas principais. O mínimo de 12 ainda depende das telas adicionais de Guilherme; playlists completas e reprodução também continuam em G01–G15. Ver [Biblioteca e contrato de continuidade](BIBLIOTECA.md).
 
 ## Etapas do Guilherme — 15 commits
 
