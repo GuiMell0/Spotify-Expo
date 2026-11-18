@@ -2,7 +2,7 @@
 
 ## Evolução para a P2
 
-A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de Ana Carolina e 15 de Guilherme. O aplicativo já usa Expo Router, login Spotify e sessão segura. A08 conectou a busca; A09 conectou a Home; A10 conectou os álbuns e suas faixas; A11 conecta artistas e discografia ao catálogo real. As próximas entregas estão no roteiro.
+A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de Ana Carolina e 15 de Guilherme. O aplicativo já usa Expo Router, login Spotify e sessão segura. A08 conectou a busca; A09 conectou a Home; A10 conectou os álbuns e suas faixas; A11 conectou artistas e discografia; A12 adiciona a base de armazenamento local com AsyncStorage. As próximas entregas estão no roteiro.
 
 - [Roteiro completo, divisão dos commits e checklist da P2](docs/P2-ROTEIRO.md)
 - [Configuração da Spotify Web API](docs/SPOTIFY-SETUP.md)
@@ -12,6 +12,7 @@ A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de An
 - [Home real e teste no Android — A09](docs/SPOTIFY-INICIO.md)
 - [Álbuns e faixas reais — A10](docs/SPOTIFY-ALBUNS.md)
 - [Artistas e discografia real — A11](docs/SPOTIFY-ARTISTAS.md)
+- [Armazenamento local e atualização do APK — A12](docs/ARMAZENAMENTO-LOCAL.md)
 - [Geração e instalação do APK Android pelo EAS](docs/ANDROID-EAS.md)
 - [Roteiro de continuidade para Guilherme](docs/ROTEIRO-DUPLA.md)
 
@@ -21,7 +22,7 @@ A04 implementou o login Spotify com PKCE; A05 adiciona persistência segura no A
 
 Aplicativo mobile que reproduz visualmente partes da interface do Spotify utilizando React Native e Expo. O aplicativo foi desenvolvido para a disciplina de Aplicativos Híbridos.
 
-O projeto está evoluindo da interface da P1 para a P2. A conta usa OAuth com PKCE e sessão segura no Android. Home e busca consultam o Spotify. A rota de álbum carrega os detalhes e as faixas do ID solicitado, com paginação e acesso ao artista. A rota de artista carrega nome, imagem disponível e discografia com álbuns e singles. Dados locais com AsyncStorage e player continuam nas etapas seguintes.
+O projeto está evoluindo da interface da P1 para a P2. A conta usa OAuth com PKCE e sessão segura no Android. Home e busca consultam o Spotify. A rota de álbum carrega os detalhes e as faixas do ID solicitado, com paginação e acesso ao artista. A rota de artista carrega nome, imagem disponível e discografia com álbuns e singles. A12 prepara o armazenamento local por conta. A13–A15 conectam curtidas, histórico e biblioteca; o player permanece nas etapas do Guilherme.
 
 Repositório: https://github.com/GuiMell0/Spotify-Expo
 
@@ -60,6 +61,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 - Expo SDK 57;
 - Expo Router 57;
 - Expo AuthSession, Expo Crypto e Expo SecureStore;
+- AsyncStorage 2.2.0 para dados locais por conta;
 - Expo Linear Gradient;
 - Expo Status Bar;
 - Expo Vector Icons;
@@ -291,13 +293,24 @@ Nome, imagem e gêneros disponíveis vêm da API. A tela autenticada oferece Ver
 
 Validação da A11: 180 testes unitários (21 novos), lint e bundles Android/web aprovados. 73 cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Teste físico do artista pendente.
 
+## Base de armazenamento local implementada na A12
+
+AsyncStorage 2.2.0 foi instalado na versão compatível com o Expo do projeto. A conta possui um registro versionado para curtidas, recentes, playlists, artistas acompanhados e preferências. A base valida os dados, restaura ao entrar e grava alterações em ordem, com isolamento por conta.
+
+Falhas de leitura, registro inválido e versão desconhecida preservam o conteúdo existente. A interface oferece recuperação manual sem bloquear o catálogo. A13–A15 conectarão os controles de curtidas, histórico e biblioteca a essa base; as funcionalidades da dupla também poderão utilizá-la.
+
+A12 adiciona um módulo nativo: gere e instale outro APK de desenvolvimento antes de testar no Android. O [guia do armazenamento](docs/ARMAZENAMENTO-LOCAL.md) descreve o contrato e o passo a passo.
+
+Validação da A12: 210 testes unitários (30 novos), lint, compatibilidade das dependências e bundles Android/web aprovados. 81 cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. APK atualizado e persistência no Android pendentes.
+
 ## Limitações atuais
 
 - APK e login Android confirmados pela Ana; busca, Home, álbum e artista novos aguardam conferência no aparelho;
 - Não há backend ou banco de dados;
 - O aplicativo não reproduz arquivos de áudio;
 - Curtidas e controles da P1 ainda são locais; filtros da busca já consultam a API;
-- Curtidas e histórico ainda não persistem; a sessão Android já possui armazenamento seguro na A05;
+- A base local da A12 está integrada; curtidas e histórico serão conectados nas A13/A14. A sessão Android já possui armazenamento seguro na A05;
+- O módulo nativo do AsyncStorage precisa ser incluído em um APK atualizado da A12;
 - Algumas imagens dependem de conexão com a internet;
 - Home, busca, álbuns e artistas usam dados reais. Conteúdo completo de playlists continua nas etapas do Guilherme;
 

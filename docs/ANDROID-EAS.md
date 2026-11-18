@@ -32,7 +32,7 @@ Se o EAS solicitar uma chave Android para este projeto novo, selecione a geraç�
 
 O perfil usa developmentClient, distribuição internal e buildType apk. Ele gera um aplicativo instalável para desenvolvimento. Referência: [configuração do EAS](https://docs.expo.dev/build/eas-json/).
 
-A05 adicionou expo-secure-store às bibliotecas nativas do login. Gere e instale o APK atualizado para testar a restauração da sessão; atualizar apenas o JavaScript não acrescenta o módulo nativo.
+A05 adicionou expo-secure-store às bibliotecas nativas do login. A12 adiciona @react-native-async-storage/async-storage 2.2.0 para os dados locais. Gere e instale um APK atualizado com a A12; atualizar apenas o JavaScript não acrescenta esse módulo nativo. O [guia do armazenamento](ARMAZENAMENTO-LOCAL.md) contém a conferência desta etapa.
 
 ## 4. Instalar e abrir no Android
 
@@ -78,10 +78,10 @@ Se optar por compilar neste computador depois, configure Android Studio, SDK And
 
 ## Mensagem para retomar no chat
 
-    Fiz o commit A11.
+    Fiz o commit A12.
     Login real no APK testado: [sim/não; informar o erro se houver]
     Projeto vinculado à conta Expo: [sim/não]
     APK gerado/instalado: [sim/não; pode aguardar as bibliotecas nativas]
-    Continue somente a A12 e pare antes do próximo commit.
+    Continue somente a A13 e pare antes do próximo commit.
 
 Se algum comando falhar, informe o comando e a mensagem completa, sem credenciais de conta ou tokens.

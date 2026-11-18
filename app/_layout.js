@@ -1,4 +1,7 @@
 import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { LocalDataProvider } from '../src/contexts/LocalDataContext';
+import LocalDataNotice from '../src/components/LocalDataNotice';
 import { DarkTheme, Stack, ThemeProvider } from 'expo-router';
 import { HomeProvider } from '../src/contexts/HomeContext';
 import { SearchProvider } from '../src/contexts/SearchContext';
@@ -18,6 +21,8 @@ function RootNavigator() {
   return (
     <ThemeProvider value={navigationTheme}>
       <StatusBar style="light" />
+      <View style={styles.root}>
+      <LocalDataNotice />
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}>
         <Stack.Screen name="index" />
         <Stack.Protected guard={!canAccess}><Stack.Screen name="login" /></Stack.Protected>
@@ -32,10 +37,13 @@ function RootNavigator() {
         </Stack.Protected>
         <Stack.Screen name="+not-found" />
       </Stack>
+      </View>
     </ThemeProvider>
   );
 }
 
 export default function RootLayout() {
-  return <SessionProvider><SearchProvider><HomeProvider><RootNavigator /></HomeProvider></SearchProvider></SessionProvider>;
+  return <SessionProvider><LocalDataProvider><SearchProvider><HomeProvider><RootNavigator /></HomeProvider></SearchProvider></LocalDataProvider></SessionProvider>;
 }
+
+const styles = StyleSheet.create({ root: { flex: 1 } });
