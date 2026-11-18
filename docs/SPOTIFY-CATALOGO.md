@@ -2,7 +2,7 @@
 
 A07 adiciona uma camada de consultas à Spotify Web API e converte as respostas para os modelos usados nas próximas telas. Ela usa o cliente da A06, sem Client Secret ou dados de demonstração. O objeto catalog está disponível em useSession().
 
-As telas da P1 permanecem demonstrativas nesta etapa. A08 conecta a busca; A09, a Home; A10, álbuns; A11, artistas. A exibição de playlists remotas fica para G05/G06.
+A08 conectou a busca e visualizações básicas dos resultados reais. A09 conectará a Home; A10 completará álbuns e faixas; A11, artistas e discografia. A exibição de playlists remotas fica para G05/G06.
 
 ## Métodos disponíveis
 
@@ -69,7 +69,7 @@ getPlaylist retorna tracks como página ou null, além de contentStatus. availab
 
 O formato atual usa items e item. Há compatibilidade de leitura com tracks e track nas respostas antigas; as requisições sempre usam /items. Itens removidos, nulos, locais, episódios e entidades com IDs inválidos são descartados, com skippedCount disponível. Uma página sem faixas suportadas ainda pode ter próxima página.
 
-O href de uma faixa aponta para /player?trackId=ID como contrato para a seleção futura. O player demonstrativo ainda não consome esse parâmetro na A07; G11/G12 cuidarão do fluxo de faixa selecionada e abertura no Spotify.
+O href de uma faixa aponta para /player?trackId=ID como contrato para a seleção futura. Desde A08, esse parâmetro apresenta os metadados reais básicos da faixa. G11/G12 continuam responsáveis pela experiência do player, seleção e fila.
 
 ## Verificação e acesso real
 
@@ -81,6 +81,6 @@ O href de uma faixa aponta para /player?trackId=ID como contrato para a seleçã
 - Não foi usado token copiado manualmente, nem foi feita consulta à conta real por estes testes.
 - Não houve nova dependência nativa; permanece válido o APK atualizado da A05. [Preparar Android](ANDROID-EAS.md).
 
-Para a busca real da A08, informe se o APK foi instalado e se Entrar com Spotify conclui normalmente. Para playlists na G05/G06, use uma playlist acessível pela própria conta; acesso ao catálogo público não garante acesso aos seus itens.
+Na A08, a Ana confirmou APK instalado e login funcionando. A busca real pode ser validada pelo [guia da busca](SPOTIFY-BUSCA.md). Para playlists na G05/G06, use uma playlist acessível pela própria conta; acesso ao catálogo público não garante acesso aos seus itens.
 
 Referências: [mudanças de fevereiro de 2026](https://developer.spotify.com/documentation/web-api/references/changes/february-2026), [busca](https://developer.spotify.com/documentation/web-api/reference/search), [discografia](https://developer.spotify.com/documentation/web-api/reference/get-an-artists-albums), [itens da playlist](https://developer.spotify.com/documentation/web-api/reference/get-playlists-items), [playlists da conta](https://developer.spotify.com/documentation/web-api/reference/get-a-list-of-current-users-playlists).

@@ -1,99 +1,108 @@
-import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import React, { useCallback } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import MiniPlayer from '../components/MiniPlayer';
-import { ASSETS, homeAlbums } from '../data/media';
+import { useSession } from '../contexts/SessionContext';
+import { useSearch } from '../contexts/SearchContext';
+import { SEARCH_FILTERS, SEARCH_GROUPS } from '../services/spotifySearch.mjs';
+import ApiFeedback from '../components/ApiFeedback';
+import DemoSearchScreen from './DemoSearchScreen';
 import { colors, radius } from '../theme';
 
-const categories = [
-  { title: 'Música', color: '#DC148C', image: ASSETS.albumRed, href: '/playlist/rock-mix' },
-  { title: 'Podcasts', color: '#006450', image: ASSETS.albumBlue, href: '/playlist/daily' },
-  { title: 'Eventos ao vivo', color: '#8400E7', image: ASSETS.artist, href: '/artist/pierce-the-veil' },
-  { title: 'Feito para você', color: '#1E3264', image: ASSETS.albumNeon, href: '/playlist/no-repeat' },
-  { title: 'Lançamentos', color: '#E8115B', image: ASSETS.misadventures, href: '/album/misadventures' },
-  { title: 'Rock', color: '#8D67AB', image: ASSETS.albumDark, href: '/artist/pierce-the-veil' },
-];
+const suggestions = ['Rock', 'Música brasileira', 'Jazz', 'Indie'];
+const icons = { artist: 'account-music', album: 'album', track: 'music-note', playlist: 'playlist-music' };
+const typeLabels = { artist: 'Artista', album: 'Álbum', track: 'Música', playlist: 'Playlist' };
 
 export default function SearchScreen() {
-  const router = useRouter();
-  const [query, setQuery] = useState('');
-  const results = homeAlbums.filter((item) => `${item.title} ${item.subtitle}`.toLowerCase().includes(query.toLowerCase()));
+  const { isDemo } = useSession();
+  return isDemo ? <DemoSearchScreen /> : <SpotifySearchScreen />;
+}
 
+function SpotifySearchScreen() {
+  const router = useRouter();
+  const { search, state } = useSearch();
+  useFocusEffect(useCallback(() => {
+    search.setActive(true);
+    return () => search.setActive(false);
+  }, [search]));
+  const loading = ['debouncing', 'loading'].includes(state.status) && Boolean(state.query.trim());
+  const groups = SEARCH_GROUPS.filter(group => state.groups[group.key]);
+  const hasResults = groups.some(group => state.groups[group.key].items.length > 0);
   return (
     <View style={styles.root}>
-      <SafeAreaView style={styles.safe} edges={['top']}>
+      <SafeAreaView edges={['top']} style={styles.safe}>
         <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
-          <View style={styles.header}>
-            <Text style={styles.title}>Buscar</Text>
-            <MaterialCommunityIcons name="camera-outline" size={27} color={colors.text} />
-          </View>
+          <View style={styles.header}><Text accessibilityRole="header" style={styles.title}>Buscar</Text><MaterialCommunityIcons name="spotify" size={30} color={colors.green} /></View>
           <View style={styles.searchBox}>
             <MaterialCommunityIcons name="magnify" size={25} color={colors.black} />
-            <TextInput
-              value={query}
-              onChangeText={setQuery}
-              placeholder="O que você quer ouvir?"
-              placeholderTextColor="#555"
-              style={styles.input}
-              returnKeyType="search"
-            />
-            {!!query && <Pressable onPress={() => setQuery('')}><MaterialCommunityIcons name="close-circle" size={21} color="#555" /></Pressable>}
+            <TextInput accessibilityLabel="Pesquisar no Spotify" value={state.query} onChangeText={search.setQuery}
+              placeholder="O que você quer ouvir?" placeholderTextColor="#555" style={styles.input}
+              returnKeyType="search" autoCapitalize="none" autoCorrect={false} onSubmitEditing={search.retry} />
+            {!!state.query && <Pressable accessibilityRole="button" accessibilityLabel="Limpar busca" onPress={() => search.setQuery('')} style={styles.clear}><MaterialCommunityIcons name="close-circle" size={22} color="#555" /></Pressable>}
           </View>
-
-          {query ? (
-            <View style={styles.results}>
-              <Text style={styles.sectionTitle}>Resultados</Text>
-              {results.map((item) => (
-                <Pressable key={item.id} onPress={() => router.push(item.href)} style={styles.resultRow}>
-                  <Image source={item.image} style={styles.resultImage} />
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.resultTitle}>{item.title}</Text>
-                    <Text style={styles.resultSub}>{item.subtitle}</Text>
-                  </View>
-                  <MaterialCommunityIcons name="chevron-right" size={25} color={colors.muted} />
-                </Pressable>
-              ))}
-              {!results.length && <Text style={styles.empty}>Nenhum resultado neste protótipo.</Text>}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filters}>
+            {SEARCH_FILTERS.map(filter => <Pressable key={filter.value} accessibilityRole="button" accessibilityLabel={'Filtrar ' + filter.label} accessibilityState={{ selected: state.filter === filter.value }}
+              onPress={() => search.setFilter(filter.value)} style={[styles.filter, state.filter === filter.value && styles.selected]}>
+              <Text style={[styles.filterText, state.filter === filter.value && styles.selectedText]}>{filter.label}</Text>
+            </Pressable>)}
+          </ScrollView>
+          {!state.query.trim() ? (
+            <View style={styles.intro}>
+              <MaterialCommunityIcons name="magnify" size={58} color={colors.green} />
+              <Text style={styles.introTitle}>Encontre sua próxima música</Text>
+              <Text style={styles.description}>Pesquise músicas, artistas, álbuns e playlists no Spotify.</Text>
+              <View style={styles.suggestions}>{suggestions.map(term => <Pressable key={term} accessibilityRole="button" onPress={() => search.setQuery(term)} style={styles.suggestion}><Text style={styles.filterText}>{term}</Text></Pressable>)}</View>
             </View>
           ) : (
-            <>
-              <Text style={styles.sectionTitle}>Navegar por todas as seções</Text>
-              <View style={styles.grid}>
-                {categories.map((category) => (
-                  <Pressable key={category.title} onPress={() => router.push(category.href)} style={[styles.category, { backgroundColor: category.color }]}>
-                    <Text style={styles.categoryTitle}>{category.title}</Text>
-                    <Image source={category.image} style={styles.categoryImage} />
-                  </Pressable>
-                ))}
-              </View>
-            </>
+            <View style={styles.results}>
+              {state.status === 'paused' && <ApiFeedback message="Pesquisa interrompida." onRetry={search.retry} />}
+              <ApiFeedback loading={loading} error={state.error} onRetry={search.retry} />
+              {state.status === 'ready' && !hasResults && <Text accessibilityLiveRegion="polite" style={styles.empty}>Nenhum resultado para “{state.query.trim()}”. Tente outro termo.</Text>}
+              {groups.map(group => {
+                const result = state.groups[group.key];
+                if (!result.items.length && !result.page.next) return null;
+                return <View key={group.key} style={styles.section}>
+                  <Text accessibilityRole="header" style={styles.sectionTitle}>{group.label}</Text>
+                  {result.items.map(item => <Pressable key={item.type + ':' + item.id} accessibilityRole="button" accessibilityLabel={'Abrir ' + typeLabels[item.type] + ' ' + item.title}
+                    onPress={() => router.push(item.href)} style={({ pressed }) => [styles.resultRow, pressed && styles.pressed]}>
+                    {item.image ? <Image source={item.image} resizeMode="contain" style={[styles.resultImage, item.type === 'artist' && styles.artistImage]} /> : <View style={[styles.placeholder, item.type === 'artist' && styles.artistImage]}><MaterialCommunityIcons name={icons[item.type]} size={28} color={colors.muted} /></View>}
+                    <View style={styles.resultInfo}><Text numberOfLines={2} style={styles.resultTitle}>{item.title}</Text><Text numberOfLines={2} style={styles.resultSub}>{item.type === 'artist' || item.type === 'playlist' ? item.subtitle : typeLabels[item.type] + ' • ' + item.subtitle}{item.duration ? ' • ' + item.duration : ''}</Text></View>
+                    <MaterialCommunityIcons name="chevron-right" size={24} color={colors.muted} />
+                  </Pressable>)}
+                  <ApiFeedback loading={result.loadingMore} error={result.error} onRetry={() => search.loadMore(group.key)} retryLabel={'Tentar carregar mais ' + group.label.toLowerCase()} />
+                  {!!result.page.next && !result.loadingMore && !result.error && <Pressable accessibilityRole="button" accessibilityLabel={'Carregar mais ' + group.label.toLowerCase()} onPress={() => search.loadMore(group.key)} style={styles.more}><Text style={styles.moreText}>Carregar mais {group.label.toLowerCase()}</Text></Pressable>}
+                </View>;
+              })}
+            </View>
           )}
         </ScrollView>
-        <MiniPlayer />
       </SafeAreaView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.background },
-  safe: { flex: 1 },
-  content: { padding: 14, paddingBottom: 94 },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginVertical: 12 },
+  root: { flex: 1, backgroundColor: colors.background }, safe: { flex: 1 },
+  content: { paddingHorizontal: 16, paddingBottom: 32 },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 18, marginBottom: 20 },
   title: { color: colors.text, fontSize: 29, fontWeight: '900' },
-  searchBox: { height: 51, borderRadius: radius.md, backgroundColor: colors.text, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 13 },
-  input: { flex: 1, color: colors.black, fontSize: 16, fontWeight: '700', marginLeft: 8 },
-  sectionTitle: { color: colors.text, fontSize: 20, fontWeight: '800', marginTop: 26, marginBottom: 14 },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-  category: { width: '48.4%', height: 102, borderRadius: radius.md, overflow: 'hidden', marginBottom: 13, padding: 12 },
-  categoryTitle: { color: colors.text, fontSize: 16, fontWeight: '900', width: '76%', zIndex: 1 },
-  categoryImage: { position: 'absolute', width: 65, height: 65, right: -9, bottom: -7, transform: [{ rotate: '24deg' }], borderRadius: 4 },
-  results: { marginTop: 2 },
-  resultRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 7 },
-  resultImage: { width: 58, height: 58, borderRadius: radius.sm, marginRight: 12 },
-  resultTitle: { color: colors.text, fontSize: 15, fontWeight: '700' },
-  resultSub: { color: colors.muted, fontSize: 12, marginTop: 4 },
-  empty: { color: colors.muted, textAlign: 'center', marginTop: 60 },
+  searchBox: { minHeight: 54, borderRadius: radius.md, backgroundColor: colors.text, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12 },
+  input: { flex: 1, minHeight: 54, color: colors.black, fontSize: 16, fontWeight: '600', marginLeft: 8 },
+  clear: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
+  filters: { flexDirection: 'row', gap: 8, paddingVertical: 18 },
+  filter: { minHeight: 44, borderRadius: radius.pill, paddingHorizontal: 16, backgroundColor: colors.surface, justifyContent: 'center' },
+  filterText: { color: colors.text, fontSize: 13, fontWeight: '600' }, selected: { backgroundColor: colors.green }, selectedText: { color: colors.black },
+  intro: { alignItems: 'center', paddingVertical: 44, gap: 18 }, introTitle: { color: colors.text, fontSize: 23, fontWeight: '800', textAlign: 'center' },
+  description: { color: colors.muted, fontSize: 15, lineHeight: 23, textAlign: 'center', maxWidth: 310 },
+  suggestions: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 10, marginTop: 10 },
+  suggestion: { backgroundColor: colors.surface, borderRadius: radius.pill, paddingHorizontal: 18, minHeight: 46, justifyContent: 'center' },
+  results: { gap: 16 }, section: { gap: 10 }, sectionTitle: { color: colors.text, fontSize: 22, fontWeight: '800', marginTop: 10 },
+  resultRow: { flexDirection: 'row', alignItems: 'center', minHeight: 78, paddingVertical: 8, gap: 12, borderRadius: radius.md },
+  resultImage: { width: 58, height: 58, backgroundColor: colors.surface }, placeholder: { width: 58, height: 58, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center' },
+  artistImage: { borderRadius: 29 }, resultInfo: { flex: 1 }, resultTitle: { color: colors.text, fontSize: 15, fontWeight: '700' },
+  resultSub: { color: colors.muted, fontSize: 12, lineHeight: 18, marginTop: 4 }, pressed: { backgroundColor: colors.surface },
+  empty: { color: colors.muted, textAlign: 'center', lineHeight: 22, paddingVertical: 42 },
+  more: { alignSelf: 'center', minHeight: 46, paddingHorizontal: 22, borderRadius: radius.pill, borderWidth: 1, borderColor: colors.subtle, justifyContent: 'center', marginVertical: 8 },
+  moreText: { color: colors.text, fontWeight: '700', fontSize: 13 },
 });

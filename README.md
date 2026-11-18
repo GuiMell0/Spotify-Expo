@@ -8,6 +8,7 @@ A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de An
 - [Configuração da Spotify Web API](docs/SPOTIFY-SETUP.md)
 - [Cliente HTTP e tratamento de erros — A06](docs/SPOTIFY-API.md)
 - [Serviços e modelos do catálogo — A07](docs/SPOTIFY-CATALOGO.md)
+- [Busca real e teste no Android — A08](docs/SPOTIFY-BUSCA.md)
 - [Geração e instalação do APK Android pelo EAS](docs/ANDROID-EAS.md)
 - [Roteiro de continuidade para Guilherme](docs/ROTEIRO-DUPLA.md)
 
@@ -27,7 +28,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 - Navegação por abas e pilhas com Expo Router;
 - Login Spotify com PKCE, tratamento de falhas e demonstração explícita;
 - Sessão Android persistente no SecureStore, renovação compartilhada e logout;
-- Busca local por músicas e playlists;
+- Busca Spotify com filtros, paginação e recuperação de falhas;
 - Biblioteca com filtros visuais;
 - Páginas de playlist, álbum, artista e perfil;
 - Mini-player disponível nas principais telas;
@@ -40,7 +41,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 | --- | --- |
 | Login | Entrada Spotify por PKCE, cancelamento, mensagens de erro e acesso explícito à demonstração. |
 | Home | Atalhos, filtros, playlists e seções horizontais de conteúdo. |
-| Busca | Campo de pesquisa local, resultados e categorias musicais. |
+| Busca | Pesquisa Spotify com filtros, paginação e resultados reais; demonstração local separada. |
 | Biblioteca | Filtros, ordenação e grade de playlists, álbuns e artistas. |
 | Playlist | Capa, informações, controles e lista de músicas. |
 | Álbum | Informações do álbum, artista, ações e faixas. |
@@ -173,7 +174,7 @@ O teste de OAuth passará a exigir development build nas próximas etapas. Consu
 - Schemes: spotifyexpo para navegação e spotifyexpo-login para autenticação.
 - npm run test:config verifica retornos, campos incompletos e seleção de plataforma.
 
-Para criar o app no Spotify e preencher o Client ID, siga [o passo a passo](docs/SPOTIFY-SETUP.md). Para vincular sua conta Expo e gerar o APK, siga [o guia EAS](docs/ANDROID-EAS.md). A03 configura o processo; A04 implementa o login. A geração e instalação do APK e o teste com a conta real seguem pendentes.
+Para criar o app no Spotify e preencher o Client ID, siga [o passo a passo](docs/SPOTIFY-SETUP.md). Para vincular sua conta Expo e gerar o APK, siga [o guia EAS](docs/ANDROID-EAS.md). A03 configura o processo; A04 implementa o login. A Ana confirmou o APK instalado e o login real funcionando na A08; os passos permanecem disponíveis para a dupla.
 
 ### Verificações da A03
 
@@ -186,7 +187,7 @@ Validação em 17/11/2026:
 - Edge em viewport móvel: 10 cenários aprovados, sem exceções JavaScript ou avisos de navegação.
 - Mensagens de configuração pendente e preenchida verificadas; Client ID informado aplicado apenas ao .env local.
 - Modelo .env.example compartilhável e .env pessoal ignorado pelo Git.
-- Geração/instalação do APK pelo EAS e autenticação real da conta continuam pendentes.
+- Na conclusão da A03, APK e login estavam pendentes; foram confirmados pela Ana na A08.
 
 Ao alterar o .env, encerre o Metro anterior e use npm run dev -- --clear; para a demonstração no Expo Go, npm run start:go -- --clear. Para exportar novamente após trocar variáveis, use --clear em npx expo export, evitando configuração antiga em cache.
 
@@ -208,7 +209,7 @@ O botão Entrar com Spotify usa Authorization Code com PKCE S256. A URL e o veri
 - npm run test:auth: 14 testes aprovados.
 - Compatibilidade Expo e bundles Android/Hermes e web aprovados.
 - Edge com Spotify simulado: 12 cenários aprovados, sem exceções JavaScript. Cobrem PKCE S256, janela, cancelamento seguido de nova entrada, recusa, state incorreto, token inválido, 403, logout e callback sem tentativa.
-- Os testes simulados não acessam a conta real. Teste físico com Spotify real: pendente da Ana e de um APK atualizado.
+- Os testes simulados não acessam a conta real. Login real no APK confirmado pela Ana na A08; os demais fluxos no aparelho seguem os guias de teste.
 - Artefatos e ferramenta de navegador ficam em dist-check/a04/, ignorada pelo Git.
 
 Para testar com a conta, siga [a configuração Spotify](docs/SPOTIFY-SETUP.md) e [o guia do APK](docs/ANDROID-EAS.md). Expo Go permite a demonstração; a entrada real no Android exige o development build atualizado. Como A04 adicionou bibliotecas nativas, um APK anterior precisa ser gerado novamente.
@@ -255,15 +256,23 @@ As telas continuam demonstrativas nesta etapa. A08–A11 conectarão busca, Home
 
 Validação da A07: 107 testes unitários aprovados (29 novos e 78 anteriores), lint aprovado, bundles Android/Hermes e web gerados e 18 cenários Edge com Spotify simulado aprovados, sem exceções JavaScript. O acesso ao catálogo com a conta real ainda precisa ser validado ao conectar as telas.
 
+## Busca real implementada na A08
+
+A aba Buscar agora usa a API para a conta conectada, com filtros por tipo, debounce, paginação e descarte de respostas antigas. Resultados abrem visualizações básicas com os dados reais e link Spotify; voltar preserva a consulta. O modo de demonstração continua identificado e separado.
+
+O APK e o login Android foram confirmados pela Ana nesta etapa. A08 não adiciona biblioteca nativa. O [guia de busca](docs/SPOTIFY-BUSCA.md) explica o que foi entregue e como testar no aparelho já instalado.
+
+Validação da A08: 124 testes unitários (17 novos), lint e bundles Android/web aprovados; 31 cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Busca no Android aguardando conferência da Ana.
+
 ## Limitações atuais
 
-- O login implementado aguarda validação manual com a conta real no APK Android;
+- APK e login Android confirmados pela Ana; busca da A08 aguardando conferência no aparelho;
 - Não há backend ou banco de dados;
 - O aplicativo não reproduz arquivos de áudio;
-- Curtidas, filtros e controles são estados visuais locais;
+- Curtidas e controles da P1 ainda são locais; filtros da busca já consultam a API;
 - Curtidas e histórico ainda não persistem; a sessão Android já possui armazenamento seguro na A05;
 - Algumas imagens dependem de conexão com a internet;
-- As telas ainda usam dados da P1; a API já é utilizada na autenticação e consulta de /me. Os serviços de catálogo estão prontos na A07; a conexão das telas será feita em A08–A11 e G05/G06.
+- Busca e visualizações básicas de resultados usam dados reais. Home, detalhes completos de álbum/artista e conteúdo de playlists continuam nas próximas etapas;
 
 ## Integrantes
 

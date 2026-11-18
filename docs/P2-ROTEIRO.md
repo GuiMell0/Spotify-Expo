@@ -66,7 +66,7 @@ Callback e página de rota inexistente serão utilitários e não entram na cont
 
 ## Etapas da Ana — 15 commits
 
-Status: A01–A06 commitadas. A07 implementada e validada: serviços e modelos do catálogo, paginação e campos opcionais; 107 testes unitários, lint, bundles Android/web e 18 cenários de navegador com Spotify simulado aprovados. Aguardando commit da Ana. A08–A15 pendentes. Teste físico do login, sessão e acesso ao catálogo continua pendente. Client ID e retorno Android já foram configurados. A Ana confirmou manter a reprodução na parte do Guilherme.
+Status: A01–A07 commitadas. A08 implementada e validada: busca real com filtros, paginação, cancelamento e visualizações básicas dos resultados; 124 testes unitários, lint, bundles Android/web e 31 cenários de navegador com Spotify simulado aprovados. Aguardando commit da Ana. A09–A15 pendentes. A Ana confirmou APK atualizado instalado e login Spotify funcionando no Android; a busca nova aguarda conferência no aparelho. Reprodução permanece nas etapas do Guilherme.
 
 | Etapa | Mensagem de commit | Entrega e critério de aceite |
 | --- | --- | --- |

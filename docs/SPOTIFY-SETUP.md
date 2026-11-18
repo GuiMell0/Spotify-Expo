@@ -1,6 +1,6 @@
 # Configuração Spotify — P2
 
-A03 prepara o ambiente, o modelo de variáveis e o perfil EAS para Android. A Ana escolheu APK pela nuvem, forneceu o Client ID e confirmou spotifyexpo-login://callback salvo no painel. O Client ID foi preenchido somente no .env local. A04 implementou o login PKCE e a consulta de confirmação em /me. A05 adiciona SecureStore no Android, restauração e renovação. Geração/instalação do APK e teste com a conta real continuam pendentes.
+A03 prepara o ambiente, o modelo de variáveis e o perfil EAS para Android. A Ana escolheu APK pela nuvem, forneceu o Client ID e confirmou spotifyexpo-login://callback salvo no painel. O Client ID foi preenchido somente no .env local. A04 implementou o login PKCE e a consulta de confirmação em /me. A05 adiciona SecureStore no Android, restauração e renovação. Na A08, a Ana confirmou APK instalado e login Spotify funcionando no Android. A nova busca tem um [guia de teste](SPOTIFY-BUSCA.md).
 
 ## O que já sabemos
 

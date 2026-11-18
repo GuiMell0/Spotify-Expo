@@ -1,4 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import CatalogEntityPreview from './CatalogEntityPreview';
+import { useSession } from '../contexts/SessionContext';
+import { isSpotifyId } from '../services/spotifyModels.mjs';
 import React from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -15,6 +18,8 @@ import { colors } from '../theme';
 export default function AlbumScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
+  const { isDemo } = useSession();
+  if (!isDemo && isSpotifyId(id)) return <CatalogEntityPreview type="album" id={id} />;
   const album = demoAlbums.find((item) => item.id === id);
 
   if (!album) return <UnavailableContent title="Álbum não encontrado" />;

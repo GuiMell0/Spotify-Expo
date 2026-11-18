@@ -1,3 +1,7 @@
+import { useLocalSearchParams } from 'expo-router';
+import CatalogEntityPreview from './CatalogEntityPreview';
+import { useSession } from '../contexts/SessionContext';
+import { isSpotifyId } from '../services/spotifyModels.mjs';
 import React, { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -9,6 +13,12 @@ import { ASSETS } from '../data/media';
 import { colors, radius } from '../theme';
 
 export default function PlayerScreen() {
+  const { trackId } = useLocalSearchParams();
+  const { isDemo } = useSession();
+  return !isDemo && isSpotifyId(trackId) ? <CatalogEntityPreview type="track" id={trackId} /> : <DemoPlayerScreen />;
+}
+
+function DemoPlayerScreen() {
   const [playing, setPlaying] = useState(true);
   const [liked, setLiked] = useState(true);
 

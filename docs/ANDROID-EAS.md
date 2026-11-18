@@ -1,6 +1,6 @@
 # Android com EAS — preparação A03 e sessão A04/A05
 
-A Ana escolheu gerar o APK na nuvem. O projeto já inclui expo-dev-client, os schemes, o perfil development em eas.json e, desde A04, expo-auth-session e expo-crypto. A05 acrescenta expo-secure-store e seu plugin. A geração e instalação do APK ainda não foram confirmadas.
+A Ana escolheu gerar o APK na nuvem. O projeto já inclui expo-dev-client, os schemes, o perfil development em eas.json e, desde A04, expo-auth-session e expo-crypto. A05 acrescenta expo-secure-store e seu plugin. Na A08, a Ana confirmou o APK atualizado instalado e o login Spotify funcionando no Android. Este guia continua disponível para novas instalações e para a dupla.
 
 ## 1. Preparar o Spotify e a configuração local
 
@@ -56,7 +56,7 @@ O tunnel transporta a conexão com o Metro; o retorno OAuth continua sendo spoti
 - No Expo Go, a entrada real permanece bloqueada com orientação para usar o APK de desenvolvimento.
 - No APK atualizado, Entrar com Spotify abre a autorização; após o retorno válido, a Home mostra Conta Spotify conectada.
 - Teste também cancelamento e Sair da conta no Perfil. O passo a passo está em SPOTIFY-SETUP.md.
-- Desde A05, fechar e reabrir no Android restaura a conta, quando válida. Teste também sair, reabrir e permanecer no login. O teste físico ainda está pendente.
+- Desde A05, fechar e reabrir no Android restaura a conta, quando válida. Teste também sair, reabrir e permanecer no login. O login no aparelho foi confirmado na A08; a nova busca tem um [passo a passo de validação](SPOTIFY-BUSCA.md).
 - A geração e instalação do APK só ficam confirmadas depois de executar os passos acima.
 - Ao adicionar bibliotecas nativas ou alterar schemes/plugins, gere e instale outro APK. Alterações comuns no JavaScript usam o Metro.
 
@@ -78,10 +78,10 @@ Se optar por compilar neste computador depois, configure Android Studio, SDK And
 
 ## Mensagem para retomar no chat
 
-    Fiz o commit A07.
+    Fiz o commit A08.
     Login real no APK testado: [sim/não; informar o erro se houver]
     Projeto vinculado à conta Expo: [sim/não]
     APK gerado/instalado: [sim/não; pode aguardar as bibliotecas nativas]
-    Continue somente a A08 e pare antes do próximo commit.
+    Continue somente a A09 e pare antes do próximo commit.
 
 Se algum comando falhar, informe o comando e a mensagem completa, sem credenciais de conta ou tokens.
