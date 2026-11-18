@@ -2,7 +2,7 @@
 
 ## Evolução para a P2
 
-A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de Ana Carolina e 15 de Guilherme. O aplicativo já usa Expo Router, login Spotify e sessão segura. A08 conectou a busca; A09 conectou a Home; A10 conecta os álbuns e suas faixas ao catálogo real. As próximas entregas estão no roteiro.
+A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de Ana Carolina e 15 de Guilherme. O aplicativo já usa Expo Router, login Spotify e sessão segura. A08 conectou a busca; A09 conectou a Home; A10 conectou os álbuns e suas faixas; A11 conecta artistas e discografia ao catálogo real. As próximas entregas estão no roteiro.
 
 - [Roteiro completo, divisão dos commits e checklist da P2](docs/P2-ROTEIRO.md)
 - [Configuração da Spotify Web API](docs/SPOTIFY-SETUP.md)
@@ -11,6 +11,7 @@ A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de An
 - [Busca real e teste no Android — A08](docs/SPOTIFY-BUSCA.md)
 - [Home real e teste no Android — A09](docs/SPOTIFY-INICIO.md)
 - [Álbuns e faixas reais — A10](docs/SPOTIFY-ALBUNS.md)
+- [Artistas e discografia real — A11](docs/SPOTIFY-ARTISTAS.md)
 - [Geração e instalação do APK Android pelo EAS](docs/ANDROID-EAS.md)
 - [Roteiro de continuidade para Guilherme](docs/ROTEIRO-DUPLA.md)
 
@@ -20,7 +21,7 @@ A04 implementou o login Spotify com PKCE; A05 adiciona persistência segura no A
 
 Aplicativo mobile que reproduz visualmente partes da interface do Spotify utilizando React Native e Expo. O aplicativo foi desenvolvido para a disciplina de Aplicativos Híbridos.
 
-O projeto está evoluindo da interface da P1 para a P2. A conta usa OAuth com PKCE e sessão segura no Android. Home e busca consultam o Spotify. A rota de álbum carrega os detalhes e as faixas do ID solicitado, com paginação e acesso ao artista. Discografia do artista, dados locais com AsyncStorage e player continuam nas etapas seguintes.
+O projeto está evoluindo da interface da P1 para a P2. A conta usa OAuth com PKCE e sessão segura no Android. Home e busca consultam o Spotify. A rota de álbum carrega os detalhes e as faixas do ID solicitado, com paginação e acesso ao artista. A rota de artista carrega nome, imagem disponível e discografia com álbuns e singles. Dados locais com AsyncStorage e player continuam nas etapas seguintes.
 
 Repositório: https://github.com/GuiMell0/Spotify-Expo
 
@@ -47,7 +48,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 | Biblioteca | Filtros, ordenação e grade de playlists, álbuns e artistas. |
 | Playlist | Capa, informações, controles e lista de músicas. |
 | Álbum | Detalhes e faixas reais por ID, paginação, atualização e navegação ao artista e à faixa. |
-| Artista | Imagem de destaque, seguidores, abas e músicas populares. |
+| Artista | Dados reais por ID, discografia paginada de álbuns e singles, atualização e acesso aos álbuns. |
 | Player | Capa, progresso e controles demonstrativos, com retorno à tela de origem. |
 | Perfil | Dados do usuário e listagem de playlists. |
 
@@ -142,7 +143,7 @@ A entrada é expo-router/entry, com layouts em app/_layout.js e app/(tabs)/_layo
 - O botão Voltar retorna à origem; se não houver histórico, abre /home.
 - As telas de detalhe ficam no Stack acima das abas. Ao voltar, a aba e seu conteúdo são preservados.
 
-O catálogo da P1 permanece no modo de demonstração. Nessa modalidade, exemplos são /album/misadventures, /artist/pierce-the-veil, /playlist/daily e /playlist/my-heart. Na conta conectada, Home, busca e álbum usam IDs reais; a rota de álbum rejeita identificadores fictícios.
+O catálogo da P1 permanece no modo de demonstração. Nessa modalidade, exemplos são /album/misadventures, /artist/pierce-the-veil, /playlist/daily e /playlist/my-heart. Na conta conectada, Home, busca, álbum e artista usam IDs reais; as rotas de álbum e artista rejeitam identificadores fictícios.
 
 ### Verificações da A02
 
@@ -282,15 +283,23 @@ A tela mostra capa, artistas, data e duração conforme recebidos. Artistas e fa
 
 Validação da A10: 159 testes unitários (19 novos), lint e bundles Android/web aprovados. 57 cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Busca, Home e álbum no Android aguardam teste da Ana.
 
+## Artistas e discografia real implementados na A11
+
+A rota /artist/[id] consulta os dados do artista e sua discografia com álbuns e singles. Cada página traz até 10 lançamentos. Carregar mais preserva os itens anteriores, e abrir um álbum encaminha à tela com faixas da A10. Voltar mantém as páginas do artista em memória.
+
+Nome, imagem e gêneros disponíveis vêm da API. A tela autenticada oferece Ver no Spotify, atualização e recuperação de falhas. O [guia dos artistas](docs/SPOTIFY-ARTISTAS.md) contém os passos para testar no APK instalado.
+
+Validação da A11: 180 testes unitários (21 novos), lint e bundles Android/web aprovados. 73 cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Teste físico do artista pendente.
+
 ## Limitações atuais
 
-- APK e login Android confirmados pela Ana; busca, Home e álbum novos aguardam conferência no aparelho;
+- APK e login Android confirmados pela Ana; busca, Home, álbum e artista novos aguardam conferência no aparelho;
 - Não há backend ou banco de dados;
 - O aplicativo não reproduz arquivos de áudio;
 - Curtidas e controles da P1 ainda são locais; filtros da busca já consultam a API;
 - Curtidas e histórico ainda não persistem; a sessão Android já possui armazenamento seguro na A05;
 - Algumas imagens dependem de conexão com a internet;
-- Home, busca e álbuns usam dados reais. Discografia do artista e conteúdo completo de playlists continuam nas próximas etapas;
+- Home, busca, álbuns e artistas usam dados reais. Conteúdo completo de playlists continua nas etapas do Guilherme;
 
 ## Integrantes
 

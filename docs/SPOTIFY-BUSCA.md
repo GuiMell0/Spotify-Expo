@@ -18,11 +18,11 @@ A tela real usa StyleSheet/Flexbox, rótulos acessíveis, imagens sem corte de c
 
 ## Abrir os resultados
 
-Música, artista, álbum e playlist usam os IDs e rotas corretos do catálogo. Como as páginas completas continuam nas etapas seguintes, A08 inclui CatalogEntityPreview: uma visualização básica da entidade real, com título, imagem, metadados disponíveis e link para o Spotify.
+Música, artista, álbum e playlist usam os IDs e rotas corretos do catálogo. A08 incluiu CatalogEntityPreview para os metadados básicos. A10 conecta a página de álbum com faixas; A11 conecta artista e discografia. A visualização básica continua para playlists e faixas, com título, imagem, metadados disponíveis e link Spotify.
 
 A visualização aproveita a entidade já carregada pela pesquisa. Caso ela não esteja disponível na memória, consulta o serviço correspondente. Voltar retorna à busca preservada. A faixa com trackId mostra seus próprios dados; não exibe a música e o progresso fictícios do player antigo.
 
-A10 adicionará a lista de faixas do álbum; A11, a discografia do artista; G05/G06, o conteúdo e a biblioteca de playlists. G11/G12 continuam responsáveis pela experiência do player, seleção e fila. Abrir um link Spotify não implementa reprodução interna no aplicativo.
+A10 adiciona a lista de faixas do álbum ([guia](SPOTIFY-ALBUNS.md)); A11, a discografia do artista ([guia](SPOTIFY-ARTISTAS.md)); G05/G06 implementarão o conteúdo e a biblioteca de playlists. G11/G12 continuam responsáveis pela experiência do player, seleção e fila. Abrir um link Spotify não implementa reprodução interna no aplicativo.
 
 ## Organização
 

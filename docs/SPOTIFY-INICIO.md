@@ -13,7 +13,7 @@ A Home da conta conectada agora usa os serviços de catálogo da A07 e o cliente
 - O mini-player fictício da P1 não aparece na Home autenticada. A reprodução continua nas etapas do Guilherme.
 - O modo demonstração mantém a Home da P1 separada e identificada; não consulta a API.
 
-A10 conecta a página completa de álbum, consultando detalhes e faixas pelo ID selecionado ([guia](SPOTIFY-ALBUNS.md)). A página completa de artista continua na A11. A exibição completa de playlists remotas e o perfil são etapas do Guilherme.
+A10 conecta a página completa de álbum, consultando detalhes e faixas pelo ID selecionado ([guia](SPOTIFY-ALBUNS.md)). A11 conecta os dados do artista e sua discografia ([guia](SPOTIFY-ARTISTAS.md)). A exibição completa de playlists remotas e o perfil são etapas do Guilherme.
 
 ## Carregamento, cache e falhas
 

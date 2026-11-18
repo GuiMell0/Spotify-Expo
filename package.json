@@ -55,7 +55,8 @@
     "test:catalog": "node --test tests/spotify-catalog.test.mjs",
     "test:search": "node --test tests/spotify-search.test.mjs",
     "test:home": "node --test tests/spotify-home.test.mjs",
-    "test:album": "node --test tests/spotify-album.test.mjs"
+    "test:album": "node --test tests/spotify-album.test.mjs",
+    "test:artist": "node --test tests/spotify-artist.test.mjs"
   },
   "private": true
 }

@@ -1,69 +1,110 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import CatalogEntityPreview from './CatalogEntityPreview';
-import { useSession } from '../contexts/SessionContext';
-import { isSpotifyId } from '../services/spotifyModels.mjs';
-import React from 'react';
-import { ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { Image, Linking, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import IconButton from '../components/IconButton';
+import { useSession } from '../contexts/SessionContext';
+import { useSearch } from '../contexts/SearchContext';
+import { createSpotifyArtist } from '../services/spotifyArtist.mjs';
+import ApiFeedback from '../components/ApiFeedback';
 import BackButton from '../components/BackButton';
-import MiniPlayer from '../components/MiniPlayer';
-import TrackRow from '../components/TrackRow';
-import { demoArtists } from '../data/media';
-import UnavailableContent from '../components/UnavailableContent';
+import DemoArtistScreen from './DemoArtistScreen';
 import { colors, radius } from '../theme';
 
-export default function ArtistScreen() {
-  const router = useRouter();
-  const { id } = useLocalSearchParams();
-  const { isDemo } = useSession();
-  if (!isDemo && isSpotifyId(id)) return <CatalogEntityPreview type="artist" id={id} />;
-  const artist = demoArtists.find((item) => item.id === id);
+const albumTypes = { album: 'Álbum', single: 'Single', compilation: 'Coletânea' };
 
-  if (!artist) return <UnavailableContent title="Artista não encontrado" />;
+export default function ArtistScreen() {
+  const { isDemo } = useSession();
+  return isDemo ? <DemoArtistScreen /> : <SpotifyArtistScreen />;
+}
+
+function SpotifyArtistScreen() {
+  const { id: routeId } = useLocalSearchParams();
+  const id = typeof routeId === 'string' ? routeId : '';
+  const { catalog, session } = useSession();
+  const { search } = useSearch();
+  const router = useRouter();
+  const scope = session?.user.id ?? null;
+  const controller = useMemo(() => createSpotifyArtist(catalog, id, { scope }), [catalog, id, scope]);
+  const state = useSyncExternalStore(controller.subscribe, controller.getSnapshot, controller.getSnapshot);
+  const [openError, setOpenError] = useState(null);
+  useEffect(() => () => controller.suspend(), [controller]);
+  useFocusEffect(useCallback(() => {
+    controller.setActive(true);
+    return () => { controller.setActive(false); };
+  }, [controller]));
+  const artist = state.artist;
+  const busy = state.status === 'loading';
+  function openAlbum(album) {
+    search.rememberEntity(album);
+    router.push(album.href);
+  }
+  async function openSpotify() {
+    setOpenError(null);
+    try { await Linking.openURL(artist.spotifyUrl); }
+    catch { setOpenError(controller); }
+  }
+
   return (
     <View style={styles.root}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <ImageBackground source={artist.image} style={styles.hero} imageStyle={{ opacity: 0.78 }}>
-          <LinearGradient colors={['rgba(0,0,0,0.15)', 'rgba(0,0,0,0.08)', colors.background]} style={StyleSheet.absoluteFill} />
-          <SafeAreaView edges={['top']} style={styles.heroSafe}>
+      <LinearGradient colors={['#234038', colors.background]} style={StyleSheet.absoluteFill} locations={[0, 0.5]} />
+      <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
+        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled"
+          refreshControl={<RefreshControl refreshing={busy} onRefresh={controller.refresh} tintColor={colors.green} colors={[colors.green]} />}>
+          <View style={styles.topbar}>
             <BackButton style={styles.back} />
-            <View style={styles.heroText}>
-              <Text style={styles.artistName}>{artist.title}</Text>
-              <View style={styles.verified}><MaterialCommunityIcons name="check-decagram" size={17} color="#3D91F4" /><Text style={styles.verifiedText}>Verificado pelo Spotify</Text></View>
-            </View>
-          </SafeAreaView>
-        </ImageBackground>
-        <View style={styles.body}>
-          <Text style={styles.listeners}>10,2 mi ouvintes mensais</Text>
-          <View style={styles.actions}>
-            <Pressable style={styles.follow}><Text style={styles.followText}>Seguindo</Text></Pressable>
-            <IconButton name="dots-vertical" size={25} color={colors.muted} />
-            <MaterialCommunityIcons name="shuffle-variant" size={27} color={colors.muted} style={{ marginLeft: 'auto' }} />
-            <Pressable onPress={() => router.push('/player')} style={styles.play}><MaterialCommunityIcons name="play" size={35} color={colors.black} /></Pressable>
+            <View style={styles.brand}><MaterialCommunityIcons name="spotify" size={22} color={colors.green} /><Text style={styles.brandText}>Artista no Spotify</Text></View>
+            <Pressable accessibilityRole="button" accessibilityLabel="Atualizar artista" accessibilityState={{ disabled: busy || state.loadingMore }} disabled={busy || state.loadingMore} onPress={controller.refresh} style={[styles.iconButton, (busy || state.loadingMore) && styles.disabled]}><MaterialCommunityIcons name="refresh" size={25} color={colors.text} /></Pressable>
           </View>
-          <View style={styles.tabs}><Text style={styles.tabActive}>Músicas</Text><Text style={styles.tab}>Eventos</Text><Text style={styles.tab}>Sobre</Text></View>
-          <Text style={styles.sectionTitle}>Mais ouvidas</Text>
-          {artist.tracks.map((track, index) => <TrackRow key={track.id} track={track} index={index} showIndex liked={index === 0} onPress={() => router.push('/player')} />)}
-        </View>
-      </ScrollView>
-      <MiniPlayer />
+          <ApiFeedback loading={busy} error={state.error} onRetry={controller.refresh} retryLabel="Tentar carregar artista" />
+          {state.status === 'paused' && <ApiFeedback message="Carregamento interrompido." onRetry={controller.refresh} retryLabel="Carregar artista" />}
+          {!!artist && <>
+            {artist.image ? <Image source={artist.image} resizeMode="contain" style={styles.photo} /> : <View style={styles.placeholder}><MaterialCommunityIcons name="account-music" size={90} color={colors.muted} /></View>}
+            <Text accessibilityRole="header" style={styles.title}>{artist.title}</Text>
+            <Text style={styles.kind}>Artista</Text>
+            {artist.genres.length > 0 && <Text style={styles.genres}>{artist.genres.join(' • ')}</Text>}
+            <Pressable accessibilityRole="link" accessibilityLabel={'Ver ' + artist.title + ' no Spotify'} onPress={openSpotify} style={styles.spotify}><MaterialCommunityIcons name="spotify" size={23} color={colors.black} /><Text style={styles.spotifyText}>Ver no Spotify</Text></Pressable>
+            {openError === controller && <Text accessibilityRole="alert" style={styles.notice}>Não foi possível abrir o Spotify. Tente tocar no botão novamente.</Text>}
+            {!!state.error && state.albums.length > 0 && <Text style={styles.notice}>Não foi possível atualizar. Os álbuns já carregados continuam disponíveis.</Text>}
+            <View style={styles.albumHeading}><Text accessibilityRole="header" style={styles.sectionTitle}>Discografia</Text>{state.page && <Text style={styles.loaded}>{state.albums.length} carregados</Text>}</View>
+            <Text style={styles.kind}>Álbuns e singles</Text>
+            {state.status === 'ready' && !state.albums.length && <Text style={styles.empty}>{state.page?.next ? 'Nenhum álbum disponível nesta página. Você pode carregar a próxima.' : 'Nenhum álbum ou single disponível para este artista.'}</Text>}
+            {state.albums.map(album => <Pressable key={album.id} accessibilityRole="button" accessibilityLabel={'Abrir álbum ' + album.title} onPress={() => openAlbum(album)} style={({ pressed }) => [styles.albumRow, pressed && styles.pressed]}>
+              {album.image ? <Image source={album.image} resizeMode="contain" style={styles.albumCover} /> : <View style={styles.albumPlaceholder}><MaterialCommunityIcons name="album" size={30} color={colors.muted} /></View>}
+              <View style={styles.albumInfo}><Text numberOfLines={2} style={styles.albumTitle}>{album.title}</Text><Text style={styles.albumMeta}>{albumTypes[album.albumType] ?? 'Álbum'}{album.releaseDate ? ' • ' + album.releaseDate : ''}</Text><Text numberOfLines={1} style={styles.albumArtist}>{album.artist}</Text></View>
+              <MaterialCommunityIcons name="chevron-right" size={23} color={colors.muted} />
+            </Pressable>)}
+            {state.skippedCount > 0 && <Text style={styles.notice}>Alguns lançamentos não foram fornecidos pelo Spotify.</Text>}
+            <ApiFeedback loading={state.loadingMore} error={state.moreError} onRetry={controller.loadMore} retryLabel="Tentar carregar mais álbuns" />
+            {state.status === 'ready' && !!state.page?.next && !state.moreError && !state.loadingMore && !busy && <Pressable accessibilityRole="button" onPress={controller.loadMore} style={styles.more}><Text style={styles.moreText}>Carregar mais álbuns</Text></Pressable>}
+          </>}
+        </ScrollView>
+      </SafeAreaView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.background }, content: { paddingBottom: 96 },
-  hero: { height: 360, justifyContent: 'flex-end' }, heroSafe: { flex: 1 },
-  back: { marginLeft: 14, marginTop: 6, width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(0,0,0,0.42)' },
-  heroText: { marginTop: 'auto', padding: 18, paddingBottom: 30 }, artistName: { color: colors.text, fontSize: 43, lineHeight: 48, fontWeight: '900' },
-  verified: { flexDirection: 'row', alignItems: 'center', marginTop: 8 }, verifiedText: { color: colors.text, marginLeft: 6, fontSize: 12, fontWeight: '600' },
-  body: { marginTop: -10 }, listeners: { color: colors.muted, fontSize: 13, marginHorizontal: 17 },
-  actions: { flexDirection: 'row', alignItems: 'center', gap: 14, margin: 16 }, follow: { borderWidth: 1, borderColor: '#777', borderRadius: radius.pill, paddingHorizontal: 16, paddingVertical: 8 },
-  followText: { color: colors.text, fontSize: 13, fontWeight: '700' }, play: { width: 58, height: 58, borderRadius: 29, backgroundColor: colors.green, alignItems: 'center', justifyContent: 'center' },
-  tabs: { flexDirection: 'row', gap: 25, paddingHorizontal: 17, borderBottomWidth: 1, borderBottomColor: colors.divider },
-  tab: { color: colors.muted, paddingBottom: 11, fontWeight: '600' }, tabActive: { color: colors.text, paddingBottom: 10, borderBottomColor: colors.green, borderBottomWidth: 2, fontWeight: '800' },
-  sectionTitle: { color: colors.text, fontSize: 22, fontWeight: '900', margin: 17 },
+  root: { flex: 1, backgroundColor: colors.background }, safe: { flex: 1 }, content: { flexGrow: 1, paddingHorizontal: 20, paddingBottom: 30, gap: 14 },
+  topbar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginVertical: 8 },
+  back: { width: 44, height: 44 }, brand: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 7 }, brandText: { color: colors.muted, fontSize: 12, fontWeight: '600' },
+  iconButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }, disabled: { opacity: 0.5 },
+  photo: { width: '100%', maxWidth: 280, aspectRatio: 1, alignSelf: 'center', backgroundColor: colors.surface },
+  placeholder: { width: '100%', maxWidth: 280, aspectRatio: 1, alignSelf: 'center', backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center' },
+  title: { color: colors.text, fontSize: 32, lineHeight: 39, fontWeight: '900', marginTop: 8 },
+  kind: { color: colors.muted, fontSize: 13, lineHeight: 20 }, genres: { color: colors.text, fontSize: 13, lineHeight: 21 },
+  spotify: { minHeight: 50, borderRadius: radius.pill, backgroundColor: colors.green, flexDirection: 'row', gap: 10, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 16, marginVertical: 4 },
+  spotifyText: { color: colors.black, fontSize: 15, fontWeight: '800' },
+  albumHeading: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginTop: 14 },
+  sectionTitle: { color: colors.text, fontSize: 22, fontWeight: '800' }, loaded: { color: colors.muted, fontSize: 12 },
+  albumRow: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 84, paddingVertical: 8, borderRadius: radius.md },
+  albumCover: { width: 62, height: 62, backgroundColor: colors.surface },
+  albumPlaceholder: { width: 62, height: 62, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center' },
+  albumInfo: { flex: 1 }, albumTitle: { color: colors.text, fontSize: 15, lineHeight: 21, fontWeight: '700' },
+  albumMeta: { color: colors.muted, fontSize: 12, lineHeight: 19, marginTop: 3 }, albumArtist: { color: colors.muted, fontSize: 12, marginTop: 3 },
+  empty: { color: colors.muted, fontSize: 14, lineHeight: 22, textAlign: 'center', paddingVertical: 28 },
+  notice: { color: colors.muted, fontSize: 13, lineHeight: 20 }, pressed: { backgroundColor: colors.surface },
+  more: { alignSelf: 'center', minHeight: 46, borderRadius: radius.pill, borderWidth: 1, borderColor: colors.subtle, justifyContent: 'center', paddingHorizontal: 22, marginVertical: 12 },
+  moreText: { color: colors.text, fontSize: 13, fontWeight: '700' },
 });

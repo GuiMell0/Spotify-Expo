@@ -9,7 +9,7 @@ A tela /album/[id] agora carrega detalhes e faixas pela Spotify Web API para a c
 - Exibe título, capa, créditos dos artistas, tipo, total e data de lançamento quando fornecidos. A data preserva a precisão original: 2026, 2026-05 ou 2026-05-20.
 - Faixas exibem posição, disco quando houver mais de um, artista, duração, marca de conteúdo explícito e indisponibilidade quando informada.
 - Campos ausentes não recebem números ou datas fictícios. Capa ausente usa um espaço reservado.
-- Nome de artista com ID válido abre /artist/[id]. A página completa do artista e a discografia continuam na A11.
+- Nome de artista com ID válido abre /artist/[id]. A11 conecta os dados do artista e sua discografia ([guia](SPOTIFY-ARTISTAS.md)).
 - Uma faixa abre /player?trackId=ID com seus metadados e contexto do álbum. Voltar conserva as páginas já carregadas.
 - Ver no Spotify abre o álbum externamente; tocar em faixa ainda não inicia áudio dentro do aplicativo. A integração do player permanece para o Guilherme.
 - Conta conectada com ID malformado, conteúdo inexistente ou sem permissão recebe erro legível. Não troca para catálogo fictício.

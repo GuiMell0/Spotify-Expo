@@ -66,7 +66,7 @@ Callback e página de rota inexistente serão utilitários e não entram na cont
 
 ## Etapas da Ana — 15 commits
 
-Status: A01–A09 commitadas. A10 implementada e validada: álbuns e faixas reais por ID, paginação e navegação ao artista e à faixa; 159 testes unitários, lint e bundles Android/web aprovados. 57 cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Aguardando commit da Ana. A11–A15 pendentes. APK e login Android confirmados pela Ana; busca, Home e álbum novos aguardam conferência no aparelho. Reprodução permanece nas etapas do Guilherme.
+Status: A01–A10 commitadas. A11 implementada e validada: artistas e discografia real de álbuns e singles, paginação e navegação ao álbum; 180 testes unitários, lint e bundles Android/web aprovados. 73 cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Aguardando commit da Ana. A12–A15 pendentes. APK e login Android confirmados pela Ana; busca, Home, álbum e artista novos aguardam conferência no aparelho. Reprodução permanece nas etapas do Guilherme.
 
 | Etapa | Mensagem de commit | Entrega e critério de aceite |
 | --- | --- | --- |
