@@ -6,11 +6,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Chip from '../components/Chip';
 import MediaCard from '../components/MediaCard';
 import MiniPlayer from '../components/MiniPlayer';
+import LikedTracksShortcut from '../components/LikedTracksShortcut';
+import { useSession } from '../contexts/SessionContext';
 import { ASSETS, libraryItems } from '../data/media';
 import { colors } from '../theme';
 
 export default function LibraryScreen() {
   const router = useRouter();
+  const { isDemo } = useSession();
   const [filter, setFilter] = useState('Playlists');
   const { width } = useWindowDimensions();
   // Dois cards + margens internas do MediaCard dentro dos 14 px laterais.
@@ -26,6 +29,7 @@ export default function LibraryScreen() {
             <MaterialCommunityIcons name="magnify" size={27} color={colors.text} style={{ marginLeft: 'auto' }} />
             <MaterialCommunityIcons name="plus" size={30} color={colors.text} style={{ marginLeft: 17 }} />
           </View>
+          {!isDemo && <LikedTracksShortcut />}
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filters}>
             {['Playlists', 'Podcasts', 'Álbuns', 'Artistas'].map((item) => (
               <Chip key={item} label={item} selected={filter === item} onPress={() => setFilter(item)} />

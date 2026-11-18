@@ -2,6 +2,8 @@
 
 A Ana escolheu gerar o APK na nuvem. O projeto já inclui expo-dev-client, os schemes, o perfil development em eas.json e, desde A04, expo-auth-session e expo-crypto. A05 acrescenta expo-secure-store e seu plugin. Na A08, a Ana confirmou o APK atualizado instalado e o login Spotify funcionando no Android. Este guia continua disponível para novas instalações e para a dupla.
 
+Para instalar o APK independente, que a Ana escolheu depois da A12, veja [Instalar no celular](INSTALAR-NO-CELULAR.md). Esse perfil inclui o aplicativo e funciona sem Metro.
+
 ## 1. Preparar o Spotify e a configuração local
 
 Siga o [passo a passo do Spotify](SPOTIFY-SETUP.md). O .env local desta máquina já recebeu o Client ID informado pela Ana. O retorno Android foi confirmado no painel Spotify. Em outra máquina, preencha o próprio .env com o Client ID do projeto.

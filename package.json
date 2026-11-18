@@ -58,7 +58,8 @@
     "test:home": "node --test tests/spotify-home.test.mjs",
     "test:album": "node --test tests/spotify-album.test.mjs",
     "test:artist": "node --test tests/spotify-artist.test.mjs",
-    "test:storage": "node --test tests/local-data.test.mjs"
+    "test:storage": "node --test tests/local-data.test.mjs",
+    "test:likes": "node --test tests/liked-tracks.test.mjs"
   },
   "private": true
 }

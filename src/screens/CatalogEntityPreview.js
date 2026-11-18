@@ -6,6 +6,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSession } from '../contexts/SessionContext';
 import { useSearch } from '../contexts/SearchContext';
 import ApiFeedback from '../components/ApiFeedback';
+import LikeTrackButton from '../components/LikeTrackButton';
+import { useLocalData } from '../contexts/LocalDataContext';
 import BackButton from '../components/BackButton';
 import { colors, radius } from '../theme';
 
@@ -16,12 +18,13 @@ const icons = { album: 'album', artist: 'account-music', track: 'music-note', pl
 export default function CatalogEntityPreview({ type, id }) {
   const { catalog } = useSession();
   const { search } = useSearch();
+  const { state: localState } = useLocalData();
   const router = useRouter();
   const [attempt, setAttempt] = useState(0);
   const [loaded, setLoaded] = useState(null);
   const [openError, setOpenError] = useState(false);
   const identity = useMemo(() => ({ type, id, catalog, attempt, search }), [type, id, catalog, attempt, search]);
-  const cached = search.getEntity(type, id);
+  const cached = search.getEntity(type, id) ?? (type === 'track' ? localState.data?.likedTracks.find(item => item.track.id === id)?.track : null);
   useEffect(() => {
     if (cached) return undefined;
     const controller = new AbortController();
@@ -49,6 +52,7 @@ export default function CatalogEntityPreview({ type, id }) {
           {data.image ? <Image source={data.image} resizeMode="contain" style={styles.cover} /> : <View style={styles.placeholder}><MaterialCommunityIcons name={icons[type]} size={90} color={colors.muted} /></View>}
           <Text accessibilityRole="header" style={styles.title}>{data.title}</Text>
           <Text style={styles.subtitle}>{data.subtitle}</Text>
+          {type === 'track' && <LikeTrackButton track={data} showLabel />}
           {data.releaseDate && <Text style={styles.detail}>Lançamento: {data.releaseDate}</Text>}
           {data.duration && <Text style={styles.detail}>Duração: {data.duration}</Text>}
           {data.description && <Text style={styles.detail}>{data.description}</Text>}

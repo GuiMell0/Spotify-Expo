@@ -7,6 +7,7 @@ import { useSession } from '../contexts/SessionContext';
 import { useSearch } from '../contexts/SearchContext';
 import { SEARCH_FILTERS, SEARCH_GROUPS } from '../services/spotifySearch.mjs';
 import ApiFeedback from '../components/ApiFeedback';
+import LikeTrackButton from '../components/LikeTrackButton';
 import DemoSearchScreen from './DemoSearchScreen';
 import { colors, radius } from '../theme';
 
@@ -64,12 +65,12 @@ function SpotifySearchScreen() {
                 if (!result.items.length && !result.page.next) return null;
                 return <View key={group.key} style={styles.section}>
                   <Text accessibilityRole="header" style={styles.sectionTitle}>{group.label}</Text>
-                  {result.items.map(item => <Pressable key={item.type + ':' + item.id} accessibilityRole="button" accessibilityLabel={'Abrir ' + typeLabels[item.type] + ' ' + item.title}
+                  {result.items.map(item => <View key={item.type + ':' + item.id} style={styles.resultEntry}><Pressable accessibilityRole="button" accessibilityLabel={'Abrir ' + typeLabels[item.type] + ' ' + item.title}
                     onPress={() => { search.rememberEntity(item); router.push(item.href); }} style={({ pressed }) => [styles.resultRow, pressed && styles.pressed]}>
                     {item.image ? <Image source={item.image} resizeMode="contain" style={[styles.resultImage, item.type === 'artist' && styles.artistImage]} /> : <View style={[styles.placeholder, item.type === 'artist' && styles.artistImage]}><MaterialCommunityIcons name={icons[item.type]} size={28} color={colors.muted} /></View>}
                     <View style={styles.resultInfo}><Text numberOfLines={2} style={styles.resultTitle}>{item.title}</Text><Text numberOfLines={2} style={styles.resultSub}>{item.type === 'artist' || item.type === 'playlist' ? item.subtitle : typeLabels[item.type] + ' • ' + item.subtitle}{item.duration ? ' • ' + item.duration : ''}</Text></View>
                     <MaterialCommunityIcons name="chevron-right" size={24} color={colors.muted} />
-                  </Pressable>)}
+                  </Pressable>{item.type === 'track' && <LikeTrackButton track={item} />}</View>)}
                   <ApiFeedback loading={result.loadingMore} error={result.error} onRetry={() => search.loadMore(group.key)} retryLabel={'Tentar carregar mais ' + group.label.toLowerCase()} />
                   {!!result.page.next && !result.loadingMore && !result.error && <Pressable accessibilityRole="button" accessibilityLabel={'Carregar mais ' + group.label.toLowerCase()} onPress={() => search.loadMore(group.key)} style={styles.more}><Text style={styles.moreText}>Carregar mais {group.label.toLowerCase()}</Text></Pressable>}
                 </View>;
@@ -98,7 +99,8 @@ const styles = StyleSheet.create({
   suggestions: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 10, marginTop: 10 },
   suggestion: { backgroundColor: colors.surface, borderRadius: radius.pill, paddingHorizontal: 18, minHeight: 46, justifyContent: 'center' },
   results: { gap: 16 }, section: { gap: 10 }, sectionTitle: { color: colors.text, fontSize: 22, fontWeight: '800', marginTop: 10 },
-  resultRow: { flexDirection: 'row', alignItems: 'center', minHeight: 78, paddingVertical: 8, gap: 12, borderRadius: radius.md },
+  resultEntry: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  resultRow: { flex: 1, flexDirection: 'row', alignItems: 'center', minHeight: 78, paddingVertical: 8, gap: 12, borderRadius: radius.md },
   resultImage: { width: 58, height: 58, backgroundColor: colors.surface }, placeholder: { width: 58, height: 58, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center' },
   artistImage: { borderRadius: 29 }, resultInfo: { flex: 1 }, resultTitle: { color: colors.text, fontSize: 15, fontWeight: '700' },
   resultSub: { color: colors.muted, fontSize: 12, lineHeight: 18, marginTop: 4 }, pressed: { backgroundColor: colors.surface },

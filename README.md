@@ -2,7 +2,7 @@
 
 ## Evolução para a P2
 
-A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de Ana Carolina e 15 de Guilherme. O aplicativo já usa Expo Router, login Spotify e sessão segura. A08 conectou a busca; A09 conectou a Home; A10 conectou os álbuns e suas faixas; A11 conectou artistas e discografia; A12 adiciona a base de armazenamento local com AsyncStorage. As próximas entregas estão no roteiro.
+A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de Ana Carolina e 15 de Guilherme. O aplicativo já usa Expo Router, login Spotify e sessão segura. A08 conectou a busca; A09 conectou a Home; A10 conectou os álbuns e suas faixas; A11 conectou artistas e discografia; A12 adicionou a base de armazenamento local; A13 conecta curtidas persistentes e a tela de favoritas. As próximas entregas estão no roteiro.
 
 - [Roteiro completo, divisão dos commits e checklist da P2](docs/P2-ROTEIRO.md)
 - [Configuração da Spotify Web API](docs/SPOTIFY-SETUP.md)
@@ -13,6 +13,7 @@ A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de An
 - [Álbuns e faixas reais — A10](docs/SPOTIFY-ALBUNS.md)
 - [Artistas e discografia real — A11](docs/SPOTIFY-ARTISTAS.md)
 - [Armazenamento local e atualização do APK — A12](docs/ARMAZENAMENTO-LOCAL.md)
+- [Curtidas persistentes e teste no Android — A13](docs/MUSICAS-CURTIDAS.md)
 - [Geração e instalação do APK Android pelo EAS](docs/ANDROID-EAS.md)
 - [Roteiro de continuidade para Guilherme](docs/ROTEIRO-DUPLA.md)
 
@@ -22,7 +23,7 @@ A04 implementou o login Spotify com PKCE; A05 adiciona persistência segura no A
 
 Aplicativo mobile que reproduz visualmente partes da interface do Spotify utilizando React Native e Expo. O aplicativo foi desenvolvido para a disciplina de Aplicativos Híbridos.
 
-O projeto está evoluindo da interface da P1 para a P2. A conta usa OAuth com PKCE e sessão segura no Android. Home e busca consultam o Spotify. A rota de álbum carrega os detalhes e as faixas do ID solicitado, com paginação e acesso ao artista. A rota de artista carrega nome, imagem disponível e discografia com álbuns e singles. A12 prepara o armazenamento local por conta. A13–A15 conectam curtidas, histórico e biblioteca; o player permanece nas etapas do Guilherme.
+O projeto está evoluindo da interface da P1 para a P2. A conta usa OAuth com PKCE e sessão segura no Android. Home e busca consultam o Spotify. A rota de álbum carrega os detalhes e as faixas do ID solicitado, com paginação e acesso ao artista. A rota de artista carrega nome, imagem disponível e discografia com álbuns e singles. A base local por conta já salva curtidas na busca, no álbum e nos detalhes da faixa, com uma tela própria de favoritas. Histórico e integração completa da biblioteca continuam nas A14/A15; o player permanece nas etapas do Guilherme.
 
 Repositório: https://github.com/GuiMell0/Spotify-Expo
 
@@ -33,10 +34,11 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 - Login Spotify com PKCE, tratamento de falhas e demonstração explícita;
 - Sessão Android persistente no SecureStore, renovação compartilhada e logout;
 - Busca Spotify com filtros, paginação e recuperação de falhas;
+- Curtidas locais persistentes, corações sincronizados e tela de músicas curtidas;
 - Biblioteca com filtros visuais;
 - Páginas de playlist, álbum, artista e perfil;
 - Mini-player demonstrativo nas telas ainda não refatoradas; integração prevista para G12;
-- Player com estados visuais de reprodução e curtida;
+- Detalhes de faixa real com curtida e link Spotify; player demonstrativo nas telas ainda não refatoradas;
 - Layout responsivo e suporte a áreas seguras;
 
 ## Telas implementadas
@@ -47,10 +49,11 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 | Home | Temas Brasil, Rock e Indie com músicas, álbuns e artistas reais, cache e atualização. |
 | Busca | Pesquisa Spotify com filtros, paginação e resultados reais; demonstração local separada. |
 | Biblioteca | Filtros, ordenação e grade de playlists, álbuns e artistas. |
+| Músicas curtidas | Favoritas salvas por conta neste aparelho, remoção, estado vazio e abertura dos metadados da faixa. |
 | Playlist | Capa, informações, controles e lista de músicas. |
 | Álbum | Detalhes e faixas reais por ID, paginação, atualização e navegação ao artista e à faixa. |
 | Artista | Dados reais por ID, discografia paginada de álbuns e singles, atualização e acesso aos álbuns. |
-| Player | Capa, progresso e controles demonstrativos, com retorno à tela de origem. |
+| Player | Metadados de faixa real, curtida local e link Spotify; player da P1 nas telas ainda não refatoradas. |
 | Perfil | Dados do usuário e listagem de playlists. |
 
 ## Tecnologias utilizadas
@@ -303,13 +306,21 @@ A12 adiciona um módulo nativo: gere e instale outro APK de desenvolvimento ante
 
 Validação da A12: 210 testes unitários (30 novos), lint, compatibilidade das dependências e bundles Android/web aprovados. 81 cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. APK atualizado e persistência no Android pendentes.
 
+## Curtidas persistentes implementadas na A13
+
+Busca, álbum e detalhes da faixa possuem corações que salvam ou removem músicas na base local da conta. O estado só muda depois de confirmar a gravação. A Biblioteca oferece o atalho Músicas curtidas, com contador e acesso à nova rota /liked.
+
+A lista mostra as curtidas mais recentes primeiro e abre os metadados salvos da faixa. Remover, sair e entrar novamente mantém a alteração; outra conta recebe sua própria lista. O [guia das curtidas](docs/MUSICAS-CURTIDAS.md) contém a conferência no Android.
+
+Validação da A13: 226 testes unitários (16 novos), lint e bundles Android/web aprovados. 15 cenários específicos de navegador com Spotify simulado aprovados, sem exceções JavaScript. Fluxos anteriores também conferidos em regressão. Teste físico das curtidas pendente. Esta etapa adiciona a décima tela principal; as demais continuam no roteiro.
+
 ## Limitações atuais
 
 - APK e login Android confirmados pela Ana; busca, Home, álbum e artista novos aguardam conferência no aparelho;
-- Não há backend ou banco de dados;
+- Não há backend próprio; o catálogo vem do Spotify e os dados pessoais do aplicativo são salvos localmente;
 - O aplicativo não reproduz arquivos de áudio;
-- Curtidas e controles da P1 ainda são locais; filtros da busca já consultam a API;
-- A base local da A12 está integrada; curtidas e histórico serão conectados nas A13/A14. A sessão Android já possui armazenamento seguro na A05;
+- Curtidas de faixas reais persistem neste aparelho; controles demonstrativos da P1 permanecem nas telas ainda não refatoradas;
+- Curtidas locais estão conectadas; histórico será conectado na A14. A sessão Android já possui armazenamento seguro na A05;
 - O módulo nativo do AsyncStorage precisa ser incluído em um APK atualizado da A12;
 - Algumas imagens dependem de conexão com a internet;
 - Home, busca, álbuns e artistas usam dados reais. Conteúdo completo de playlists continua nas etapas do Guilherme;

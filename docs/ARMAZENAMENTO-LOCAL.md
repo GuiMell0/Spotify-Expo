@@ -2,7 +2,7 @@
 
 A12 instala @react-native-async-storage/async-storage 2.2.0, conforme a versão indicada pelo SDK 57 deste projeto, e integra a restauração dos dados locais à conta conectada.
 
-O armazenamento é uma base compartilhada para as próximas etapas: curtidas na A13, recentes na A14, biblioteca na A15 e funcionalidades locais da dupla. Essas telas e seus controles continuam nos respectivos commits.
+O armazenamento é uma base compartilhada. A13 conecta as curtidas e a tela de favoritas ([guia](MUSICAS-CURTIDAS.md)); recentes na A14, biblioteca na A15 e funcionalidades locais da dupla continuam nos respectivos commits.
 
 ## Dados e isolamento
 
@@ -85,6 +85,8 @@ Os testes não acessam sua conta Spotify. O bundle Android verifica a compilaç�
 
 ## Gerar e testar o APK da A12
 
+A Ana escolheu posteriormente o APK independente. Para essa opção, siga [Instalar no celular](INSTALAR-NO-CELULAR.md): o perfil preview inclui o JavaScript e dispensa o Metro. Os passos abaixo continuam sendo o fluxo de desenvolvimento.
+
 1. Na pasta do projeto, execute:
 
        npx eas-cli@latest build --platform android --profile development
@@ -99,7 +101,7 @@ Os testes não acessam sua conta Spotify. O bundle Android verifica a compilaç�
 6. Visite busca, álbum e artista; saia e entre novamente. A navegação deve continuar funcionando.
 7. Se aparecer que o aplicativo instalado precisa ser atualizado, confira se instalou o APK novo. O APK antigo não recebe o módulo por uma atualização do Metro.
 8. Se persistir uma mensagem, informe o texto e em qual passo ocorreu. Não desinstale nem limpe dados como tentativa inicial.
-9. A verificação visível de curtir, fechar e reabrir será feita na A13, quando o botão e a tela de favoritas estiverem conectados.
+9. A13 conecta os botões e a tela de favoritas. Siga o [teste de curtidas](MUSICAS-CURTIDAS.md) para curtir, fechar e reabrir. Um APK independente gerado antes da A13 precisará ser atualizado para exibir os recursos novos.
 
 Não é necessário modificar Client ID, redirect URI ou gerar outro app no Spotify. A nova compilação serve para incluir o módulo nativo do armazenamento.
 

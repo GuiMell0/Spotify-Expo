@@ -8,6 +8,7 @@ import { useSession } from '../contexts/SessionContext';
 import { useSearch } from '../contexts/SearchContext';
 import { albumTrackKey, createSpotifyAlbum } from '../services/spotifyAlbum.mjs';
 import ApiFeedback from '../components/ApiFeedback';
+import LikeTrackButton from '../components/LikeTrackButton';
 import BackButton from '../components/BackButton';
 import DemoAlbumScreen from './DemoAlbumScreen';
 import { colors, radius } from '../theme';
@@ -77,12 +78,12 @@ function SpotifyAlbumScreen() {
             {!!state.error && state.tracks.length > 0 && <Text style={styles.notice}>Não foi possível atualizar. As faixas já carregadas continuam disponíveis.</Text>}
             <View style={styles.trackHeading}><Text accessibilityRole="header" style={styles.sectionTitle}>Faixas</Text>{state.page && <Text style={styles.loaded}>{state.tracks.length} carregadas</Text>}</View>
             {state.status === 'ready' && !state.tracks.length && <Text style={styles.empty}>{state.page?.next ? 'Nenhuma faixa disponível nesta página. Você pode carregar a próxima.' : 'Nenhuma faixa disponível para este álbum.'}</Text>}
-            {state.tracks.map(track => <Pressable key={albumTrackKey(track)} accessibilityRole="button" accessibilityLabel={'Abrir faixa ' + track.title} onPress={() => openTrack(track)} style={({ pressed }) => [styles.trackRow, pressed && styles.pressed]}>
+            {state.tracks.map(track => <View key={albumTrackKey(track)} style={styles.trackEntry}><Pressable accessibilityRole="button" accessibilityLabel={'Abrir faixa ' + track.title} onPress={() => openTrack(track)} style={({ pressed }) => [styles.trackRow, pressed && styles.pressed]}>
               <View style={styles.position}>{track.trackNumber > 0 ? <Text style={styles.number}>{multipleDiscs && track.discNumber ? track.discNumber + '.' : ''}{track.trackNumber}</Text> : <MaterialCommunityIcons name="music-note-outline" size={19} color={colors.muted} />}</View>
               <View style={styles.trackInfo}><Text numberOfLines={2} style={styles.trackTitle}>{track.title}</Text><View style={styles.trackMeta}>{track.explicit && <Text accessibilityLabel="Conteúdo explícito" style={styles.explicit}>E</Text>}<Text numberOfLines={1} style={styles.trackArtist}>{track.artist}</Text></View>{track.isPlayable === false && <Text style={styles.restricted}>Indisponível nesta conta</Text>}</View>
               {track.duration && <Text style={styles.duration}>{track.duration}</Text>}
               <MaterialCommunityIcons name="chevron-right" size={20} color={colors.muted} />
-            </Pressable>)}
+            </Pressable><LikeTrackButton track={track} /></View>)}
             {state.skippedCount > 0 && <Text style={styles.notice}>Algumas faixas não foram fornecidas pelo Spotify.</Text>}
             <ApiFeedback loading={state.loadingMore} error={state.moreError} onRetry={controller.loadMore} retryLabel="Tentar carregar mais faixas" />
             {!!state.page?.next && !state.moreError && !state.loadingMore && !busy && <Pressable accessibilityRole="button" onPress={controller.loadMore} style={styles.more}><Text style={styles.moreText}>Carregar mais faixas</Text></Pressable>}
@@ -108,7 +109,8 @@ const styles = StyleSheet.create({
   spotifyText: { color: colors.black, fontSize: 15, fontWeight: '800' },
   trackHeading: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginTop: 14 },
   sectionTitle: { color: colors.text, fontSize: 22, fontWeight: '800' }, loaded: { color: colors.muted, fontSize: 12 },
-  trackRow: { flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 72, paddingVertical: 10, borderRadius: radius.md },
+  trackEntry: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  trackRow: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 72, paddingVertical: 10, borderRadius: radius.md },
   position: { width: 28, alignItems: 'center' }, number: { color: colors.muted, fontSize: 13 }, trackInfo: { flex: 1 },
   trackTitle: { color: colors.text, fontSize: 15, lineHeight: 21, fontWeight: '600' }, trackMeta: { flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 4 },
   trackArtist: { flex: 1, color: colors.muted, fontSize: 12 }, explicit: { color: colors.background, backgroundColor: colors.muted, paddingHorizontal: 4, borderRadius: 2, fontSize: 9, fontWeight: '700' },

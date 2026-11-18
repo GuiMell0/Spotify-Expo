@@ -40,7 +40,7 @@ Na migração, configurar main como expo-router/entry no package.json, adicionar
 
 ## Telas previstas
 
-As 9 telas da P1 já possuem rotas na A02; as demais continuam como metas. Os grupos entre parênteses organizam as abas sem compor o endereço público.
+As 9 telas da P1 já possuem rotas na A02; A13 acrescenta Músicas curtidas. As demais continuam como metas. Os grupos entre parênteses organizam as abas sem compor o endereço público.
 
 | Nº | Tela | Arquivo de rota previsto | Entrada navegável |
 | --- | --- | --- | --- |
@@ -66,7 +66,7 @@ Callback e página de rota inexistente serão utilitários e não entram na cont
 
 ## Etapas da Ana — 15 commits
 
-Status: A01–A11 commitadas. A12 implementada e validada: base AsyncStorage por conta, esquema versionado, hidratação, validação, filas e recuperação de falhas; 210 testes unitários, lint, compatibilidade e bundles Android/web aprovados. 81 cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Aguardando commit da Ana. A13–A15 pendentes. O APK anterior e o login Android foram confirmados pela Ana; é necessário gerar o APK atualizado com AsyncStorage. Busca, Home, álbum, artista e armazenamento no aparelho aguardam conferência. Reprodução permanece nas etapas do Guilherme.
+Status: A01–A12 commitadas. A13 implementada e validada: curtidas locais persistentes, corações sincronizados, atalho na biblioteca e tela /liked; 226 testes unitários, lint e bundles Android/web aprovados. 15 cenários específicos de navegador com Spotify simulado aprovados, sem exceções JavaScript; fluxos anteriores também conferidos em regressão. Aguardando commit da Ana. A14–A15 pendentes. São 10 telas principais nesta etapa. Instalação do APK atualizado e conferência das curtidas no Android permanecem pendentes. A compilação independente solicitada antes da A13 contém o código da A12. Reprodução permanece nas etapas do Guilherme.
 
 | Etapa | Mensagem de commit | Entrega e critério de aceite |
 | --- | --- | --- |
