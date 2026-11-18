@@ -1,5 +1,7 @@
 # Instalar o APK independente no Android
 
+Decisão da Ana em 18/11/2026: gerar e testar o APK somente quando o projeto estiver pronto. Os comandos de compilação e a conferência no celular descritos neste guia ficam para a validação final.
+
 Esta é a opção escolhida pela Ana depois da A12: instalar e abrir no celular sem iniciar o Metro no computador.
 
 ## Quando o APK estiver disponível

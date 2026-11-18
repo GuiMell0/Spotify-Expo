@@ -1,8 +1,10 @@
 # Armazenamento local — A12
 
+Decisão da Ana em 18/11/2026: gerar e testar o APK somente quando o projeto estiver pronto. Os comandos de compilação e a conferência no celular descritos neste guia ficam para a validação final.
+
 A12 instala @react-native-async-storage/async-storage 2.2.0, conforme a versão indicada pelo SDK 57 deste projeto, e integra a restauração dos dados locais à conta conectada.
 
-O armazenamento é uma base compartilhada. A13 conecta as curtidas e a tela de favoritas ([guia](MUSICAS-CURTIDAS.md)); recentes na A14, biblioteca na A15 e funcionalidades locais da dupla continuam nos respectivos commits.
+O armazenamento é uma base compartilhada. A13 conecta as curtidas e a tela de favoritas ([guia](MUSICAS-CURTIDAS.md)); A14 conecta recentes ([guia](BUSCAS-RECENTES.md)); biblioteca na A15 e funcionalidades locais da dupla continuam nos respectivos commits.
 
 ## Dados e isolamento
 

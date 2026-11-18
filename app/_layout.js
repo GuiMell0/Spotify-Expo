@@ -31,6 +31,7 @@ function RootNavigator() {
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="album/[id]" />
           <Stack.Screen name="liked" />
+          <Stack.Screen name="recent-searches" />
           <Stack.Screen name="artist/[id]" />
           <Stack.Screen name="playlist/[id]" />
           <Stack.Screen name="profile/index" />

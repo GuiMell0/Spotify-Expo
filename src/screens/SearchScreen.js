@@ -8,6 +8,9 @@ import { useSearch } from '../contexts/SearchContext';
 import { SEARCH_FILTERS, SEARCH_GROUPS } from '../services/spotifySearch.mjs';
 import ApiFeedback from '../components/ApiFeedback';
 import LikeTrackButton from '../components/LikeTrackButton';
+import RecentSearchesShortcut from '../components/RecentSearchesShortcut';
+import { useRecentSearches } from '../hooks/useRecentSearches';
+import { MAX_RECENT_TERM_LENGTH } from '../services/recentSearches.mjs';
 import DemoSearchScreen from './DemoSearchScreen';
 import { colors, radius } from '../theme';
 
@@ -23,6 +26,18 @@ export default function SearchScreen() {
 function SpotifySearchScreen() {
   const router = useRouter();
   const { search, state } = useSearch();
+  const { rememberIfReady } = useRecentSearches();
+  function submitSearch() {
+    const term = search.getSnapshot().query;
+    if (!term.trim()) return;
+    rememberIfReady(term);
+    search.retry();
+  }
+  function openResult(item) {
+    rememberIfReady(search.getSnapshot().query);
+    search.rememberEntity(item);
+    router.push(item.href);
+  }
   useFocusEffect(useCallback(() => {
     search.setActive(true);
     return () => search.setActive(false);
@@ -36,12 +51,13 @@ function SpotifySearchScreen() {
         <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
           <View style={styles.header}><Text accessibilityRole="header" style={styles.title}>Buscar</Text><MaterialCommunityIcons name="spotify" size={30} color={colors.green} /></View>
           <View style={styles.searchBox}>
-            <MaterialCommunityIcons name="magnify" size={25} color={colors.black} />
+            <Pressable accessibilityRole="button" accessibilityLabel="Confirmar busca" accessibilityState={{ disabled: !state.query.trim() }} disabled={!state.query.trim()} onPress={submitSearch} style={styles.confirmSearch}><MaterialCommunityIcons name="magnify" size={25} color={colors.black} /></Pressable>
             <TextInput accessibilityLabel="Pesquisar no Spotify" value={state.query} onChangeText={search.setQuery}
               placeholder="O que você quer ouvir?" placeholderTextColor="#555" style={styles.input}
-              returnKeyType="search" autoCapitalize="none" autoCorrect={false} onSubmitEditing={search.retry} />
+              returnKeyType="search" autoCapitalize="none" autoCorrect={false} maxLength={MAX_RECENT_TERM_LENGTH} onSubmitEditing={submitSearch} />
             {!!state.query && <Pressable accessibilityRole="button" accessibilityLabel="Limpar busca" onPress={() => search.setQuery('')} style={styles.clear}><MaterialCommunityIcons name="close-circle" size={22} color="#555" /></Pressable>}
           </View>
+          <RecentSearchesShortcut />
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filters}>
             {SEARCH_FILTERS.map(filter => <Pressable key={filter.value} accessibilityRole="button" accessibilityLabel={'Filtrar ' + filter.label} accessibilityState={{ selected: state.filter === filter.value }}
               onPress={() => search.setFilter(filter.value)} style={[styles.filter, state.filter === filter.value && styles.selected]}>
@@ -53,7 +69,7 @@ function SpotifySearchScreen() {
               <MaterialCommunityIcons name="magnify" size={58} color={colors.green} />
               <Text style={styles.introTitle}>Encontre sua próxima música</Text>
               <Text style={styles.description}>Pesquise músicas, artistas, álbuns e playlists no Spotify.</Text>
-              <View style={styles.suggestions}>{suggestions.map(term => <Pressable key={term} accessibilityRole="button" onPress={() => search.setQuery(term)} style={styles.suggestion}><Text style={styles.filterText}>{term}</Text></Pressable>)}</View>
+              <View style={styles.suggestions}>{suggestions.map(term => <Pressable key={term} accessibilityRole="button" onPress={() => { search.setQuery(term); rememberIfReady(term); }} style={styles.suggestion}><Text style={styles.filterText}>{term}</Text></Pressable>)}</View>
             </View>
           ) : (
             <View style={styles.results}>
@@ -66,7 +82,7 @@ function SpotifySearchScreen() {
                 return <View key={group.key} style={styles.section}>
                   <Text accessibilityRole="header" style={styles.sectionTitle}>{group.label}</Text>
                   {result.items.map(item => <View key={item.type + ':' + item.id} style={styles.resultEntry}><Pressable accessibilityRole="button" accessibilityLabel={'Abrir ' + typeLabels[item.type] + ' ' + item.title}
-                    onPress={() => { search.rememberEntity(item); router.push(item.href); }} style={({ pressed }) => [styles.resultRow, pressed && styles.pressed]}>
+                    onPress={() => openResult(item)} style={({ pressed }) => [styles.resultRow, pressed && styles.pressed]}>
                     {item.image ? <Image source={item.image} resizeMode="contain" style={[styles.resultImage, item.type === 'artist' && styles.artistImage]} /> : <View style={[styles.placeholder, item.type === 'artist' && styles.artistImage]}><MaterialCommunityIcons name={icons[item.type]} size={28} color={colors.muted} /></View>}
                     <View style={styles.resultInfo}><Text numberOfLines={2} style={styles.resultTitle}>{item.title}</Text><Text numberOfLines={2} style={styles.resultSub}>{item.type === 'artist' || item.type === 'playlist' ? item.subtitle : typeLabels[item.type] + ' • ' + item.subtitle}{item.duration ? ' • ' + item.duration : ''}</Text></View>
                     <MaterialCommunityIcons name="chevron-right" size={24} color={colors.muted} />
@@ -90,6 +106,7 @@ const styles = StyleSheet.create({
   title: { color: colors.text, fontSize: 29, fontWeight: '900' },
   searchBox: { minHeight: 54, borderRadius: radius.md, backgroundColor: colors.text, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12 },
   input: { flex: 1, minHeight: 54, color: colors.black, fontSize: 16, fontWeight: '600', marginLeft: 8 },
+  confirmSearch: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   clear: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   filters: { flexDirection: 'row', gap: 8, paddingVertical: 18 },
   filter: { minHeight: 44, borderRadius: radius.pill, paddingHorizontal: 16, backgroundColor: colors.surface, justifyContent: 'center' },

@@ -10,6 +10,7 @@ Planejamento iniciado em 17/11/2026 após leitura do README, código e imagem do
 - Previsão final: 59 commits (29 da Ana e 30 do Guilherme). Mesmo desconsiderando o merge, supera o mínimo de 40.
 - Branch atual: main. A mesma branch pode ser utilizada, trabalhando em sequência.
 - A cada etapa: implementar somente seu escopo, verificar, entregar mensagem e comandos de commit e parar até a confirmação.
+- Decisão da Ana em 18/11/2026: gerar e testar o APK apenas na validação final do projeto. Manter testes unitários, navegador simulado e bundles locais durante os commits; não considerar o teste físico aprovado antes da conferência real.
 - Os integrantes fazem seus próprios commits e pushes, com suas identidades Git. Não reescrever o histórico da P1.
 - Os títulos abaixo são propostas; se o escopo mudar, atualizar a mensagem para refletir a alteração real.
 - Não criar commits vazios nem dividir uma alteração apenas para aumentar a contagem.
@@ -40,7 +41,7 @@ Na migração, configurar main como expo-router/entry no package.json, adicionar
 
 ## Telas previstas
 
-As 9 telas da P1 já possuem rotas na A02; A13 acrescenta Músicas curtidas. As demais continuam como metas. Os grupos entre parênteses organizam as abas sem compor o endereço público.
+As 9 telas da P1 já possuem rotas na A02; A13 acrescenta Músicas curtidas e A14 acrescenta Buscas recentes. As demais continuam como metas. Os grupos entre parênteses organizam as abas sem compor o endereço público.
 
 | Nº | Tela | Arquivo de rota previsto | Entrada navegável |
 | --- | --- | --- | --- |
@@ -66,7 +67,7 @@ Callback e página de rota inexistente serão utilitários e não entram na cont
 
 ## Etapas da Ana — 15 commits
 
-Status: A01–A12 commitadas. A13 implementada e validada: curtidas locais persistentes, corações sincronizados, atalho na biblioteca e tela /liked; 226 testes unitários, lint e bundles Android/web aprovados. 15 cenários específicos de navegador com Spotify simulado aprovados, sem exceções JavaScript; fluxos anteriores também conferidos em regressão. Aguardando commit da Ana. A14–A15 pendentes. São 10 telas principais nesta etapa. Instalação do APK atualizado e conferência das curtidas no Android permanecem pendentes. A compilação independente solicitada antes da A13 contém o código da A12. Reprodução permanece nas etapas do Guilherme.
+Status: A01–A13 commitadas. A14 implementada e validada: histórico local com limite de 20 termos, deduplicação, reutilização, remoção e tela /recent-searches; 244 testes unitários, lint e bundles Android/web aprovados. 35 cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Aguardando commit da Ana. A15 pendente. São 11 telas principais. Por preferência da Ana, gerar e testar o APK apenas quando o projeto estiver pronto; a verificação física permanece pendente. Reprodução continua nas etapas do Guilherme.
 
 | Etapa | Mensagem de commit | Entrega e critério de aceite |
 | --- | --- | --- |

@@ -1,5 +1,7 @@
 # Android com EAS — preparação A03 e sessão A04/A05
 
+Decisão da Ana em 18/11/2026: gerar e testar o APK somente quando o projeto estiver pronto. Os comandos de compilação e a conferência no celular descritos neste guia ficam para a validação final.
+
 A Ana escolheu gerar o APK na nuvem. O projeto já inclui expo-dev-client, os schemes, o perfil development em eas.json e, desde A04, expo-auth-session e expo-crypto. A05 acrescenta expo-secure-store e seu plugin. Na A08, a Ana confirmou o APK atualizado instalado e o login Spotify funcionando no Android. Este guia continua disponível para novas instalações e para a dupla.
 
 Para instalar o APK independente, que a Ana escolheu depois da A12, veja [Instalar no celular](INSTALAR-NO-CELULAR.md). Esse perfil inclui o aplicativo e funciona sem Metro.
