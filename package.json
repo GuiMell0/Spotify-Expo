@@ -51,7 +51,8 @@
     "test:config": "node --test tests/spotify-config.test.mjs",
     "test:auth": "node --test tests/spotify-auth.test.mjs",
     "test:session": "node --test tests/session-manager.test.mjs tests/spotify-refresh.test.mjs",
-    "test:api": "node --test tests/spotify-api.test.mjs"
+    "test:api": "node --test tests/spotify-api.test.mjs",
+    "test:catalog": "node --test tests/spotify-catalog.test.mjs"
   },
   "private": true
 }

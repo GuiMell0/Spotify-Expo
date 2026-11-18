@@ -16,7 +16,7 @@ No modo de conta, consultar com:
       signal: controller.signal,
     });
 
-O exemplo mostra o contrato da camada HTTP. A disponibilidade e os limites de cada endpoint serão validados na A07; a busca da interface ainda é demonstrativa na A06.
+O exemplo mostra o contrato da camada HTTP. A07 adicionou serviços e normalização em catalog; consulte [o contrato do catálogo](SPOTIFY-CATALOGO.md). As telas continuam demonstrativas até suas etapas de integração.
 
 - api é estável durante a vida do provedor. O token é obtido no momento da chamada.
 - O cliente implementa GET. Escrita no Spotify não faz parte desta etapa.

@@ -5,6 +5,7 @@ import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
 import { getSpotifyConfig } from '../config/spotify.mjs';
 import { authErrorMessage, completeSpotifyLogin, refreshSpotifySession, getLoginBlocker, SPOTIFY_DISCOVERY, SPOTIFY_SCOPES, SpotifyAuthError } from '../services/spotifyAuth.mjs';
+import { createSpotifyCatalog } from '../services/spotifyCatalog.mjs';
 import { createSpotifyApiClient } from '../services/spotifyApi.mjs';
 import { createSessionManager } from '../services/sessionManager.mjs';
 import { createSessionStorage } from '../storage/sessionStorage';
@@ -79,6 +80,8 @@ export function SessionProvider({ children }) {
     getSessionVersion: manager.getSessionVersion,
     onUnauthorized: invalidateApiSession,
   }), [manager, invalidateApiSession]);
+
+  const catalog = useMemo(() => createSpotifyCatalog(api, { getSessionVersion: manager.getSessionVersion }), [api, manager]);
 
   const reportSessionError = useCallback(error => {
     if (!alive.current || error.code === 'cancelled') return;
@@ -270,7 +273,7 @@ export function SessionProvider({ children }) {
   }, []);
 
   const value = {
-    session, api, isDemo, status, message, blocker, isBrowserOpen,
+    session, api, catalog, isDemo, status, message, blocker, isBrowserOpen,
     isRestoring, isEndingSession, logoutBlocked, isRefreshing, canRetryRestore,
     canAccess: Boolean(session) || isDemo,
     isBusy: ['authenticating', 'exchanging'].includes(status),

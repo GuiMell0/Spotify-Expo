@@ -7,6 +7,7 @@ A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de An
 - [Roteiro completo, divisão dos commits e checklist da P2](docs/P2-ROTEIRO.md)
 - [Configuração da Spotify Web API](docs/SPOTIFY-SETUP.md)
 - [Cliente HTTP e tratamento de erros — A06](docs/SPOTIFY-API.md)
+- [Serviços e modelos do catálogo — A07](docs/SPOTIFY-CATALOGO.md)
 - [Geração e instalação do APK Android pelo EAS](docs/ANDROID-EAS.md)
 - [Roteiro de continuidade para Guilherme](docs/ROTEIRO-DUPLA.md)
 
@@ -240,9 +241,19 @@ A reprodução permanece nas etapas do Guilherme, conforme confirmado pela Ana. 
 
 A consulta /me do login já usa o cliente centralizado. Ele obtém o token da sessão, codifica parâmetros, limita a espera, renova e repete uma vez após 401 e distingue permissões, conteúdo indisponível, limite e cota. Respostas antigas são descartadas após sair ou trocar de conta.
 
-A tela de login reutiliza ApiFeedback para mensagens e recuperação. O catálogo e a busca continuam demonstrativos até A07–A11. O contrato para as próximas telas e os comandos de validação estão no [guia do cliente API](docs/SPOTIFY-API.md).
+A tela de login reutiliza ApiFeedback para mensagens e recuperação. O catálogo e a busca nas telas continuam demonstrativos até A08–A11. O contrato para as próximas telas e os comandos de validação estão no [guia do cliente API](docs/SPOTIFY-API.md).
 
 Validação da A06: 78 testes unitários aprovados (25 do cliente API e 53 anteriores), lint aprovado, bundles Android/Hermes e web gerados e 18 cenários Edge com Spotify simulado aprovados, sem exceções JavaScript. O teste no Android com a conta real continua pendente.
+
+## Serviços de catálogo implementados na A07
+
+O contexto da sessão oferece catalog para consultar artistas, discografia, álbuns, faixas, playlists e busca. Os serviços usam o cliente da A06, normalizam campos opcionais e oferecem paginação independente, sem baixar todo o catálogo automaticamente.
+
+Os modelos preservam IDs Spotify, fornecem links e representam dados ausentes com null. Conteúdo não fornecido de uma playlist é distinguido de uma playlist vazia; respostas e cursores antigos são descartados após trocar de conta. Contrato e exemplos no [guia do catálogo](docs/SPOTIFY-CATALOGO.md).
+
+As telas continuam demonstrativas nesta etapa. A08–A11 conectarão busca, Home, álbuns e artistas; playlists remotas ficam para G05/G06. Acesso com a conta real continua pendente.
+
+Validação da A07: 107 testes unitários aprovados (29 novos e 78 anteriores), lint aprovado, bundles Android/Hermes e web gerados e 18 cenários Edge com Spotify simulado aprovados, sem exceções JavaScript. O acesso ao catálogo com a conta real ainda precisa ser validado ao conectar as telas.
 
 ## Limitações atuais
 
@@ -252,7 +263,7 @@ Validação da A06: 78 testes unitários aprovados (25 do cliente API e 53 anter
 - Curtidas, filtros e controles são estados visuais locais;
 - Curtidas e histórico ainda não persistem; a sessão Android já possui armazenamento seguro na A05;
 - Algumas imagens dependem de conexão com a internet;
-- O catálogo ainda usa dados da P1; a API já é utilizada na autenticação e consulta de /me; as consultas de catálogo virão nas etapas A07–A11.
+- As telas ainda usam dados da P1; a API já é utilizada na autenticação e consulta de /me. Os serviços de catálogo estão prontos na A07; a conexão das telas será feita em A08–A11 e G05/G06.
 
 ## Integrantes
 

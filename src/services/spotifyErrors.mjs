@@ -14,6 +14,7 @@ const messages = {
   rate_limited: 'O Spotify limitou as solicitações. Aguarde antes de tentar novamente.',
   quota_exceeded: 'A cota de acesso ao Spotify foi esgotada. Tente mais tarde e confira o painel do aplicativo.',
   bad_request: 'Não foi possível realizar esta consulta. Confira os dados informados.',
+  invalid_id: 'O identificador deste conteúdo Spotify não é válido.',
   invalid_url: 'O endereço solicitado não é válido para a API Spotify.',
   invalid_response: 'O Spotify retornou uma resposta inválida. Tente novamente.',
   server: 'O Spotify está indisponível no momento. Tente novamente mais tarde.',
