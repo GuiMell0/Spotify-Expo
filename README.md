@@ -2,13 +2,14 @@
 
 ## Evolução para a P2
 
-A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de Ana Carolina e 15 de Guilherme. A01 entregou o planejamento. A02 migrou as 9 telas para Expo Router; o catálogo e o player continuam demonstrativos. A04 adicionou login Spotify.
+A P2 está em desenvolvimento gradual, com 30 novos commits planejados: 15 de Ana Carolina e 15 de Guilherme. O aplicativo já usa Expo Router, login Spotify e sessão segura. A08 conectou a busca; A09 conecta a Home ao catálogo real. As próximas entregas estão no roteiro.
 
 - [Roteiro completo, divisão dos commits e checklist da P2](docs/P2-ROTEIRO.md)
 - [Configuração da Spotify Web API](docs/SPOTIFY-SETUP.md)
 - [Cliente HTTP e tratamento de erros — A06](docs/SPOTIFY-API.md)
 - [Serviços e modelos do catálogo — A07](docs/SPOTIFY-CATALOGO.md)
 - [Busca real e teste no Android — A08](docs/SPOTIFY-BUSCA.md)
+- [Home real e teste no Android — A09](docs/SPOTIFY-INICIO.md)
 - [Geração e instalação do APK Android pelo EAS](docs/ANDROID-EAS.md)
 - [Roteiro de continuidade para Guilherme](docs/ROTEIRO-DUPLA.md)
 
@@ -18,7 +19,7 @@ A04 implementou o login Spotify com PKCE; A05 adiciona persistência segura no A
 
 Aplicativo mobile que reproduz visualmente partes da interface do Spotify utilizando React Native e Expo. O aplicativo foi desenvolvido para a disciplina de Aplicativos Híbridos.
 
-O projeto está evoluindo da interface da P1 para a P2. A04 implementa autenticação Spotify por PKCE e confirmação da conta em /me. Catálogo, player e conteúdo do perfil ainda usam dados demonstrativos. A05 salva a sessão Android com SecureStore e renova tokens. Catálogo real e dados locais com AsyncStorage continuam nas próximas etapas.
+O projeto está evoluindo da interface da P1 para a P2. A conta usa OAuth com PKCE e sessão segura no Android. Home e busca consultam o Spotify e abrem metadados reais nas rotas do catálogo. Detalhes completos, dados locais com AsyncStorage e player continuam nas etapas seguintes.
 
 Repositório: https://github.com/GuiMell0/Spotify-Expo
 
@@ -31,7 +32,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 - Busca Spotify com filtros, paginação e recuperação de falhas;
 - Biblioteca com filtros visuais;
 - Páginas de playlist, álbum, artista e perfil;
-- Mini-player disponível nas principais telas;
+- Mini-player demonstrativo nas telas ainda não refatoradas; integração prevista para G12;
 - Player com estados visuais de reprodução e curtida;
 - Layout responsivo e suporte a áreas seguras;
 
@@ -40,7 +41,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 | Tela | Descrição |
 | --- | --- |
 | Login | Entrada Spotify por PKCE, cancelamento, mensagens de erro e acesso explícito à demonstração. |
-| Home | Atalhos, filtros, playlists e seções horizontais de conteúdo. |
+| Home | Temas Brasil, Rock e Indie com músicas, álbuns e artistas reais, cache e atualização. |
 | Busca | Pesquisa Spotify com filtros, paginação e resultados reais; demonstração local separada. |
 | Biblioteca | Filtros, ordenação e grade de playlists, álbuns e artistas. |
 | Playlist | Capa, informações, controles e lista de músicas. |
@@ -264,15 +265,23 @@ O APK e o login Android foram confirmados pela Ana nesta etapa. A08 não adicion
 
 Validação da A08: 124 testes unitários (17 novos), lint e bundles Android/web aprovados; 31 cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Busca no Android aguardando conferência da Ana.
 
+## Home real implementada na A09
+
+A Home autenticada carrega músicas, álbuns e artistas reais para os temas Brasil, Rock e Indie. Uma consulta por tema alimenta as seções e os atalhos. A saudação usa a conta conectada, e o catálogo da P1 permanece apenas no modo de demonstração.
+
+O cache em memória é separado por tema e conta. Atualização manual, gesto de atualizar, estado vazio e recuperação de falhas estão implementados. Ver mais abre a busca com o tema e tipo corretos. O [guia da Home](docs/SPOTIFY-INICIO.md) contém os passos para o Android já instalado.
+
+Validação da A09: 140 testes unitários (16 novos), lint e bundles Android/web aprovados; 43 cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Home no Android aguardando conferência da Ana.
+
 ## Limitações atuais
 
-- APK e login Android confirmados pela Ana; busca da A08 aguardando conferência no aparelho;
+- APK e login Android confirmados pela Ana; busca e Home novas aguardam conferência no aparelho;
 - Não há backend ou banco de dados;
 - O aplicativo não reproduz arquivos de áudio;
 - Curtidas e controles da P1 ainda são locais; filtros da busca já consultam a API;
 - Curtidas e histórico ainda não persistem; a sessão Android já possui armazenamento seguro na A05;
 - Algumas imagens dependem de conexão com a internet;
-- Busca e visualizações básicas de resultados usam dados reais. Home, detalhes completos de álbum/artista e conteúdo de playlists continuam nas próximas etapas;
+- Home, busca e visualizações básicas usam dados reais. Detalhes completos de álbum/artista e conteúdo de playlists continuam nas próximas etapas;
 
 ## Integrantes
 

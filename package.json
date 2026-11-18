@@ -53,7 +53,8 @@
     "test:session": "node --test tests/session-manager.test.mjs tests/spotify-refresh.test.mjs",
     "test:api": "node --test tests/spotify-api.test.mjs",
     "test:catalog": "node --test tests/spotify-catalog.test.mjs",
-    "test:search": "node --test tests/spotify-search.test.mjs"
+    "test:search": "node --test tests/spotify-search.test.mjs",
+    "test:home": "node --test tests/spotify-home.test.mjs"
   },
   "private": true
 }

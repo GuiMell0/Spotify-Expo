@@ -2,7 +2,7 @@
 
 A07 adiciona uma camada de consultas à Spotify Web API e converte as respostas para os modelos usados nas próximas telas. Ela usa o cliente da A06, sem Client Secret ou dados de demonstração. O objeto catalog está disponível em useSession().
 
-A08 conectou a busca e visualizações básicas dos resultados reais. A09 conectará a Home; A10 completará álbuns e faixas; A11, artistas e discografia. A exibição de playlists remotas fica para G05/G06.
+A08 conectou a busca e visualizações básicas dos resultados reais. A09 conectou a Home a temas e resultados reais; A10 completará álbuns e faixas; A11, artistas e discografia. A exibição de playlists remotas fica para G05/G06.
 
 ## Métodos disponíveis
 

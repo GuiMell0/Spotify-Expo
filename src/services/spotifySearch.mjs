@@ -16,6 +16,7 @@ const unique = items => [...new Map(items.map(item => [item.type + ':' + item.id
 export function createSpotifySearch(catalog, { debounceMs = 350, scope = 'account' } = {}) {
   let state = { scope, query: '', filter: 'all', status: 'idle', groups: {}, error: null };
   let active = false;
+  let preview = null;
   let generation = 0;
   let timer;
   const listeners = new Set();
@@ -99,10 +100,11 @@ export function createSpotifySearch(catalog, { debounceMs = 350, scope = 'accoun
   }
 
   function getEntity(type, id) {
+    if (preview?.type === type && preview.id === id) return preview;
     const items = Object.values(state.groups).flatMap(group => group.items);
     const direct = items.find(item => item.type === type && item.id === id);
     if (direct) return direct;
-    for (const item of items) {
+    for (const item of [...items, ...(preview ? [preview] : [])]) {
       if (type === 'album' && item.album?.id === id) return item.album;
       if (type === 'artist') {
         const artist = item.artists?.find(value => value.id === id);
@@ -116,6 +118,7 @@ export function createSpotifySearch(catalog, { debounceMs = 350, scope = 'accoun
     getSnapshot: () => state,
     subscribe: listener => { listeners.add(listener); return () => listeners.delete(listener); },
     setQuery, setFilter, setActive, loadMore, getEntity,
+    rememberEntity: item => { preview = item; },
     retry: () => schedule(0),
     suspend: () => setActive(false),
   };

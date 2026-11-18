@@ -65,7 +65,7 @@ function SpotifySearchScreen() {
                 return <View key={group.key} style={styles.section}>
                   <Text accessibilityRole="header" style={styles.sectionTitle}>{group.label}</Text>
                   {result.items.map(item => <Pressable key={item.type + ':' + item.id} accessibilityRole="button" accessibilityLabel={'Abrir ' + typeLabels[item.type] + ' ' + item.title}
-                    onPress={() => router.push(item.href)} style={({ pressed }) => [styles.resultRow, pressed && styles.pressed]}>
+                    onPress={() => { search.rememberEntity(item); router.push(item.href); }} style={({ pressed }) => [styles.resultRow, pressed && styles.pressed]}>
                     {item.image ? <Image source={item.image} resizeMode="contain" style={[styles.resultImage, item.type === 'artist' && styles.artistImage]} /> : <View style={[styles.placeholder, item.type === 'artist' && styles.artistImage]}><MaterialCommunityIcons name={icons[item.type]} size={28} color={colors.muted} /></View>}
                     <View style={styles.resultInfo}><Text numberOfLines={2} style={styles.resultTitle}>{item.title}</Text><Text numberOfLines={2} style={styles.resultSub}>{item.type === 'artist' || item.type === 'playlist' ? item.subtitle : typeLabels[item.type] + ' • ' + item.subtitle}{item.duration ? ' • ' + item.duration : ''}</Text></View>
                     <MaterialCommunityIcons name="chevron-right" size={24} color={colors.muted} />

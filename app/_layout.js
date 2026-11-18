@@ -1,5 +1,6 @@
 import React from 'react';
 import { DarkTheme, Stack, ThemeProvider } from 'expo-router';
+import { HomeProvider } from '../src/contexts/HomeContext';
 import { SearchProvider } from '../src/contexts/SearchContext';
 import SessionLoadingScreen from '../src/screens/SessionLoadingScreen';
 import { StatusBar } from 'expo-status-bar';
@@ -36,5 +37,5 @@ function RootNavigator() {
 }
 
 export default function RootLayout() {
-  return <SessionProvider><SearchProvider><RootNavigator /></SearchProvider></SessionProvider>;
+  return <SessionProvider><SearchProvider><HomeProvider><RootNavigator /></HomeProvider></SearchProvider></SessionProvider>;
 }
