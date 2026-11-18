@@ -78,10 +78,10 @@ Se optar por compilar neste computador depois, configure Android Studio, SDK And
 
 ## Mensagem para retomar no chat
 
-    Fiz o commit A09.
+    Fiz o commit A10.
     Login real no APK testado: [sim/não; informar o erro se houver]
     Projeto vinculado à conta Expo: [sim/não]
     APK gerado/instalado: [sim/não; pode aguardar as bibliotecas nativas]
-    Continue somente a A10 e pare antes do próximo commit.
+    Continue somente a A11 e pare antes do próximo commit.
 
 Se algum comando falhar, informe o comando e a mensagem completa, sem credenciais de conta ou tokens.
