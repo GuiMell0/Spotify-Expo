@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import { useSession } from '../contexts/SessionContext';
 import { useSearch } from '../contexts/SearchContext';
 import ApiFeedback from '../components/ApiFeedback';
@@ -45,7 +45,7 @@ export default function CatalogEntityPreview({ type, id }) {
   }
   return (
     <SafeAreaView style={styles.root}>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView keyboardDismissMode="on-drag" contentContainerStyle={styles.content}>
         <BackButton style={styles.back} />
         <ApiFeedback loading={!data && !current?.error} error={current?.error} onRetry={() => setAttempt(value => value + 1)} />
         {!!data && <>

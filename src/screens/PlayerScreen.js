@@ -4,7 +4,7 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, View, Linking } from 'r
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import { useSession } from '../contexts/SessionContext';
 import { useSearch } from '../contexts/SearchContext';
 import { useLocalData } from '../contexts/LocalDataContext';
@@ -40,7 +40,7 @@ function RealTrackPlayer(){
    try{await openSpotifyTrack(track,url=>Linking.openURL(url));}catch{setOpenFailure(owner);}finally{setOpening(current=>current===owner?null:current);}
  }
  const artists=[...new Map((track?.artists??[]).filter(artist=>artist.id).map(artist=>[artist.id,artist])).values()];
- return <View style={styles.root}><LinearGradient colors={['#224B38',colors.background]} style={StyleSheet.absoluteFill}/><SafeAreaView style={styles.safe} edges={['top','bottom']}><ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+ return <View style={styles.root}><LinearGradient colors={['#224B38',colors.background]} style={StyleSheet.absoluteFill}/><SafeAreaView style={styles.safe} edges={['top','bottom']}><ScrollView keyboardDismissMode="on-drag" contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
  <View style={styles.top}><BackButton name="chevron-down" accessibilityLabel="Voltar" style={styles.icon}/><MaterialCommunityIcons name="spotify" size={25} color={colors.green}/><Text style={styles.description}>Faixa selecionada</Text><Pressable accessibilityRole="button" accessibilityLabel="Atualizar faixa" disabled={state.status==='loading'||!trackId} onPress={controller.refresh} style={styles.icon}><MaterialCommunityIcons name="refresh" size={25} color={colors.text}/></Pressable></View>
  {!trackId?<View style={styles.section}><Text accessibilityRole="header" style={styles.title}>Escolha uma música</Text><Text style={styles.description}>Abra uma faixa pela busca, álbum ou Biblioteca.</Text></View>:<ApiFeedback loading={state.status==='loading'} error={state.error} onRetry={controller.refresh} retryLabel="Tentar carregar faixa"/>}
  {state.status==='paused'&&<ApiFeedback message="Carregamento interrompido." onRetry={controller.refresh}/>}

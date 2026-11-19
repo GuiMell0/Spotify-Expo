@@ -4,7 +4,7 @@ import { Image, Linking, Pressable, RefreshControl, ScrollView, StyleSheet, Text
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import { useSession } from '../contexts/SessionContext';
 import { useSearch } from '../contexts/SearchContext';
 import { createSpotifyArtist } from '../services/spotifyArtist.mjs';
@@ -51,7 +51,7 @@ function SpotifyArtistScreen() {
     <View style={styles.root}>
       <LinearGradient colors={['#234038', colors.background]} style={StyleSheet.absoluteFill} locations={[0, 0.5]} />
       <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
-        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled"
+        <ScrollView keyboardDismissMode="on-drag" contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled"
           refreshControl={<RefreshControl refreshing={busy} onRefresh={controller.refresh} tintColor={colors.green} colors={[colors.green]} />}>
           <View style={styles.topbar}>
             <BackButton style={styles.back} />

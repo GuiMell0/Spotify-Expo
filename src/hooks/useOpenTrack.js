@@ -1,3 +1,4 @@
+import { Keyboard } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSearch } from '../contexts/SearchContext';
 import { useTrackQueue } from '../contexts/TrackQueueContext';
@@ -9,6 +10,7 @@ export function useOpenTrack() {
   return (track, tracks = [track]) => {
     const selected = queue.select(track, tracks);
     if (!selected) return;
+    Keyboard.dismiss();
     search.rememberEntity(selected);
     router.push(selected.href);
   };

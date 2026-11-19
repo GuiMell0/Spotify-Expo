@@ -5,7 +5,7 @@ import { ActivityIndicator, FlatList, Image, Pressable, StyleSheet, Text, View }
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import { useLikedTracks } from '../hooks/useLikedTracks';
 import { useSession } from '../contexts/SessionContext';
 import BackButton from '../components/BackButton';
@@ -30,7 +30,7 @@ export default function LikedScreen() {
   return <View style={styles.root}>
     <LinearGradient colors={['#40227F', colors.background]} locations={[0, 0.55]} style={StyleSheet.absoluteFill} />
     <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
-      <FlatList data={entries} keyExtractor={item => item.track.id} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled"
+      <FlatList keyboardDismissMode="on-drag" data={entries} keyExtractor={item => item.track.id} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled"
         ListHeaderComponent={<View style={styles.header}><BackButton style={styles.back} /><LinearGradient colors={['#4C22A9', '#97B9A8']} style={styles.art}><MaterialCommunityIcons name="heart" size={68} color={colors.text} /></LinearGradient><Text accessibilityRole="header" style={styles.title}>Músicas curtidas</Text><Text style={styles.description}>Suas favoritas salvas neste aparelho</Text>{state.data && <Text accessibilityLiveRegion="polite" style={styles.count}>{entries.length} {entries.length === 1 ? 'música' : 'músicas'}</Text>}{state.status === 'saving' && <Text accessibilityLiveRegion="polite" style={styles.count}>Salvando alteração…</Text>}{state.status === 'error' && entries.length > 0 && <Text style={styles.description}>Esta é a última lista carregada. Recarregue os dados pelo aviso acima.</Text>}</View>}
         ListEmptyComponent={empty}
         renderItem={({ item }) => <View style={styles.row}><Pressable accessibilityRole="button" accessibilityLabel={'Abrir música curtida ' + item.track.title} onPress={() => open(item.track)} style={({ pressed }) => [styles.open, pressed && styles.pressed]}>
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   count: { color: colors.text, fontSize: 13, lineHeight: 20 }, row: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   open: { flex: 1, minHeight: 80, paddingVertical: 10, flexDirection: 'row', alignItems: 'center', gap: 12, borderRadius: radius.sm },
   cover: { width: 52, height: 52, backgroundColor: colors.surface }, placeholder: { width: 52, height: 52, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center' },
-  info: { flex: 1 }, trackTitle: { color: colors.text, fontSize: 15, fontWeight: '700', lineHeight: 21 }, artist: { color: colors.muted, fontSize: 12, marginTop: 4 },
+  info: { flex: 1, minWidth: 0 }, trackTitle: { color: colors.text, fontSize: 15, fontWeight: '700', lineHeight: 21 }, artist: { color: colors.muted, fontSize: 12, marginTop: 4 },
   duration: { color: colors.muted, fontSize: 12 }, pressed: { backgroundColor: colors.surface },
   empty: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 36, gap: 16 },
   emptyTitle: { color: colors.text, fontSize: 21, lineHeight: 28, fontWeight: '800', textAlign: 'center' },

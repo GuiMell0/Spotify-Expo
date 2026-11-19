@@ -11,7 +11,8 @@
     ],
     "android": {
       "package": "com.guimello.spotifyexpo",
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "softwareKeyboardLayoutMode": "resize"
     },
     "ios": {
       "supportsTablet": true,

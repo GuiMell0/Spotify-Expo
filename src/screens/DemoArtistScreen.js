@@ -3,7 +3,7 @@ import React from 'react';
 import { ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import IconButton from '../components/IconButton';
 import BackButton from '../components/BackButton';
 import MiniPlayer from '../components/DemoMiniPlayer';
@@ -20,7 +20,7 @@ export default function DemoArtistScreen() {
   if (!artist) return <UnavailableContent title="Artista não encontrado" />;
   return (
     <View style={styles.root}>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView keyboardDismissMode="on-drag" contentContainerStyle={styles.content}>
         <ImageBackground source={artist.image} style={styles.hero} imageStyle={{ opacity: 0.78 }}>
           <LinearGradient colors={['rgba(0,0,0,0.15)', 'rgba(0,0,0,0.08)', colors.background]} style={StyleSheet.absoluteFill} />
           <SafeAreaView edges={['top']} style={styles.heroSafe}>
@@ -36,7 +36,7 @@ export default function DemoArtistScreen() {
           <View style={styles.actions}>
             <Pressable style={styles.follow}><Text style={styles.followText}>Seguindo</Text></Pressable>
             <IconButton name="dots-vertical" size={25} color={colors.muted} />
-            <MaterialCommunityIcons name="shuffle-variant" size={27} color={colors.muted} style={{ marginLeft: 'auto' }} />
+            <MaterialCommunityIcons name="shuffle-variant" size={27} color={colors.muted} style={styles.pushRight} />
             <Pressable onPress={() => router.push('/player')} style={styles.play}><MaterialCommunityIcons name="play" size={35} color={colors.black} /></Pressable>
           </View>
           <View style={styles.tabs}><Text style={styles.tabActive}>Músicas</Text><Text style={styles.tab}>Eventos</Text><Text style={styles.tab}>Sobre</Text></View>
@@ -50,6 +50,7 @@ export default function DemoArtistScreen() {
 }
 
 const styles = StyleSheet.create({
+  pushRight: { marginLeft: 'auto' },
   root: { flex: 1, backgroundColor: colors.background }, content: { paddingBottom: 96 },
   hero: { height: 360, justifyContent: 'flex-end' }, heroSafe: { flex: 1 },
   back: { marginLeft: 14, marginTop: 6, width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(0,0,0,0.42)' },

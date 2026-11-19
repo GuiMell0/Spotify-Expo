@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import MiniPlayer from '../components/DemoMiniPlayer';
 import { ASSETS, homeAlbums } from '../data/media';
 import { colors, radius } from '../theme';
@@ -24,7 +24,7 @@ export default function DemoSearchScreen() {
   return (
     <View style={styles.root}>
       <SafeAreaView style={styles.safe} edges={['top']}>
-        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
+        <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
           <View style={styles.header}>
             <Text style={styles.title}>Buscar</Text>
             <MaterialCommunityIcons name="camera-outline" size={27} color={colors.text} />
@@ -49,7 +49,7 @@ export default function DemoSearchScreen() {
               {results.map((item) => (
                 <Pressable key={item.id} onPress={() => router.push(item.href)} style={styles.resultRow}>
                   <Image source={item.image} style={styles.resultImage} />
-                  <View style={{ flex: 1 }}>
+                  <View style={styles.flexFill}>
                     <Text style={styles.resultTitle}>{item.title}</Text>
                     <Text style={styles.resultSub}>{item.subtitle}</Text>
                   </View>
@@ -79,6 +79,7 @@ export default function DemoSearchScreen() {
 }
 
 const styles = StyleSheet.create({
+  flexFill: { flex: 1 },
   demoLabel: { color: colors.muted, fontSize: 12, marginBottom: 12 },
   root: { flex: 1, backgroundColor: colors.background },
   safe: { flex: 1 },

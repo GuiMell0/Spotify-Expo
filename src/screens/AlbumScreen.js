@@ -5,7 +5,7 @@ import { Image, Linking, Pressable, RefreshControl, ScrollView, StyleSheet, Text
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import { useSession } from '../contexts/SessionContext';
 import { useSearch } from '../contexts/SearchContext';
 import { albumTrackKey, createSpotifyAlbum } from '../services/spotifyAlbum.mjs';
@@ -58,7 +58,7 @@ function SpotifyAlbumScreen() {
     <View style={styles.root}>
       <LinearGradient colors={['#244431', colors.background]} style={StyleSheet.absoluteFill} locations={[0, 0.5]} />
       <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
-        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled"
+        <ScrollView keyboardDismissMode="on-drag" contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled"
           refreshControl={<RefreshControl refreshing={busy} onRefresh={controller.refresh} tintColor={colors.green} colors={[colors.green]} />}>
           <View style={styles.topbar}>
             <BackButton style={styles.back} />
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   sectionTitle: { color: colors.text, fontSize: 22, fontWeight: '800' }, loaded: { color: colors.muted, fontSize: 12 },
   trackEntry: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   trackRow: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 72, paddingVertical: 10, borderRadius: radius.md },
-  position: { width: 28, alignItems: 'center' }, number: { color: colors.muted, fontSize: 13 }, trackInfo: { flex: 1 },
+  position: { width: 28, alignItems: 'center' }, number: { color: colors.muted, fontSize: 13 }, trackInfo: { flex: 1, minWidth: 0 },
   trackTitle: { color: colors.text, fontSize: 15, lineHeight: 21, fontWeight: '600' }, trackMeta: { flexDirection: 'row', alignItems: 'center', gap: 7, marginTop: 4 },
   trackArtist: { flex: 1, color: colors.muted, fontSize: 12 }, explicit: { color: colors.background, backgroundColor: colors.muted, paddingHorizontal: 4, borderRadius: 2, fontSize: 9, fontWeight: '700' },
   duration: { color: colors.muted, fontSize: 12 }, restricted: { color: colors.muted, fontSize: 11, marginTop: 4 },

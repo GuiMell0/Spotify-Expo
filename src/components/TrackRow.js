@@ -5,7 +5,7 @@ import { colors } from '../theme';
 
 export default function TrackRow({ track, index, onPress, showIndex = false, liked = false }) {
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.row, pressed && { backgroundColor: '#242424' }]}>
+    <Pressable accessibilityRole="button" accessibilityLabel={'Abrir faixa ' + track.title} onPress={onPress} style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
       {showIndex && <Text style={styles.index}>{index + 1}</Text>}
       <View style={styles.meta}>
         <Text numberOfLines={1} style={styles.title}>{track.title}</Text>
@@ -18,6 +18,7 @@ export default function TrackRow({ track, index, onPress, showIndex = false, lik
 }
 
 const styles = StyleSheet.create({
+  pressed: { backgroundColor: colors.surface },
   row: { minHeight: 64, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, borderRadius: 6 },
   index: { color: colors.muted, width: 28, fontSize: 14 },
   meta: { flex: 1 },

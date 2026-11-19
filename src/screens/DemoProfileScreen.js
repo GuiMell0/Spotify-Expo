@@ -3,7 +3,7 @@ import React from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import IconButton from '../components/IconButton';
 import BackButton from '../components/BackButton';
 import MiniPlayer from '../components/DemoMiniPlayer';
@@ -17,12 +17,12 @@ export default function DemoProfileScreen() {
   return (
     <View style={styles.root}>
       <LinearGradient colors={['#EC6196', '#77344D', colors.background]} locations={[0, 0.31, 0.58]} style={StyleSheet.absoluteFill} />
-      <SafeAreaView style={{ flex: 1 }} edges={['top']}>
-        <ScrollView contentContainerStyle={styles.content}>
+      <SafeAreaView style={styles.flexFill} edges={['top']}>
+        <ScrollView keyboardDismissMode="on-drag" contentContainerStyle={styles.content}>
           <BackButton style={styles.back} />
           <View style={styles.profileRow}>
             <Image source={ASSETS.profile} style={styles.avatar} />
-            <View style={{ flex: 1 }}><Text style={styles.name}>anna</Text><Text style={styles.stats}>6 seguidores • 50 seguindo</Text></View>
+            <View style={styles.flexFill}><Text style={styles.name}>anna</Text><Text style={styles.stats}>6 seguidores • 50 seguindo</Text></View>
           </View>
           <View style={styles.actions}>
             <Pressable style={styles.edit}><Text style={styles.editText}>Editar</Text></Pressable>
@@ -33,7 +33,7 @@ export default function DemoProfileScreen() {
           {libraryItems.slice(0, 4).map((item) => (
             <Pressable key={item.id} onPress={() => router.push(item.href)} style={styles.playlistRow}>
               <Image source={item.image} style={styles.playlistImage} />
-              <View style={{ flex: 1 }}><Text numberOfLines={1} style={styles.playlistTitle}>{item.title}</Text><Text style={styles.playlistSub}>{item.subtitle}</Text></View>
+              <View style={styles.flexFill}><Text numberOfLines={1} style={styles.playlistTitle}>{item.title}</Text><Text style={styles.playlistSub}>{item.subtitle}</Text></View>
               <MaterialCommunityIcons name="dots-vertical" size={22} color={colors.muted} />
             </Pressable>
           ))}
@@ -47,6 +47,7 @@ export default function DemoProfileScreen() {
 }
 
 const styles = StyleSheet.create({
+  flexFill: { flex: 1 },
   root: { flex: 1, backgroundColor: colors.background }, content: { paddingBottom: 100 }, back: { marginLeft: 15, marginTop: 4, alignSelf: 'flex-start' },
   profileRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 24, marginTop: 21 }, avatar: { width: 108, height: 108, borderRadius: 54, marginRight: 18 },
   name: { color: colors.text, fontSize: 29, fontWeight: '900' }, stats: { color: colors.text, fontSize: 12, marginTop: 8 },

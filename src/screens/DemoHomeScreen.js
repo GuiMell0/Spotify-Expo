@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import Chip from '../components/Chip';
 import MediaCard from '../components/MediaCard';
 import MiniPlayer from '../components/DemoMiniPlayer';
@@ -22,7 +22,7 @@ export default function DemoHomeScreen() {
     <View style={styles.root}>
       <LinearGradient colors={['#244431', colors.background]} style={StyleSheet.absoluteFill} locations={[0, 0.44]} />
       <SafeAreaView style={styles.safe} edges={['top']}>
-        <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <ScrollView keyboardDismissMode="on-drag" contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
           <View style={styles.topbar}>
             <Pressable accessibilityRole="button" accessibilityLabel="Abrir perfil" onPress={() => router.push('/profile')}>
               <Image source={ASSETS.profile} style={styles.avatar} />
@@ -59,7 +59,7 @@ function Section({ title, items, cardWidth }) {
   return (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>{title}</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingRight: 6 }}>
+      <ScrollView keyboardDismissMode="on-drag" horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingRight: 6 }}>
         {items.map((item) => (
           <MediaCard key={item.id} item={item} width={cardWidth} onPress={() => router.push(item.href)} />
         ))}

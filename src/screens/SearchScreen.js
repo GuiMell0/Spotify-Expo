@@ -4,7 +4,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import { useSession } from '../contexts/SessionContext';
 import { useSearch } from '../contexts/SearchContext';
 import { SEARCH_FILTERS, SEARCH_GROUPS } from '../services/spotifySearch.mjs';
@@ -51,7 +51,7 @@ function SpotifySearchScreen() {
   return (
     <View style={styles.root}>
       <SafeAreaView edges={['top']} style={styles.safe}>
-        <ScrollView keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
+        <ScrollView keyboardDismissMode="on-drag" keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
           <View style={styles.header}><Text accessibilityRole="header" style={styles.title}>Buscar</Text><MaterialCommunityIcons name="spotify" size={30} color={colors.green} /></View>
           <View style={styles.searchBox}>
             <Pressable accessibilityRole="button" accessibilityLabel="Confirmar busca" accessibilityState={{ disabled: !state.query.trim() }} disabled={!state.query.trim()} onPress={submitSearch} style={styles.confirmSearch}><MaterialCommunityIcons name="magnify" size={25} color={colors.black} /></Pressable>
@@ -61,7 +61,7 @@ function SpotifySearchScreen() {
             {!!state.query && <Pressable accessibilityRole="button" accessibilityLabel="Limpar busca" onPress={() => search.setQuery('')} style={styles.clear}><MaterialCommunityIcons name="close-circle" size={22} color="#555" /></Pressable>}
           </View>
           <RecentSearchesShortcut />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filters}>
+          <ScrollView keyboardDismissMode="on-drag" horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filters}>
             {SEARCH_FILTERS.map(filter => <Pressable key={filter.value} accessibilityRole="button" accessibilityLabel={'Filtrar ' + filter.label} accessibilityState={{ selected: state.filter === filter.value }}
               onPress={() => search.setFilter(filter.value)} style={[styles.filter, state.filter === filter.value && styles.selected]}>
               <Text style={[styles.filterText, state.filter === filter.value && styles.selectedText]}>{filter.label}</Text>
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
   resultEntry: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   resultRow: { flex: 1, flexDirection: 'row', alignItems: 'center', minHeight: 78, paddingVertical: 8, gap: 12, borderRadius: radius.md },
   resultImage: { width: 58, height: 58, backgroundColor: colors.surface }, placeholder: { width: 58, height: 58, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center' },
-  artistImage: { borderRadius: 29 }, resultInfo: { flex: 1 }, resultTitle: { color: colors.text, fontSize: 15, fontWeight: '700' },
+  artistImage: { borderRadius: 29 }, resultInfo: { flex: 1, minWidth: 0 }, resultTitle: { color: colors.text, fontSize: 15, fontWeight: '700' },
   resultSub: { color: colors.muted, fontSize: 12, lineHeight: 18, marginTop: 4 }, pressed: { backgroundColor: colors.surface },
   empty: { color: colors.muted, textAlign: 'center', lineHeight: 22, paddingVertical: 42 },
   more: { alignSelf: 'center', minHeight: 46, paddingHorizontal: 22, borderRadius: radius.pill, borderWidth: 1, borderColor: colors.subtle, justifyContent: 'center', marginVertical: 8 },

@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import Chip from '../components/Chip';
 import MediaCard from '../components/MediaCard';
 import MiniPlayer from '../components/DemoMiniPlayer';
@@ -19,20 +19,20 @@ export default function DemoLibraryScreen() {
   return (
     <View style={styles.root}>
       <SafeAreaView style={styles.safe} edges={['top']}>
-        <ScrollView contentContainerStyle={styles.content}>
+        <ScrollView keyboardDismissMode="on-drag" contentContainerStyle={styles.content}>
           <View style={styles.header}>
             <Pressable accessibilityRole="button" accessibilityLabel="Abrir perfil" onPress={() => router.push('/profile')}><Image source={ASSETS.profile} style={styles.avatar} /></Pressable>
             <Text style={styles.title}>Sua Biblioteca</Text>
-            <MaterialCommunityIcons name="magnify" size={27} color={colors.text} style={{ marginLeft: 'auto' }} />
-            <MaterialCommunityIcons name="plus" size={30} color={colors.text} style={{ marginLeft: 17 }} />
+            <MaterialCommunityIcons name="magnify" size={27} color={colors.text} style={styles.pushRight} />
+            <MaterialCommunityIcons name="plus" size={30} color={colors.text} style={styles.addIcon} />
           </View>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filters}>
+          <ScrollView keyboardDismissMode="on-drag" horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filters}>
             {['Playlists', 'Podcasts', 'Álbuns', 'Artistas'].map((item) => (
               <Chip key={item} label={item} selected={filter === item} onPress={() => setFilter(item)} />
             ))}
           </ScrollView>
           <View style={styles.sortRow}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={styles.inlineRow}>
               <MaterialCommunityIcons name="swap-vertical" size={20} color={colors.text} />
               <Text style={styles.sortText}>Recentes</Text>
             </View>
@@ -51,6 +51,9 @@ export default function DemoLibraryScreen() {
 }
 
 const styles = StyleSheet.create({
+  inlineRow: { flexDirection: 'row', alignItems: 'center' },
+  addIcon: { marginLeft: 17 },
+  pushRight: { marginLeft: 'auto' },
   root: { flex: 1, backgroundColor: colors.background },
   safe: { flex: 1 },
   content: { padding: 14, paddingBottom: 100 },

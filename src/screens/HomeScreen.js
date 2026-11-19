@@ -6,7 +6,7 @@ import { Image, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View, u
 import { useFocusEffect, useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import { useSession } from '../contexts/SessionContext';
 import { useHome } from '../contexts/HomeContext';
 import { useSearch } from '../contexts/SearchContext';
@@ -56,7 +56,7 @@ function SpotifyHomeScreen() {
     <View style={styles.root}>
       <LinearGradient colors={['#234630', colors.background]} style={StyleSheet.absoluteFill} locations={[0, 0.35]} />
       <SafeAreaView edges={['top']} style={styles.safe}>
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}
+        <ScrollView keyboardDismissMode="on-drag" showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}
           refreshControl={<RefreshControl refreshing={busy} onRefresh={home.refresh} tintColor={colors.green} colors={[colors.green]} />}>
           <View style={styles.topbar}>
             <Pressable accessibilityRole="button" accessibilityLabel="Abrir perfil" onPress={() => router.push('/profile')} style={styles.avatar}>
@@ -80,7 +80,7 @@ function SpotifyHomeScreen() {
           </Pressable>)}</View>}
           {sections.map(section => <View key={section.key} style={styles.section}>
             <View style={styles.sectionHeader}><Text accessibilityRole="header" style={styles.sectionTitle}>{section.title}</Text><Pressable accessibilityRole="button" accessibilityLabel={'Ver mais ' + section.title.toLowerCase()} onPress={() => discover(section.type)} style={styles.more}><Text style={styles.moreText}>Ver mais</Text></Pressable></View>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.cards}>
+            <ScrollView keyboardDismissMode="on-drag" horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.cards}>
               {section.items.map(item => <Pressable key={item.type + ':' + item.id} accessibilityRole="button" accessibilityLabel={'Abrir ' + labels[item.type] + ' ' + item.title} onPress={() => open(item)} style={({ pressed }) => [styles.card, { width: cardWidth }, pressed && styles.pressed]}>
                 <Artwork item={item} />
                 <Text numberOfLines={2} style={styles.cardTitle}>{item.title}</Text>
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.background }, safe: { flex: 1 }, content: { paddingHorizontal: 16, paddingBottom: 34 },
   topbar: { flexDirection: 'row', alignItems: 'center', gap: 12, marginTop: 14, marginBottom: 20 },
   avatar: { width: 44, height: 44, borderRadius: 22, backgroundColor: '#315840', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
-  avatarImage: { width: 44, height: 44 }, initial: { color: colors.text, fontWeight: '800', fontSize: 19 }, greeting: { flex: 1 },
+  avatarImage: { width: 44, height: 44 }, initial: { color: colors.text, fontWeight: '800', fontSize: 19 }, greeting: { flex: 1, minWidth: 0 },
   name: { color: colors.text, fontSize: 20, fontWeight: '800' }, sessionLabel: { color: colors.muted, fontSize: 11, marginTop: 4 },
   iconButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }, disabled: { opacity: 0.5 },
   themeRow: { flexDirection: 'row', gap: 8, alignItems: 'center', marginBottom: 24 },

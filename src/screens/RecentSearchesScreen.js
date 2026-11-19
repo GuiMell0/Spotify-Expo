@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import { useSearch } from '../contexts/SearchContext';
 import { useSession } from '../contexts/SessionContext';
 import { useRecentSearches } from '../hooks/useRecentSearches';
@@ -40,7 +40,7 @@ export default function RecentSearchesScreen() {
     return <View style={styles.empty}><MaterialCommunityIcons name="history" size={54} color={colors.muted} /><Text style={styles.emptyTitle}>Nenhuma busca recente</Text><Text style={styles.description}>Confirme uma busca ou abra um resultado para guardar o termo.</Text><Pressable accessibilityRole="button" onPress={() => router.navigate('/search')} style={styles.action}><Text style={styles.actionText}>Buscar músicas</Text></Pressable></View>;
   }
   return <SafeAreaView style={styles.root} edges={['top', 'bottom']}>
-    <FlatList data={entries} keyExtractor={item => item.term.toLowerCase()} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled"
+    <FlatList keyboardDismissMode="on-drag" data={entries} keyExtractor={item => item.term.toLowerCase()} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled"
       ListHeaderComponent={<View style={styles.header}>
         <View style={styles.topbar}><BackButton style={styles.back} /><MaterialCommunityIcons name="spotify" size={27} color={colors.green} /></View>
         <Text accessibilityRole="header" style={styles.title}>Buscas recentes</Text>

@@ -429,6 +429,12 @@ A sessão previamente salva mantém o acesso à Biblioteca local quando o token 
 
 Validação G13: 394 testes unitários, lint sem avisos e bundles Android/web aprovados; 36 cenários de navegador com Spotify simulado aprovados (15 de recuperação e 21 de regressão do player/fila), sem exceções JavaScript. Permanecem 17 telas principais. A restauração inicial da sessão persistente foi testada no domínio; o teste real no Android e a geração do APK ficam para a conclusão do projeto completo.
 
+## Revisão visual — G14
+
+As 17 telas passaram pela revisão de StyleSheet e Flexbox, com ajustes para textos longos, áreas seguras, teclado, rótulos e alvos de toque. O mini-player recolhe durante a digitação por eventos nativos. A configuração Android de redimensionamento pelo teclado será incorporada no APK final. Ver [guia da revisão visual](docs/REVISAO-VISUAL.md).
+
+Validação G14: 394 testes unitários, lint sem avisos e bundles Android/web aprovados; 76 cenários de navegador com Spotify simulado aprovados (40 de layout, 15 de recuperação e 21 de player/fila), sem exceções JavaScript. As 17 telas foram verificadas em larguras de 320 e 768 pixels. A conferência real de teclado, insets, escala de fonte e TalkBack fica para a validação final no Android, junto da geração do APK.
+
 ## Limitações atuais
 
 - APK e login Android confirmados pela Ana; busca, Home, álbum e artista novos aguardam conferência no aparelho;

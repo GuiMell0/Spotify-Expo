@@ -1,20 +1,19 @@
+import { useMiniPlayerVisible } from '../hooks/useMiniPlayerVisible';
 import React from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
-import { usePathname, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTrackQueue } from '../contexts/TrackQueueContext';
-import { useSession } from '../contexts/SessionContext';
 import { colors, radius } from '../theme';
 
 export default function MiniPlayer() {
   const { state } = useTrackQueue();
-  const { session, isDemo } = useSession();
-  const pathname = usePathname();
+  const visible = useMiniPlayerVisible();
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const track = state.track;
-  if (!session || isDemo || !track || ['/player', '/login', '/callback'].includes(pathname)) return null;
+  if (!visible) return null;
   return <View style={[styles.area, { paddingBottom: Math.max(insets.bottom, 8) }]}>
     <Pressable accessibilityRole="button" accessibilityLabel={'Abrir faixa selecionada ' + track.title}
       onPress={() => router.push(track.href)} style={styles.container}>
@@ -29,6 +28,6 @@ const styles = StyleSheet.create({
   container: { minHeight: 76, padding: 9, borderRadius: radius.md, backgroundColor: '#224B38', flexDirection: 'row', alignItems: 'center', gap: 10 },
   cover: { width: 48, height: 48, borderRadius: radius.sm },
   placeholder: { width: 48, height: 48, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center' },
-  info: { flex: 1, gap: 3 }, title: { color: colors.text, fontSize: 14, fontWeight: '700' },
+  info: { flex: 1, minWidth: 0, gap: 3 }, title: { color: colors.text, fontSize: 14, fontWeight: '700' },
   artist: { color: colors.muted, fontSize: 12 }, caption: { color: colors.muted, fontSize: 11 },
 });

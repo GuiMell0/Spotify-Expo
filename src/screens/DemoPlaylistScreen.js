@@ -3,7 +3,7 @@ import React from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import IconButton from '../components/IconButton';
 import BackButton from '../components/BackButton';
 import MiniPlayer from '../components/DemoMiniPlayer';
@@ -22,7 +22,7 @@ export default function DemoPlaylistScreen() {
     <View style={styles.root}>
       <LinearGradient colors={['#686868', '#292929', colors.background]} locations={[0, 0.38, 0.72]} style={StyleSheet.absoluteFill} />
       <SafeAreaView style={styles.safe} edges={['top']}>
-        <ScrollView contentContainerStyle={styles.content}>
+        <ScrollView keyboardDismissMode="on-drag" contentContainerStyle={styles.content}>
           <View style={styles.topbar}>
             <BackButton />
             <View style={styles.search}><MaterialCommunityIcons name="magnify" size={18} color={colors.text} /><Text style={styles.searchText}>Procurar nesta playlist</Text></View>
@@ -35,7 +35,7 @@ export default function DemoPlaylistScreen() {
             <IconButton name="download-circle-outline" size={28} color={colors.muted} />
             <IconButton name="share-variant-outline" size={26} color={colors.muted} />
             <IconButton name="dots-vertical" size={26} color={colors.muted} />
-            <MaterialCommunityIcons name="shuffle-variant" size={28} color={colors.green} style={{ marginLeft: 'auto' }} />
+            <MaterialCommunityIcons name="shuffle-variant" size={28} color={colors.green} style={styles.pushRight} />
             <Pressable onPress={() => router.push('/player')} style={styles.play}><MaterialCommunityIcons name="play" size={34} color={colors.black} /></Pressable>
           </View>
           <View style={styles.pills}>
@@ -55,6 +55,7 @@ export default function DemoPlaylistScreen() {
 }
 
 const styles = StyleSheet.create({
+  pushRight: { marginLeft: 'auto' },
   root: { flex: 1, backgroundColor: colors.background }, safe: { flex: 1 }, content: { paddingBottom: 95 },
   topbar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, marginTop: 6 },
   search: { flex: 1, height: 38, marginLeft: 18, backgroundColor: 'rgba(255,255,255,0.16)', borderRadius: 4, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12 },

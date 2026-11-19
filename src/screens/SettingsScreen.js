@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import { useSession } from '../contexts/SessionContext';
 import { useLocalData } from '../contexts/LocalDataContext';
 import { saveLibraryPreference } from '../services/library.mjs';
@@ -26,7 +26,7 @@ export default function SettingsScreen(){
    const selected=state.data.preferences[key]===value;
    return <Pressable key={value} accessibilityRole="button" accessibilityLabel={label} accessibilityState={{selected,disabled:!canChange}} disabled={!canChange} onPress={()=>preference(key,value)} style={[styles.option,selected&&styles.selected,!canChange&&styles.disabled]}><Text style={styles.optionText}>{label}{selected?' ✓':''}</Text></Pressable>;
  }
- return <SafeAreaView style={styles.root} edges={['top','bottom']}><ScrollView contentContainerStyle={styles.content}>
+ return <SafeAreaView style={styles.root} edges={['top','bottom']}><ScrollView keyboardDismissMode="on-drag" contentContainerStyle={styles.content}>
  <Pressable accessibilityRole="button" accessibilityLabel="Voltar ao perfil" onPress={()=>router.dismissTo('/profile')} style={styles.secondary}><Text style={styles.secondaryText}>Voltar ao perfil</Text></Pressable>
  <Text accessibilityRole="header" style={styles.title}>Configurações</Text><Text style={styles.description}>Preferências e dados locais desta conta neste aparelho. Estas ações não modificam sua conta Spotify.</Text>
  {isDemo?<Text style={styles.description}>Entre com Spotify para usar suas preferências pessoais.</Text>:state.data?<>

@@ -5,7 +5,7 @@ import { ActivityIndicator, FlatList, Image, Pressable, ScrollView, StyleSheet, 
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import { useLocalData } from '../contexts/LocalDataContext';
 import { useSession } from '../contexts/SessionContext';
 import { localPlaylistCover, localPlaylistHref, selectLocalPlaylist } from '../services/localPlaylistDetails.mjs';
@@ -38,8 +38,8 @@ export default function LocalPlaylistScreen() {
   return <View style={styles.root}>
     <LinearGradient colors={['#194A33', colors.background]} locations={[0, 0.5]} style={StyleSheet.absoluteFill} />
     <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
-      {unavailable ? <ScrollView contentContainerStyle={styles.content}>{topbar}<View style={styles.feedback}>{feedback()}<Pressable accessibilityRole="button" accessibilityLabel="Voltar à Biblioteca" onPress={library} style={styles.secondary}><Text style={styles.secondaryText}>Voltar à Biblioteca</Text></Pressable></View></ScrollView>
-        : <FlatList key={playlist.id} data={playlist.tracks} keyExtractor={track => track.id} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled"
+      {unavailable ? <ScrollView keyboardDismissMode="on-drag" contentContainerStyle={styles.content}>{topbar}<View style={styles.feedback}>{feedback()}<Pressable accessibilityRole="button" accessibilityLabel="Voltar à Biblioteca" onPress={library} style={styles.secondary}><Text style={styles.secondaryText}>Voltar à Biblioteca</Text></Pressable></View></ScrollView>
+        : <FlatList keyboardDismissMode="on-drag" key={playlist.id} data={playlist.tracks} keyExtractor={track => track.id} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled"
           ListHeaderComponent={<View style={styles.header}>{topbar}
             {cover ? <Image accessibilityLabel={'Capa de ' + playlist.name} source={cover} resizeMode="contain" style={styles.cover} /> : <LinearGradient colors={['#31694D', '#1B3024']} accessibilityLabel="Playlist sem capa" style={styles.placeholder}><MaterialCommunityIcons name="playlist-music" size={86} color={colors.text} /></LinearGradient>}
             <Text accessibilityRole="header" style={styles.title}>{playlist.name}</Text>
@@ -73,5 +73,5 @@ const styles = StyleSheet.create({
   secondary: { minHeight: 48, paddingHorizontal: 20, paddingVertical: 12, borderRadius: radius.pill, borderWidth: 1, borderColor: colors.muted, alignSelf: 'flex-start', justifyContent: 'center' }, secondaryText: { color: colors.text, fontSize: 14, fontWeight: '700' },
   row: { flexDirection: 'row', alignItems: 'center', gap: 6 }, open: { flex: 1, minHeight: 86, flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 12, borderRadius: radius.sm },
   position: { minWidth: 16, color: colors.muted, fontSize: 12 }, trackCover: { width: 48, height: 48, backgroundColor: colors.surface }, trackPlaceholder: { width: 48, height: 48, backgroundColor: colors.surface, justifyContent: 'center', alignItems: 'center' },
-  info: { flex: 1, gap: 4 }, trackTitle: { color: colors.text, fontSize: 15, fontWeight: '700', lineHeight: 21 }, artist: { color: colors.muted, fontSize: 12, lineHeight: 18 }, duration: { color: colors.muted, fontSize: 12 }, pressed: { backgroundColor: colors.surface },
+  info: { flex: 1, minWidth: 0, gap: 4 }, trackTitle: { color: colors.text, fontSize: 15, fontWeight: '700', lineHeight: 21 }, artist: { color: colors.muted, fontSize: 12, lineHeight: 18 }, duration: { color: colors.muted, fontSize: 12 }, pressed: { backgroundColor: colors.surface },
 });

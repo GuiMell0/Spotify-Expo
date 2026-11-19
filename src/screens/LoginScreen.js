@@ -3,7 +3,7 @@ import React from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import { colors, radius } from '../theme';
 import ApiFeedback from '../components/ApiFeedback';
 import { useSession } from '../contexts/SessionContext';
@@ -16,10 +16,10 @@ export default function LoginScreen() {
   return (
     <LinearGradient colors={['#193724', '#121212', '#000000']} style={styles.container}>
       <SafeAreaView style={styles.safe}>
-        <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+        <ScrollView keyboardDismissMode="on-drag" contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
           <View style={styles.hero}>
             <MaterialCommunityIcons name="spotify" size={78} color={colors.green} />
-            <Text style={styles.title}>Sua música.{`\n`}Do seu jeito.</Text>
+            <Text accessibilityRole="header" style={styles.title}>Sua música.{`\n`}Do seu jeito.</Text>
             <Text style={styles.subtitle}>Conecte sua conta Spotify ou explore a demonstração.</Text>
           </View>
           <View style={styles.actions}>

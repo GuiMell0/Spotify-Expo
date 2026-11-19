@@ -10,7 +10,7 @@ export default function DemoMiniPlayer() {
   return (
     <Pressable
       onPress={() => router.push('/player')}
-      style={({ pressed }) => [styles.container, pressed && { opacity: 0.9 }]}
+      style={({ pressed }) => [styles.container, pressed && styles.pressed]}
       accessibilityRole="button"
       accessibilityLabel="Abrir player de Bedless"
     >
@@ -27,6 +27,7 @@ export default function DemoMiniPlayer() {
 }
 
 const styles = StyleSheet.create({
+  pressed: { opacity: 0.9 },
   container: {
     position: 'absolute', left: 8, right: 8, bottom: 5, height: 62, borderRadius: radius.md,
     backgroundColor: '#155B72', flexDirection: 'row', alignItems: 'center', padding: 7,

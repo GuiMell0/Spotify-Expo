@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useState, useSyncExternalStore 
 import { Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import { useSession } from '../contexts/SessionContext';
 import { createSpotifyProfile, sessionProfile } from '../services/spotifyProfile.mjs';
 import { createSpotifyLibrary } from '../services/spotifyLibrary.mjs';
@@ -26,7 +26,7 @@ function AccountProfile(){
  const profile=state.profile??sessionProfile(user),name=displayNameForAccount(localState.data,profile.name),initial=Array.from(name)[0]?.toLocaleUpperCase()||'♪';
  function refresh(){setFailedImage(null);controller.refresh();}
  async function open(){setLinkError(null);try{await Linking.openURL(profile.spotifyUrl);}catch{setLinkError(controller);}}
- return <SafeAreaView style={styles.root} edges={['top','bottom']}><ScrollView contentContainerStyle={styles.content}>
+ return <SafeAreaView style={styles.root} edges={['top','bottom']}><ScrollView keyboardDismissMode="on-drag" contentContainerStyle={styles.content}>
  <View style={styles.top}><BackButton style={styles.icon}/><MaterialCommunityIcons name="spotify" size={26} color={colors.green}/><Text style={styles.description}>Sua conta Spotify</Text><Pressable accessibilityRole="button" accessibilityLabel="Atualizar perfil Spotify" disabled={state.status==='loading'} onPress={refresh} style={styles.icon}><MaterialCommunityIcons name="refresh" size={25} color={colors.text}/></Pressable></View>
  <ApiFeedback loading={state.status==='loading'} error={state.error} onRetry={refresh} retryLabel="Tentar carregar perfil"/>
  {state.status==='paused'&&<ApiFeedback message="Atualização interrompida." onRetry={refresh}/>}

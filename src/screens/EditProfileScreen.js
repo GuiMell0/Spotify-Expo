@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import { useSession } from '../contexts/SessionContext';
 import { useLocalData } from '../contexts/LocalDataContext';
 import { normalizeLocalDisplayName, saveLocalDisplayName } from '../services/localDisplayName.mjs';
 import { colors, radius } from '../theme';
 export default function EditProfileScreen() {
  const {isDemo}=useSession(),{state}=useLocalData(),router=useRouter();
- if(isDemo||!state.data)return <SafeAreaView style={styles.root}><ScrollView contentContainerStyle={styles.content}><Text accessibilityRole="header" style={styles.title}>Editar apelido local</Text><Text style={styles.description}>{isDemo?'Entre com Spotify para editar seu apelido neste aparelho.':state.status==='error'?'Não foi possível carregar seus dados. Use o aviso acima para tentar novamente.':'Carregando preferências…'}</Text><Pressable accessibilityRole="button" onPress={()=>router.dismissTo('/profile')} style={styles.secondary}><Text style={styles.secondaryText}>Voltar ao perfil</Text></Pressable></ScrollView></SafeAreaView>;
+ if(isDemo||!state.data)return <SafeAreaView style={styles.root}><ScrollView keyboardDismissMode="on-drag" contentContainerStyle={styles.content}><Text accessibilityRole="header" style={styles.title}>Editar apelido local</Text><Text style={styles.description}>{isDemo?'Entre com Spotify para editar seu apelido neste aparelho.':state.status==='error'?'Não foi possível carregar seus dados. Use o aviso acima para tentar novamente.':'Carregando preferências…'}</Text><Pressable accessibilityRole="button" onPress={()=>router.dismissTo('/profile')} style={styles.secondary}><Text style={styles.secondaryText}>Voltar ao perfil</Text></Pressable></ScrollView></SafeAreaView>;
  return <EditForm key={state.accountId}/>;
 }
 function EditForm() {
@@ -23,7 +23,7 @@ function EditForm() {
    setError(null);
    try{await saveLocalDisplayName(localData,value);if(alive.current)router.dismissTo('/profile');}catch{/* O aviso global preserva dados e permite recuperação. */}
  }
- return <SafeAreaView style={styles.root} edges={['top','bottom']}><KeyboardAvoidingView style={styles.root} behavior={Platform.OS==='ios'?'padding':undefined}><ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+ return <SafeAreaView style={styles.root} edges={['top','bottom']}><KeyboardAvoidingView style={styles.root} behavior={Platform.OS==='ios'?'padding':undefined}><ScrollView keyboardDismissMode="on-drag" contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
  <Pressable accessibilityRole="button" accessibilityLabel="Cancelar edição de apelido" disabled={saving} onPress={()=>router.dismissTo('/profile')} style={styles.secondary}><Text style={styles.secondaryText}>Voltar ao perfil</Text></Pressable>
  <Text accessibilityRole="header" style={styles.title}>Editar apelido local</Text><Text style={styles.description}>Este nome aparece neste aplicativo e fica salvo neste aparelho para sua conta. Não altera seu nome no Spotify.</Text>
  <Text style={styles.label}>Apelido</Text><TextInput accessibilityLabel="Apelido local" value={name} onChangeText={value=>{setName(value);setError(null);}} editable={ready} maxLength={80} onSubmitEditing={()=>save()} returnKeyType="done" placeholder="Como você quer aparecer?" placeholderTextColor={colors.subtle} selectionColor={colors.green} style={styles.input}/>

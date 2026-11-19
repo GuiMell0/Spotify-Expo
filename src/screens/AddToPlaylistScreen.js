@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSession } from '../contexts/SessionContext';
 import { useSearch } from '../contexts/SearchContext';
@@ -43,7 +43,7 @@ export default function AddToPlaylistScreen() {
     } catch { /* O aviso global preserva os dados e permite nova leitura. */ }
   }
   const confirmed = saved?.owner === localData && saved.trackId === trackId && state.data?.playlists.find(item => item.id === saved.playlistId && item.tracks.some(value => value.id === trackId));
-  return <SafeAreaView style={styles.root} edges={['top', 'bottom']}><FlatList data={track ? playlists : []} keyExtractor={item => item.id} contentContainerStyle={styles.content}
+  return <SafeAreaView style={styles.root} edges={['top', 'bottom']}><FlatList keyboardDismissMode="on-drag" data={track ? playlists : []} keyExtractor={item => item.id} contentContainerStyle={styles.content}
     ListHeaderComponent={<View style={styles.header}><BackButton style={styles.back} /><Text accessibilityRole="header" style={styles.title}>Adicionar à playlist</Text><Text style={styles.description}>Escolha uma playlist local deste aparelho.</Text>
       {isDemo ? <Text style={styles.description}>Entre com Spotify para usar suas playlists pessoais.</Text> : !valid ? <Text accessibilityRole="alert" style={styles.description}>Música inválida. Abra uma faixa pela busca.</Text> : <><ApiFeedback loading={!track && !current?.error} error={current?.error} onRetry={() => setAttempt(value => value + 1)} />{track && <Text style={styles.track}>{track.title} · {track.artist}</Text>}</>}
       {['idle', 'loading'].includes(state.status) && !isDemo && <Text style={styles.description}>Carregando playlists…</Text>}
@@ -55,4 +55,4 @@ export default function AddToPlaylistScreen() {
     renderItem={({ item }) => { const exists = item.tracks.some(value => value.id === trackId); const full = item.tracks.length >= 300; const disabled = !ready || exists || full; return <Pressable accessibilityRole="button" accessibilityLabel={'Adicionar em ' + item.name} accessibilityState={{ disabled }} disabled={disabled} onPress={() => add(item)} style={[styles.row, disabled && styles.disabled]}><MaterialCommunityIcons name={exists ? 'check' : 'playlist-plus'} size={28} color={exists ? colors.green : colors.text} /><View style={styles.info}><Text style={styles.track}>{item.name}</Text><Text style={styles.description}>{exists ? 'Já adicionada' : full ? 'Limite de 300 músicas' : item.tracks.length + ' músicas'}</Text></View></Pressable>; }}
   /></SafeAreaView>;
 }
-const styles = StyleSheet.create({ root: { flex: 1, backgroundColor: colors.background }, content: { flexGrow: 1, padding: 20, paddingBottom: 32 }, header: { gap: 16, paddingBottom: 24 }, back: { width: 44, height: 44 }, title: { color: colors.text, fontSize: 28, fontWeight: '900' }, description: { color: colors.muted, fontSize: 14, lineHeight: 22 }, track: { color: colors.text, fontSize: 16, fontWeight: '700', lineHeight: 23 }, row: { minHeight: 80, flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 12 }, info: { flex: 1, gap: 4 }, disabled: { opacity: 0.5 }, success: { padding: 16, gap: 14, backgroundColor: colors.surface, borderRadius: radius.md }, action: { minHeight: 48, justifyContent: 'center', paddingHorizontal: 20, paddingVertical: 12, backgroundColor: colors.green, borderRadius: radius.pill, alignSelf: 'flex-start' }, actionText: { color: colors.black, fontWeight: '800' } });
+const styles = StyleSheet.create({ root: { flex: 1, backgroundColor: colors.background }, content: { flexGrow: 1, padding: 20, paddingBottom: 32 }, header: { gap: 16, paddingBottom: 24 }, back: { width: 44, height: 44 }, title: { color: colors.text, fontSize: 28, fontWeight: '900' }, description: { color: colors.muted, fontSize: 14, lineHeight: 22 }, track: { color: colors.text, fontSize: 16, fontWeight: '700', lineHeight: 23 }, row: { minHeight: 80, flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 12 }, info: { flex: 1, minWidth: 0, gap: 4 }, disabled: { opacity: 0.5 }, success: { padding: 16, gap: 14, backgroundColor: colors.surface, borderRadius: radius.md }, action: { minHeight: 48, justifyContent: 'center', paddingHorizontal: 20, paddingVertical: 12, backgroundColor: colors.green, borderRadius: radius.pill, alignSelf: 'flex-start' }, actionText: { color: colors.black, fontWeight: '800' } });

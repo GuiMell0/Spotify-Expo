@@ -4,7 +4,11 @@ Este roteiro foi atualizado com a implementação da A15. Usar depois que a Ana 
 
 **Decisão da Ana: gerar e testar o APK somente quando o projeto completo estiver pronto.** Durante G01–G14, validar com testes e bundles, sem exigir instalações a cada commit. O login no Android já foi confirmado anteriormente; os recursos novos e a persistência nativa ainda precisam da validação final.
 
-## Estado após G13
+## Estado após G14
+
+G13 commitada (9d32eec). G14 implementada e validada e aguarda commit: StyleSheet, Flexbox para textos longos, política compartilhada de áreas seguras, alvos de toque, rótulos, teclado e recolhimento do mini-player. As 17 telas foram conferidas no navegador em 320 e 768 pixels. 394 testes unitários, lint sem avisos e bundles Android/web aprovados; 76 cenários de navegador com Spotify simulado aprovados (40 de layout, 15 de recuperação e 21 de player/fila), sem exceções JavaScript. Ver [guia da revisão visual](REVISAO-VISUAL.md). Depois do commit, continuar somente G15: validação final, APK, conferência do histórico e roteiro do vídeo. O teste físico de teclado, insets, escala de fonte e TalkBack permanece pendente. Não gerar APK antes dessa etapa final.
+
+## Histórico após G13
 
 G12 commitada (97e7060). G13 implementada e validada e aguarda commit: falhas transitórias na renovação mantêm a conta local, com aviso e reconexão manual. O token vencido continua bloqueado; rejeição definitiva exige login. Os erros de catálogo oferecem Biblioteca local e o 429 respeita o prazo de espera. 394 testes unitários, lint sem avisos e bundles Android/web aprovados; 36 cenários de navegador com Spotify simulado aprovados (15 de recuperação e 21 de regressão do player/fila), sem exceções JavaScript. Permanecem 17 telas principais. Ver [guia de recuperação e uso offline](RECUPERACAO-OFFLINE.md). Depois do commit, continuar somente G14: revisão visual com StyleSheet e Flexbox. APK e teste físico apenas no final do projeto completo.
 

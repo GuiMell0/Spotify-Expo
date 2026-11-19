@@ -9,15 +9,17 @@ export default function IconButton({ name, size = 24, color = colors.text, onPre
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel || name}
-      hitSlop={10}
+      disabled={!onPress}
+      accessibilityState={{ disabled: !onPress }}
+      hitSlop={6}
       style={({ pressed }) => [styles.button, style, pressed && styles.pressed]}
     >
-      <MaterialCommunityIcons name={name} size={size} color={color} />
+      <MaterialCommunityIcons accessible={false} name={name} size={size} color={color} />
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  button: { alignItems: 'center', justifyContent: 'center' },
+  button: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   pressed: { opacity: 0.62 },
 });

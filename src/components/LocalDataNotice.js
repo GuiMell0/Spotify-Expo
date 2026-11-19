@@ -1,3 +1,4 @@
+import { useSession } from '../contexts/SessionContext';
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,9 +7,10 @@ import { colors, radius } from '../theme';
 
 export default function LocalDataNotice() {
   const { localData, state } = useLocalData();
+  const { session, sessionRecovery } = useSession();
   if (state.status !== 'error') return null;
   return (
-    <SafeAreaView edges={['top', 'left', 'right']} style={styles.safe}>
+    <SafeAreaView edges={session && sessionRecovery ? ['left', 'right'] : ['top', 'left', 'right']} style={styles.safe}>
       <View style={styles.notice}>
         <Text accessibilityRole="alert" accessibilityLiveRegion="polite" style={styles.text}>{state.error.message}</Text>
         <Pressable accessibilityRole="button" accessibilityLabel="Tentar carregar dados salvos" onPress={localData.retry} style={styles.retry}><Text style={styles.label}>Tentar novamente</Text></Pressable>

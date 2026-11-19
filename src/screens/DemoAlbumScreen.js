@@ -3,7 +3,7 @@ import React from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import IconButton from '../components/IconButton';
 import BackButton from '../components/BackButton';
 import MiniPlayer from '../components/DemoMiniPlayer';
@@ -21,8 +21,8 @@ export default function DemoAlbumScreen() {
   return (
     <View style={styles.root}>
       <LinearGradient colors={['#B50A13', '#491011', colors.background]} locations={[0, 0.44, 0.76]} style={StyleSheet.absoluteFill} />
-      <SafeAreaView style={{ flex: 1 }} edges={['top']}>
-        <ScrollView contentContainerStyle={styles.content}>
+      <SafeAreaView style={styles.flexFill} edges={['top']}>
+        <ScrollView keyboardDismissMode="on-drag" contentContainerStyle={styles.content}>
           <BackButton style={styles.back} />
           <Image source={album.image} style={styles.cover} />
           <View style={styles.info}>
@@ -36,7 +36,7 @@ export default function DemoAlbumScreen() {
               <IconButton name="heart" size={28} color={colors.green} />
               <IconButton name="download-circle-outline" size={29} color={colors.muted} />
               <IconButton name="dots-vertical" size={26} color={colors.muted} />
-              <MaterialCommunityIcons name="shuffle-variant" size={28} color={colors.muted} style={{ marginLeft: 'auto' }} />
+              <MaterialCommunityIcons name="shuffle-variant" size={28} color={colors.muted} style={styles.pushRight} />
               <Pressable onPress={() => router.push('/player')} style={styles.play}><MaterialCommunityIcons name="play" size={34} color={colors.black} /></Pressable>
             </View>
           </View>
@@ -50,6 +50,8 @@ export default function DemoAlbumScreen() {
 }
 
 const styles = StyleSheet.create({
+  pushRight: { marginLeft: 'auto' },
+  flexFill: { flex: 1 },
   root: { flex: 1, backgroundColor: colors.background }, content: { paddingBottom: 100 },
   back: { position: 'absolute', left: 16, top: 8, zIndex: 2, width: 38, height: 38, backgroundColor: 'rgba(0,0,0,0.3)', borderRadius: 20 },
   cover: { width: 226, height: 226, alignSelf: 'center', marginTop: 18, backgroundColor: colors.surface },

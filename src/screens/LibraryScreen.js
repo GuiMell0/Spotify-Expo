@@ -6,7 +6,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import LikedTracksShortcut from '../components/LikedTracksShortcut';
 import RecentSearchesShortcut from '../components/RecentSearchesShortcut';
 import { useLocalData } from '../contexts/LocalDataContext';
@@ -68,7 +68,7 @@ function SavedLibraryScreen() {
   }
 
   return <View style={styles.root}><SafeAreaView style={styles.safe} edges={['top']}>
-    <FlatList key={view} data={entries} numColumns={view === 'grid' ? 2 : 1} keyExtractor={item => item.key}
+    <FlatList keyboardDismissMode="on-drag" key={view} data={entries} numColumns={view === 'grid' ? 2 : 1} keyExtractor={item => item.key}
       contentContainerStyle={styles.content} columnWrapperStyle={view === 'grid' ? styles.columns : undefined}
       keyboardShouldPersistTaps="handled"
       ListHeaderComponent={<View style={styles.header}>
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   item: { borderRadius: radius.md, gap: 12, marginBottom: 12 }, gridItem: { width: '48.5%', minHeight: 188, padding: 12, backgroundColor: colors.backgroundSoft },
   listItem: { minHeight: 88, flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }, pressed: { backgroundColor: colors.surface },
   art: { width: 60, height: 60, borderRadius: radius.sm, backgroundColor: colors.surface }, placeholder: { alignItems: 'center', justifyContent: 'center' },
-  info: { flex: 1, gap: 5 }, itemTitle: { color: colors.text, fontSize: 15, fontWeight: '700', lineHeight: 21 }, subtitle: { color: colors.muted, fontSize: 12, lineHeight: 18 },
+  info: { flex: 1, minWidth: 0, gap: 5 }, itemTitle: { color: colors.text, fontSize: 15, fontWeight: '700', lineHeight: 21 }, subtitle: { color: colors.muted, fontSize: 12, lineHeight: 18 },
   empty: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 30, gap: 16 },
   emptyTitle: { color: colors.text, fontSize: 21, fontWeight: '800', textAlign: 'center' }, emptyDescription: { color: colors.muted, fontSize: 14, lineHeight: 22, textAlign: 'center' },
   action: { minHeight: 48, paddingHorizontal: 24, justifyContent: 'center', borderRadius: radius.pill, backgroundColor: colors.green },

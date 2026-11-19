@@ -1,3 +1,4 @@
+import { LayoutProvider } from '../src/contexts/LayoutContext';
 import SessionRecoveryNotice from '../src/components/SessionRecoveryNotice';
 import { TrackQueueProvider } from '../src/contexts/TrackQueueContext';
 import MiniPlayer from '../src/components/MiniPlayer';
@@ -56,7 +57,7 @@ function RootNavigator() {
 }
 
 export default function RootLayout() {
-  return <SessionProvider><LocalDataProvider><SearchProvider><HomeProvider><TrackQueueProvider><RootNavigator /></TrackQueueProvider></HomeProvider></SearchProvider></LocalDataProvider></SessionProvider>;
+  return <SessionProvider><LocalDataProvider><SearchProvider><HomeProvider><TrackQueueProvider><LayoutProvider><RootNavigator /></LayoutProvider></TrackQueueProvider></HomeProvider></SearchProvider></LocalDataProvider></SessionProvider>;
 }
 
 const styles = StyleSheet.create({ root: { flex: 1 } });

@@ -3,7 +3,7 @@ import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollVie
 import { useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as Crypto from 'expo-crypto';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import SafeAreaView from '../components/ScreenSafeArea';
 import { useLocalData } from '../contexts/LocalDataContext';
 import { useSession } from '../contexts/SessionContext';
 import { createLocalPlaylist, LocalPlaylistError, MAX_PLAYLIST_NAME_LENGTH, normalizePlaylistName } from '../services/localPlaylists.mjs';
@@ -51,7 +51,7 @@ function PlaylistForm() {
 
   return <SafeAreaView style={styles.root} edges={['top', 'bottom']}>
     <KeyboardAvoidingView style={styles.safe} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <ScrollView keyboardDismissMode="on-drag" contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <View style={styles.topbar}><BackButton style={styles.back} /><MaterialCommunityIcons name="playlist-music" size={29} color={colors.green} /></View>
         <Text accessibilityRole="header" style={styles.title}>Criar playlist local</Text>
         <Text style={styles.description}>Dê um nome à sua seleção. Esta playlist fica salva neste aparelho e não altera sua conta Spotify.</Text>
