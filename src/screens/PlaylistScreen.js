@@ -1,77 +1,47 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import CatalogEntityPreview from './CatalogEntityPreview';
-import { useSession } from '../contexts/SessionContext';
-import { isSpotifyId } from '../services/spotifyModels.mjs';
-import React from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { FlatList, Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import IconButton from '../components/IconButton';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useSession } from '../contexts/SessionContext';
+import { useSearch } from '../contexts/SearchContext';
+import { createSpotifyPlaylist } from '../services/spotifyPlaylist.mjs';
+import { isSpotifyId } from '../services/spotifyModels.mjs';
+import ApiFeedback from '../components/ApiFeedback';
 import BackButton from '../components/BackButton';
-import MiniPlayer from '../components/MiniPlayer';
-import TrackRow from '../components/TrackRow';
-import { ASSETS, demoPlaylists } from '../data/media';
-import UnavailableContent from '../components/UnavailableContent';
+import LikeTrackButton from '../components/LikeTrackButton';
+import AddToPlaylistButton from '../components/AddToPlaylistButton';
+import DemoPlaylistScreen from './DemoPlaylistScreen';
 import { colors, radius } from '../theme';
-
 export default function PlaylistScreen() {
-  const router = useRouter();
-  const { id } = useLocalSearchParams();
-  const { isDemo } = useSession();
-  if (!isDemo && isSpotifyId(id)) return <CatalogEntityPreview type="playlist" id={id} />;
-  const playlist = demoPlaylists.find((item) => item.id === id);
-
-  if (!playlist) return <UnavailableContent title="Playlist não encontrada" />;
-  return (
-    <View style={styles.root}>
-      <LinearGradient colors={['#686868', '#292929', colors.background]} locations={[0, 0.38, 0.72]} style={StyleSheet.absoluteFill} />
-      <SafeAreaView style={styles.safe} edges={['top']}>
-        <ScrollView contentContainerStyle={styles.content}>
-          <View style={styles.topbar}>
-            <BackButton />
-            <View style={styles.search}><MaterialCommunityIcons name="magnify" size={18} color={colors.text} /><Text style={styles.searchText}>Procurar nesta playlist</Text></View>
-          </View>
-          <Image source={playlist.image} style={styles.cover} />
-          <Text style={styles.title}>{playlist.title}</Text>
-          <View style={styles.ownerRow}><Image source={ASSETS.profile} style={styles.ownerAvatar} /><Text style={styles.owner}>anna</Text></View>
-          <Text style={styles.meta}>Playlist • {playlist.tracks.length} músicas</Text>
-          <View style={styles.actions}>
-            <IconButton name="download-circle-outline" size={28} color={colors.muted} />
-            <IconButton name="share-variant-outline" size={26} color={colors.muted} />
-            <IconButton name="dots-vertical" size={26} color={colors.muted} />
-            <MaterialCommunityIcons name="shuffle-variant" size={28} color={colors.green} style={{ marginLeft: 'auto' }} />
-            <Pressable onPress={() => router.push('/player')} style={styles.play}><MaterialCommunityIcons name="play" size={34} color={colors.black} /></Pressable>
-          </View>
-          <View style={styles.pills}>
-            <View style={styles.pill}><MaterialCommunityIcons name="plus" size={18} color={colors.text} /><Text style={styles.pillText}>Adicionar</Text></View>
-            <View style={styles.pill}><MaterialCommunityIcons name="tune-variant" size={18} color={colors.text} /><Text style={styles.pillText}>Mixar</Text></View>
-          </View>
-          <View style={styles.list}>
-            {playlist.tracks.map((track, index) => (
-              <TrackRow key={track.id} track={track} index={index} liked={index < 3} onPress={() => router.push('/player')} />
-            ))}
-          </View>
-        </ScrollView>
-        <MiniPlayer />
-      </SafeAreaView>
-    </View>
-  );
+  const {isDemo}=useSession();
+  return isDemo?<DemoPlaylistScreen/>:<RemotePlaylist/>;
 }
-
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.background }, safe: { flex: 1 }, content: { paddingBottom: 95 },
-  topbar: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 15, marginTop: 6 },
-  search: { flex: 1, height: 38, marginLeft: 18, backgroundColor: 'rgba(255,255,255,0.16)', borderRadius: 4, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12 },
-  searchText: { color: colors.text, fontSize: 13, fontWeight: '700', marginLeft: 7 },
-  cover: { width: 220, height: 220, alignSelf: 'center', marginTop: 26, borderRadius: 3, backgroundColor: colors.surface },
-  title: { color: colors.text, fontSize: 26, fontWeight: '900', marginHorizontal: 16, marginTop: 17 },
-  ownerRow: { flexDirection: 'row', alignItems: 'center', marginHorizontal: 16, marginTop: 10 },
-  ownerAvatar: { width: 25, height: 25, borderRadius: 13, marginRight: 7 }, owner: { color: colors.text, fontSize: 13, fontWeight: '700' },
-  meta: { color: colors.muted, marginHorizontal: 16, marginTop: 7, fontSize: 12 },
-  actions: { flexDirection: 'row', alignItems: 'center', gap: 19, marginHorizontal: 17, marginTop: 15 },
-  play: { width: 58, height: 58, borderRadius: 29, backgroundColor: colors.green, alignItems: 'center', justifyContent: 'center', marginLeft: 8 },
-  pills: { flexDirection: 'row', gap: 8, marginHorizontal: 16, marginTop: 12 },
-  pill: { flexDirection: 'row', alignItems: 'center', gap: 5, borderColor: '#666', borderWidth: 1, borderRadius: radius.pill, paddingHorizontal: 12, paddingVertical: 7 },
-  pillText: { color: colors.text, fontSize: 12, fontWeight: '700' }, list: { marginTop: 11 },
-});
+function RemotePlaylist() {
+  const {id:routeId}=useLocalSearchParams(),{catalog,session}=useSession(),{search}=useSearch(),router=useRouter();
+  const id=typeof routeId==='string'?routeId:'',scope=session?.user.id;
+  const controller=useMemo(()=>createSpotifyPlaylist(catalog,id,{scope}),[catalog,id,scope]);
+  const state=useSyncExternalStore(controller.subscribe,controller.getSnapshot,controller.getSnapshot);
+  const [openError,setOpenError]=useState(null);
+  useEffect(()=>()=>controller.suspend(),[controller]);
+  useFocusEffect(useCallback(()=>{controller.setActive(true);return()=>{controller.setActive(false);};},[controller]));
+  const playlist=state.playlist,busy=state.status==='loading';
+  async function spotify(){setOpenError(null);try{await Linking.openURL('https://open.spotify.com/playlist/'+id);}catch{setOpenError(controller);}}
+  function open(track){search.rememberEntity(track);router.push(track.href);}
+  return <SafeAreaView style={styles.root} edges={['top','bottom']}><FlatList data={state.tracks} keyExtractor={(item,index)=>item.id+':'+index} contentContainerStyle={styles.content}
+    ListHeaderComponent={<View style={styles.header}><View style={styles.top}><BackButton style={styles.icon}/><MaterialCommunityIcons name="spotify" size={25} color={colors.green}/><Text style={styles.description}>Playlist no Spotify</Text><Pressable accessibilityRole="button" accessibilityLabel="Atualizar playlist Spotify" disabled={busy||state.loadingMore} onPress={controller.refresh} style={styles.icon}><MaterialCommunityIcons name="refresh" size={25} color={colors.text}/></Pressable></View>
+      <ApiFeedback loading={busy} error={state.error} onRetry={controller.refresh} retryLabel="Tentar carregar playlist"/>
+      {state.status==='paused'&&<ApiFeedback message="Carregamento interrompido." onRetry={controller.refresh}/>}
+      {state.error?.status===403&&<Text style={styles.description}>O Spotify não liberou esta playlist para sua conta ou aplicativo. Confira as permissões e tente uma playlist acessível pela sua conta.</Text>}
+      {playlist&&<>{playlist.image?<Image source={playlist.image} resizeMode="contain" style={styles.cover}/>:<View style={styles.placeholder}><MaterialCommunityIcons name="playlist-music" size={80} color={colors.muted}/></View>}<Text accessibilityRole="header" style={styles.title}>{playlist.title}</Text>{playlist.owner.name&&<Text style={styles.description}>Por {playlist.owner.name}</Text>}{playlist.description&&<Text style={styles.description}>{playlist.description.replace(/<[^>]*>/g,' ')}</Text>}{playlist.totalItems!==null&&<Text style={styles.description}>{playlist.totalItems} itens informados pelo Spotify</Text>}<Text style={styles.description}>{state.tracks.length} músicas carregadas</Text></>}
+      {isSpotifyId(id)&&<Pressable accessibilityRole="link" accessibilityLabel="Abrir playlist no Spotify" onPress={spotify} style={styles.action}><Text style={styles.actionText}>Ver no Spotify</Text></Pressable>}
+      {openError===controller&&<Text accessibilityRole="alert" style={styles.description}>Não foi possível abrir o Spotify. Tente novamente.</Text>}
+      {state.error&&playlist&&<Text style={styles.description}>Os dados anteriores foram mantidos; não foi possível atualizar.</Text>}
+      {state.skippedCount>0&&<Text style={styles.description}>{state.skippedCount} itens não foram disponibilizados como músicas pela API.</Text>}
+    </View>}
+    ListEmptyComponent={state.status==='ready'&&<Text style={styles.description}>{state.page?.next?'Nenhuma música disponível nesta página. Carregue a próxima.':'Nenhuma música disponível nesta playlist.'}</Text>}
+    renderItem={({item,index})=><View style={styles.row}><Pressable accessibilityRole="button" accessibilityLabel={'Abrir faixa da playlist '+item.title} onPress={()=>open(item)} style={styles.open}><Text style={styles.description}>{index+1}</Text>{item.image&&<Image source={item.image} resizeMode="contain" style={styles.art}/>}<View style={styles.info}><Text style={styles.track} numberOfLines={2}>{item.title}</Text><Text style={styles.description} numberOfLines={2}>{item.artist}</Text>{item.isPlayable===false&&<Text style={styles.description}>Indisponível nesta conta</Text>}</View></Pressable><LikeTrackButton track={item}/><AddToPlaylistButton track={item}/></View>}
+    ListFooterComponent={<View style={styles.header}><ApiFeedback loading={state.loadingMore} error={state.moreError} onRetry={controller.loadMore} retryLabel="Tentar carregar mais músicas"/>{state.status==='ready'&&state.page?.next&&!state.moreError&&!state.loadingMore&&!busy&&<Pressable accessibilityRole="button" accessibilityLabel="Carregar mais músicas da playlist" onPress={controller.loadMore} style={styles.action}><Text style={styles.actionText}>Carregar mais músicas</Text></Pressable>}</View>}
+  /></SafeAreaView>;
+}
+const styles=StyleSheet.create({root:{flex:1,backgroundColor:colors.background},content:{flexGrow:1,padding:18,paddingBottom:32},header:{gap:16,paddingBottom:20},top:{flexDirection:'row',alignItems:'center',gap:8},icon:{width:44,height:44,alignItems:'center',justifyContent:'center'},description:{color:colors.muted,fontSize:13,lineHeight:21,flexShrink:1},title:{color:colors.text,fontSize:29,fontWeight:'900',lineHeight:37},cover:{width:200,height:200,alignSelf:'center',backgroundColor:colors.surface},placeholder:{width:200,height:200,alignSelf:'center',backgroundColor:colors.surface,alignItems:'center',justifyContent:'center'},action:{minHeight:48,paddingHorizontal:20,paddingVertical:12,justifyContent:'center',backgroundColor:colors.green,borderRadius:radius.pill,alignSelf:'flex-start'},actionText:{color:colors.black,fontWeight:'800'},row:{flexDirection:'row',alignItems:'center',gap:4},open:{flex:1,minHeight:84,flexDirection:'row',alignItems:'center',gap:10,paddingVertical:12},art:{width:44,height:44},info:{flex:1,gap:4},track:{color:colors.text,fontSize:15,lineHeight:21,fontWeight:'700'}});

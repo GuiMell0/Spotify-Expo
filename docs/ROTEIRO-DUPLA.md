@@ -4,7 +4,11 @@ Este roteiro foi atualizado com a implementação da A15. Usar depois que a Ana 
 
 **Decisão da Ana: gerar e testar o APK somente quando o projeto completo estiver pronto.** Durante G01–G14, validar com testes e bundles, sem exigir instalações a cada commit. O login no Android já foi confirmado anteriormente; os recursos novos e a persistência nativa ainda precisam da validação final.
 
-## Estado após G04
+## Estado após G05
+
+G04 commitada (e76ac47). G05 implementada e validada e aguarda commit. 322 testes unitários, lint e bundles Android/web aprovados; nove cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Permanecem 15 telas principais. G06 será a listagem de playlists Spotify da conta na Biblioteca. APK apenas ao concluir o projeto completo.
+
+## Histórico após G04
 
 G03 commitada (a113bf6). G04 implementada e validada e aguarda commit. 314 testes unitários, lint e bundles Android/web aprovados; nove cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. São 15 telas principais. G05 é a próxima etapa, ainda não iniciada. APK somente ao final.
 

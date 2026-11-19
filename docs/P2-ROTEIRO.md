@@ -92,7 +92,7 @@ A15 conclui a parte implementada da Ana: API real para Home, busca, álbuns, art
 
 ## Etapas do Guilherme — 15 commits
 
-G03 conferida no Git: a113bf6. G04 implementada e validada: edição de nome, remoção de músicas e exclusão de playlists locais com confirmação. 314 testes unitários, lint e bundles Android/web aprovados; nove cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. São 15 telas principais. G04 pronta para commit; G05 não iniciada. APK somente na conclusão do projeto completo. Ver [edição de playlists](EDITAR-PLAYLISTS.md).
+G04 conferida no Git: e76ac47. G05 implementada: metadados e faixas de playlists Spotify, paginação e tratamento de acesso negado. 322 testes unitários, lint e bundles Android/web aprovados; nove cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. São 15 telas principais. G05 pronta para commit; G06 ainda não iniciada. APK somente no projeto completo. Ver [playlists Spotify](SPOTIFY-PLAYLISTS.md).
 
 | Etapa | Mensagem de commit | Entrega e critério de aceite |
 | --- | --- | --- |

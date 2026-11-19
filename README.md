@@ -63,7 +63,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 | Criar playlist local | Formulário com validação, gravação por conta e retorno à Biblioteca após confirmação. |
 | Músicas curtidas | Favoritas salvas por conta neste aparelho, remoção, estado vazio e abertura dos metadados da faixa. |
 | Buscas recentes | Histórico por conta, nova busca por toque, remoção individual e limpeza com confirmação. |
-| Playlist | Prévia da entidade real quando disponível; detalhes completos e faixas ficam para G05. Demonstração da P1 separada. |
+| Playlist | Metadados e músicas reais, paginação, tratamento de acesso negado e link Spotify; demonstração separada. |
 | Álbum | Detalhes e faixas reais por ID, paginação, atualização e navegação ao artista e à faixa. |
 | Artista | Dados reais por ID, discografia paginada de álbuns e singles, atualização e acesso aos álbuns. |
 | Player | Metadados de faixa real, curtida local e link Spotify; player da P1 nas telas ainda não refatoradas. |
@@ -372,6 +372,12 @@ Validação G03: 306 testes unitários, lint e bundles Android/web aprovados; se
 Os detalhes oferecem Editar playlist: renomear, remover músicas e excluir a playlist, com confirmação nas remoções. Cancelar não grava alterações; falhas preservam os dados confirmados e oferecem recuperação. A G04 acrescenta a 15ª tela principal. Ver [guia de edição](docs/EDITAR-PLAYLISTS.md).
 
 Validação G04: 314 testes unitários, lint e bundles Android/web aprovados; nove cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. O teste físico do APK permanece para o projeto completo.
+
+## Playlists Spotify na G05
+
+/playlist/[id] exibe os metadados e músicas permitidos pela API, com paginação e recuperação de falhas. A tela permite curtir faixas e adicioná-las às playlists locais. A demonstração da P1 fica separada, sem ativação automática em caso de erro. São 15 telas principais; a listagem das playlists da conta na Biblioteca fica para G06. Ver [guia de playlists Spotify](docs/SPOTIFY-PLAYLISTS.md).
+
+Validação G05: 322 testes unitários, lint e bundles Android/web aprovados; nove cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Teste real no Android somente ao concluir o projeto completo.
 
 ## Limitações atuais
 

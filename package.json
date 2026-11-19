@@ -65,7 +65,8 @@
     "test:playlists": "node --test tests/local-playlists.test.mjs",
     "test:playlist-details": "node --test tests/local-playlist-details.test.mjs",
     "test:playlist-tracks": "node --test tests/playlist-tracks.test.mjs",
-    "test:playlist-edit": "node --test tests/edit-local-playlist.test.mjs"
+    "test:playlist-edit": "node --test tests/edit-local-playlist.test.mjs",
+    "test:spotify-playlist": "node --test tests/spotify-playlist.test.mjs"
   },
   "private": true
 }
