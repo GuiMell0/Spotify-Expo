@@ -1,59 +1,40 @@
-import { useRouter } from 'expo-router';
-import React from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import React, { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useFocusEffect } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import IconButton from '../components/IconButton';
-import BackButton from '../components/BackButton';
-import MiniPlayer from '../components/MiniPlayer';
-import { ASSETS, libraryItems } from '../data/media';
-import { colors, radius } from '../theme';
 import { useSession } from '../contexts/SessionContext';
-
-export default function ProfileScreen() {
-  const router = useRouter();
-  const { signOut, isDemo } = useSession();
-  return (
-    <View style={styles.root}>
-      <LinearGradient colors={['#EC6196', '#77344D', colors.background]} locations={[0, 0.31, 0.58]} style={StyleSheet.absoluteFill} />
-      <SafeAreaView style={{ flex: 1 }} edges={['top']}>
-        <ScrollView contentContainerStyle={styles.content}>
-          <BackButton style={styles.back} />
-          <View style={styles.profileRow}>
-            <Image source={ASSETS.profile} style={styles.avatar} />
-            <View style={{ flex: 1 }}><Text style={styles.name}>anna</Text><Text style={styles.stats}>6 seguidores • 50 seguindo</Text></View>
-          </View>
-          <View style={styles.actions}>
-            <Pressable style={styles.edit}><Text style={styles.editText}>Editar</Text></Pressable>
-            <IconButton name="cog-outline" size={26} />
-            <IconButton name="dots-vertical" size={25} />
-          </View>
-          <View style={styles.sectionHeader}><Text style={styles.sectionTitle}>Playlists</Text><Text style={styles.manage}>✎  Gerenciar</Text></View>
-          {libraryItems.slice(0, 4).map((item) => (
-            <Pressable key={item.id} onPress={() => router.push(item.href)} style={styles.playlistRow}>
-              <Image source={item.image} style={styles.playlistImage} />
-              <View style={{ flex: 1 }}><Text numberOfLines={1} style={styles.playlistTitle}>{item.title}</Text><Text style={styles.playlistSub}>{item.subtitle}</Text></View>
-              <MaterialCommunityIcons name="dots-vertical" size={22} color={colors.muted} />
-            </Pressable>
-          ))}
-          <Pressable accessibilityRole="button" onPress={signOut} style={styles.allButton}><Text style={styles.allText}>{isDemo ? 'Sair da demonstração' : 'Sair da conta'}</Text></Pressable>
-          <Pressable style={styles.allButton}><Text style={styles.allText}>Ver todas as playlists</Text></Pressable>
-        </ScrollView>
-        <MiniPlayer />
-      </SafeAreaView>
-    </View>
-  );
+import { createSpotifyProfile, sessionProfile } from '../services/spotifyProfile.mjs';
+import { createSpotifyLibrary } from '../services/spotifyLibrary.mjs';
+import SpotifyLibraryPlaylists from '../components/SpotifyLibraryPlaylists';
+import ApiFeedback from '../components/ApiFeedback';
+import BackButton from '../components/BackButton';
+import DemoProfileScreen from './DemoProfileScreen';
+import { colors, radius } from '../theme';
+export default function ProfileScreen(){const {isDemo}=useSession();return isDemo?<DemoProfileScreen/>:<AccountProfile/>;}
+function AccountProfile(){
+ const {session,api,catalog,signOut}=useSession(),user=session.user,id=user.id;
+ const controller=useMemo(()=>createSpotifyProfile(api,id),[api,id]);
+ const playlists=useMemo(()=>createSpotifyLibrary(catalog,{scope:id}),[catalog,id]);
+ const state=useSyncExternalStore(controller.subscribe,controller.getSnapshot,controller.getSnapshot);
+ const [failedImage,setFailedImage]=useState(null),[linkError,setLinkError]=useState(null);
+ useEffect(()=>()=>{controller.suspend();playlists.suspend();},[controller,playlists]);
+ useFocusEffect(useCallback(()=>{controller.setActive(true);return()=>controller.setActive(false);},[controller]));
+ const profile=state.profile??sessionProfile(user),initial=Array.from(profile.name)[0]?.toLocaleUpperCase()||'♪';
+ function refresh(){setFailedImage(null);controller.refresh();}
+ async function open(){setLinkError(null);try{await Linking.openURL(profile.spotifyUrl);}catch{setLinkError(controller);}}
+ return <SafeAreaView style={styles.root} edges={['top','bottom']}><ScrollView contentContainerStyle={styles.content}>
+ <View style={styles.top}><BackButton style={styles.icon}/><MaterialCommunityIcons name="spotify" size={26} color={colors.green}/><Text style={styles.description}>Sua conta Spotify</Text><Pressable accessibilityRole="button" accessibilityLabel="Atualizar perfil Spotify" disabled={state.status==='loading'} onPress={refresh} style={styles.icon}><MaterialCommunityIcons name="refresh" size={25} color={colors.text}/></Pressable></View>
+ <ApiFeedback loading={state.status==='loading'} error={state.error} onRetry={refresh} retryLabel="Tentar carregar perfil"/>
+ {state.status==='paused'&&<ApiFeedback message="Atualização interrompida." onRetry={refresh}/>}
+ <View style={styles.identity}>{profile.image&&failedImage!==profile.image.uri?<Image accessibilityLabel="Foto da conta Spotify" source={profile.image} onError={()=>setFailedImage(profile.image.uri)} style={styles.avatar}/>:<View accessibilityLabel="Perfil sem foto disponível" style={styles.placeholder}><Text style={styles.initial}>{initial}</Text></View>}<Text accessibilityRole="header" style={styles.name}>{profile.name}</Text></View>
+ <Text style={styles.description}>Identificador Spotify: {profile.id}</Text>
+ {profile.followers!==null&&<Text style={styles.description}>{profile.followers} {profile.followers===1?'seguidor':'seguidores'}</Text>}
+ {state.error&&<Text style={styles.description}>{state.profile?'Os dados anteriores foram mantidos. Não foi possível atualizar o perfil.':'A identificação exibida vem da sessão. Não foi possível atualizar o perfil.'}</Text>}
+ <Pressable accessibilityRole="link" accessibilityLabel="Ver perfil no Spotify" onPress={open} style={styles.action}><Text style={styles.actionText}>Ver perfil no Spotify</Text></Pressable>
+ {linkError===controller&&<Text accessibilityRole="alert" style={styles.description}>Não foi possível abrir o Spotify. Tente novamente.</Text>}
+ <Pressable accessibilityRole="button" accessibilityLabel="Sair da conta" onPress={signOut} style={styles.secondary}><Text style={styles.secondaryText}>Sair da conta</Text></Pressable>
+ <SpotifyLibraryPlaylists visible view="list" sort="recent" controller={playlists}/>
+ </ScrollView></SafeAreaView>;
 }
-
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.background }, content: { paddingBottom: 100 }, back: { marginLeft: 15, marginTop: 4, alignSelf: 'flex-start' },
-  profileRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 24, marginTop: 21 }, avatar: { width: 108, height: 108, borderRadius: 54, marginRight: 18 },
-  name: { color: colors.text, fontSize: 29, fontWeight: '900' }, stats: { color: colors.text, fontSize: 12, marginTop: 8 },
-  actions: { flexDirection: 'row', alignItems: 'center', gap: 20, marginHorizontal: 24, marginTop: 25 }, edit: { borderWidth: 1, borderColor: '#999', borderRadius: radius.pill, paddingHorizontal: 17, paddingVertical: 8 }, editText: { color: colors.text, fontWeight: '700' },
-  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 18, marginTop: 35, marginBottom: 10 },
-  sectionTitle: { color: colors.text, fontSize: 22, fontWeight: '900' }, manage: { color: colors.text, fontSize: 12, fontWeight: '600' },
-  playlistRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 17, paddingVertical: 6 }, playlistImage: { width: 56, height: 56, marginRight: 12 },
-  playlistTitle: { color: colors.text, fontSize: 15, fontWeight: '600' }, playlistSub: { color: colors.muted, fontSize: 12, marginTop: 4 },
-  allButton: { borderWidth: 1, borderColor: '#777', borderRadius: radius.pill, alignSelf: 'center', paddingHorizontal: 18, paddingVertical: 9, marginTop: 23 }, allText: { color: colors.text, fontSize: 12, fontWeight: '700' },
-});
+const styles=StyleSheet.create({root:{flex:1,backgroundColor:colors.background},content:{flexGrow:1,padding:20,paddingBottom:32,gap:18},top:{flexDirection:'row',alignItems:'center',gap:10},icon:{width:44,height:44,alignItems:'center',justifyContent:'center'},description:{color:colors.muted,fontSize:14,lineHeight:22,flexShrink:1},identity:{alignItems:'center',gap:20,paddingVertical:12},avatar:{width:130,height:130,borderRadius:65},placeholder:{width:130,height:130,borderRadius:65,backgroundColor:colors.green,alignItems:'center',justifyContent:'center'},initial:{fontSize:48,color:colors.black,fontWeight:'800'},name:{color:colors.text,fontSize:30,lineHeight:39,fontWeight:'900',textAlign:'center'},action:{minHeight:48,padding:14,justifyContent:'center',alignItems:'center',backgroundColor:colors.green,borderRadius:radius.pill},actionText:{color:colors.black,fontSize:14,fontWeight:'800'},secondary:{minHeight:48,padding:14,borderWidth:1,borderColor:colors.muted,justifyContent:'center',alignItems:'center',borderRadius:radius.pill},secondaryText:{color:colors.text,fontWeight:'700',fontSize:14}});

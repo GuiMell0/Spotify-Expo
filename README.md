@@ -67,7 +67,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 | Álbum | Detalhes e faixas reais por ID, paginação, atualização e navegação ao artista e à faixa. |
 | Artista | Dados reais por ID, discografia paginada de álbuns e singles, atualização e acesso aos álbuns. |
 | Player | Metadados de faixa real, curtida local e link Spotify; player da P1 nas telas ainda não refatoradas. |
-| Perfil | Interface da P1 e ação de sair; refatoração dos dados reais em G08. |
+| Perfil | Dados reais de /me, foto ou inicial, playlists da conta, atualização, link Spotify e logout. |
 
 ## Tecnologias utilizadas
 
@@ -390,6 +390,12 @@ Validação G06: 330 testes unitários, lint e bundles Android/web aprovados; de
 A tela do artista permite acompanhar ou deixar de acompanhar neste aparelho. A Biblioteca mostra a escolha em Tudo e Artistas, com acesso ao artista correto. O estado persiste por conta, evita duplicatas e não modifica seguidores no Spotify. Ver [guia dos artistas acompanhados](docs/ARTISTAS-ACOMPANHADOS.md).
 
 Validação G07: 338 testes unitários, lint e bundles Android/web aprovados; dez cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Permanecem 15 telas principais. APK somente na conclusão do projeto completo.
+
+## Perfil real da conta — G08
+
+O perfil autenticado usa /me para apresentar a identificação da conta, com foto ou inicial e nome ou ID. Seguidores só aparecem se a API informar uma contagem válida. A tela oferece atualização, playlists reais, link Spotify e logout, sem os controles fictícios da P1. Ver [guia do perfil](docs/PERFIL-SPOTIFY.md).
+
+Validação G08: 346 testes unitários, lint e bundles Android/web aprovados; dez cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Permanecem 15 telas principais. APK e teste físico somente ao concluir o projeto completo.
 
 ## Limitações atuais
 

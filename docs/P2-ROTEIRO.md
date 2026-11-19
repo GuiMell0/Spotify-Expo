@@ -92,7 +92,7 @@ A15 conclui a parte implementada da Ana: API real para Home, busca, álbuns, art
 
 ## Etapas do Guilherme — 15 commits
 
-G06 conferida no Git: cb5656c. G07 implementada: artistas acompanhados localmente, persistência por conta e filtro na Biblioteca. 338 testes unitários, lint e bundles Android/web aprovados; dez cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Permanecem 15 telas principais. G07 pronta para commit; G08 ainda não iniciada. APK somente no projeto completo. Ver [artistas acompanhados](ARTISTAS-ACOMPANHADOS.md).
+G07 conferida no Git: 21c40bb. G08 implementada: perfil real de /me, tratamento de foto e nome ausentes, playlists da conta e logout. 346 testes unitários, lint e bundles Android/web aprovados; dez cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Permanecem 15 telas principais. G08 pronta para commit; G09 ainda não iniciada. APK somente no projeto completo. Ver [perfil real](PERFIL-SPOTIFY.md).
 
 | Etapa | Mensagem de commit | Entrega e critério de aceite |
 | --- | --- | --- |
