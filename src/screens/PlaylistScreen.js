@@ -1,10 +1,10 @@
+import { useOpenTrack } from '../hooks/useOpenTrack';
 import React, { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { FlatList, Image, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
-import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSession } from '../contexts/SessionContext';
-import { useSearch } from '../contexts/SearchContext';
 import { createSpotifyPlaylist } from '../services/spotifyPlaylist.mjs';
 import { isSpotifyId } from '../services/spotifyModels.mjs';
 import ApiFeedback from '../components/ApiFeedback';
@@ -18,7 +18,8 @@ export default function PlaylistScreen() {
   return isDemo?<DemoPlaylistScreen/>:<RemotePlaylist/>;
 }
 function RemotePlaylist() {
-  const {id:routeId}=useLocalSearchParams(),{catalog,session}=useSession(),{search}=useSearch(),router=useRouter();
+  const openTrackSelection = useOpenTrack();
+  const {id:routeId}=useLocalSearchParams(),{catalog,session}=useSession();
   const id=typeof routeId==='string'?routeId:'',scope=session?.user.id;
   const controller=useMemo(()=>createSpotifyPlaylist(catalog,id,{scope}),[catalog,id,scope]);
   const state=useSyncExternalStore(controller.subscribe,controller.getSnapshot,controller.getSnapshot);
@@ -27,7 +28,7 @@ function RemotePlaylist() {
   useFocusEffect(useCallback(()=>{controller.setActive(true);return()=>{controller.setActive(false);};},[controller]));
   const playlist=state.playlist,busy=state.status==='loading';
   async function spotify(){setOpenError(null);try{await Linking.openURL('https://open.spotify.com/playlist/'+id);}catch{setOpenError(controller);}}
-  function open(track){search.rememberEntity(track);router.push(track.href);}
+  function open(track){openTrackSelection(track,state.tracks);}
   return <SafeAreaView style={styles.root} edges={['top','bottom']}><FlatList data={state.tracks} keyExtractor={(item,index)=>item.id+':'+index} contentContainerStyle={styles.content}
     ListHeaderComponent={<View style={styles.header}><View style={styles.top}><BackButton style={styles.icon}/><MaterialCommunityIcons name="spotify" size={25} color={colors.green}/><Text style={styles.description}>Playlist no Spotify</Text><Pressable accessibilityRole="button" accessibilityLabel="Atualizar playlist Spotify" disabled={busy||state.loadingMore} onPress={controller.refresh} style={styles.icon}><MaterialCommunityIcons name="refresh" size={25} color={colors.text}/></Pressable></View>
       <ApiFeedback loading={busy} error={state.error} onRetry={controller.refresh} retryLabel="Tentar carregar playlist"/>

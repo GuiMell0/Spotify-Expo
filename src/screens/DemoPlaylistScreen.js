@@ -6,7 +6,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import IconButton from '../components/IconButton';
 import BackButton from '../components/BackButton';
-import MiniPlayer from '../components/MiniPlayer';
+import MiniPlayer from '../components/DemoMiniPlayer';
 import TrackRow from '../components/TrackRow';
 import { ASSETS, demoPlaylists } from '../data/media';
 import UnavailableContent from '../components/UnavailableContent';

@@ -4,7 +4,11 @@ Este roteiro foi atualizado com a implementação da A15. Usar depois que a Ana 
 
 **Decisão da Ana: gerar e testar o APK somente quando o projeto completo estiver pronto.** Durante G01–G14, validar com testes e bundles, sem exigir instalações a cada commit. O login no Android já foi confirmado anteriormente; os recursos novos e a persistência nativa ainda precisam da validação final.
 
-## Estado após G11
+## Estado após G12
+
+G11 commitada (33177c8). G12 implementada e validada e aguarda commit: fila compartilhada da origem, mini-player sincronizado, seleção direta e anterior/próxima com limites. O estado representa seleção e a reprodução continua no Spotify. 382 testes unitários, lint sem avisos e bundles Android/web aprovados; 21 cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Permanecem 17 telas principais. Ver [guia de mini-player e fila](MINI-PLAYER-FILA.md). Depois do commit, continuar somente G13: recuperação de falhas e uso offline. APK e teste físico apenas ao concluir o projeto completo.
+
+## Histórico após G11
 
 G10 commitada (cc7a0f5). G11 implementada e validada e aguarda commit: player da faixa correta, abertura no Spotify e ações locais, sem letra ou progresso fictícios no modo autenticado. 370 testes unitários, lint e bundles Android/web aprovados; onze cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Permanecem 17 telas principais. Ver [guia do player](PLAYER-SPOTIFY.md). Depois do commit G11, continuar somente G12: estado compartilhado da seleção, mini-player e fila, sem indicar áudio tocando. APK e teste físico apenas no final do projeto completo.
 

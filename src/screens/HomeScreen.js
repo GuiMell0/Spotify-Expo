@@ -1,3 +1,4 @@
+import { useOpenTrack } from '../hooks/useOpenTrack';
 import { useLocalData } from '../contexts/LocalDataContext';
 import { displayNameForAccount } from '../services/localDisplayName.mjs';
 import React, { useCallback } from 'react';
@@ -23,6 +24,7 @@ export default function HomeScreen() {
 }
 
 function SpotifyHomeScreen() {
+  const openTrackSelection = useOpenTrack();
   const router = useRouter();
   const { session } = useSession();
   const { state: localState } = useLocalData();
@@ -41,8 +43,8 @@ function SpotifyHomeScreen() {
   const name = displayNameForAccount(localState.data, session?.user.displayName || session?.user.id || 'Spotify');
   const initial = Array.from(name.trim())[0]?.toLocaleUpperCase() || '♪';
   function open(item) {
-    search.rememberEntity(item);
-    router.push(item.href);
+    if (item.type === 'track') openTrackSelection(item, sections.flatMap(section => section.items).filter(entry => entry.type === 'track'));
+    else { search.rememberEntity(item); router.push(item.href); }
   }
   function discover(type = 'all') {
     search.setFilter(type);

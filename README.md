@@ -415,7 +415,13 @@ Validação G10: 362 testes unitários, lint e bundles Android/web aprovados; do
 
 O player autenticado mostra a música selecionada, com capa disponível, artistas e duração. Permite curtir, adicionar a uma playlist local e visitar álbum/artista, mantendo a faixa ao voltar. O botão Ouvir no Spotify abre o endereço da música: a reprodução acontece no próprio Spotify. Não há progresso nem letra fictícios nesse modo. Ver [guia do player](docs/PLAYER-SPOTIFY.md).
 
-Validação G11: 370 testes unitários, lint e bundles Android/web aprovados; onze cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Permanecem 17 telas principais. A abertura externa foi interceptada nos testes; a integração no aparelho será conferida com o APK apenas ao concluir o projeto completo. Mini-player e fila compartilhada continuam na G12.
+Validação G11: 370 testes unitários, lint e bundles Android/web aprovados; onze cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Permanecem 17 telas principais. A abertura externa foi interceptada nos testes; a integração no aparelho será conferida com o APK apenas ao concluir o projeto completo. A G12 conecta o mini-player e a fila compartilhada descritos abaixo.
+
+## Mini-player e fila compartilhada — G12
+
+Uma faixa aberta pela Home, busca, Biblioteca, curtidas, álbum ou playlist passa a ser a seleção compartilhada. O mini-player mostra essa música nas outras telas e reabre o player com a fila da origem. Anterior, Próxima e escolha direta atualizam a seleção, com limites e sem indicar reprodução de áudio. A fila fica na memória da sessão e é isolada por conta. Ver [guia de mini-player e fila](docs/MINI-PLAYER-FILA.md).
+
+Validação G12: 382 testes unitários, lint sem avisos e bundles Android/web aprovados; 21 cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Permanecem 17 telas principais. APK e teste físico somente ao concluir o projeto completo.
 
 ## Limitações atuais
 

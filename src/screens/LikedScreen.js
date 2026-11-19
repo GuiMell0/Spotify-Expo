@@ -1,3 +1,4 @@
+import { useOpenTrack } from '../hooks/useOpenTrack';
 import AddToPlaylistButton from '../components/AddToPlaylistButton';
 import React from 'react';
 import { ActivityIndicator, FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -6,21 +7,19 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLikedTracks } from '../hooks/useLikedTracks';
-import { useSearch } from '../contexts/SearchContext';
 import { useSession } from '../contexts/SessionContext';
 import BackButton from '../components/BackButton';
 import LikeTrackButton from '../components/LikeTrackButton';
 import { colors, radius } from '../theme';
 
 export default function LikedScreen() {
+  const openTrackSelection = useOpenTrack();
   const router = useRouter();
-  const { search } = useSearch();
   const { isDemo, signOut } = useSession();
   const { state, entries } = useLikedTracks();
   const loading = ['idle', 'loading'].includes(state.status);
   function open(track) {
-    search.rememberEntity(track);
-    router.push(track.href);
+    openTrackSelection(track, entries.map(entry => entry.track));
   }
   function empty() {
     if (isDemo || state.status === 'disabled') return <View style={styles.empty}><Text style={styles.emptyTitle}>Suas favoritas começam com sua conta</Text><Text style={styles.description}>Entre com Spotify para salvar músicas neste aparelho.</Text><Pressable accessibilityRole="button" onPress={signOut} style={styles.action}><Text style={styles.actionText}>Ir para o login</Text></Pressable></View>;

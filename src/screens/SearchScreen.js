@@ -1,3 +1,4 @@
+import { useOpenTrack } from '../hooks/useOpenTrack';
 import AddToPlaylistButton from '../components/AddToPlaylistButton';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback } from 'react';
@@ -25,6 +26,7 @@ export default function SearchScreen() {
 }
 
 function SpotifySearchScreen() {
+  const openTrackSelection = useOpenTrack();
   const router = useRouter();
   const { search, state } = useSearch();
   const { rememberIfReady } = useRecentSearches();
@@ -36,8 +38,8 @@ function SpotifySearchScreen() {
   }
   function openResult(item) {
     rememberIfReady(search.getSnapshot().query);
-    search.rememberEntity(item);
-    router.push(item.href);
+    if (item.type === 'track') openTrackSelection(item, state.groups.tracks?.items ?? [item]);
+    else { search.rememberEntity(item); router.push(item.href); }
   }
   useFocusEffect(useCallback(() => {
     search.setActive(true);

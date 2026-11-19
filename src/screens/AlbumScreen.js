@@ -1,3 +1,4 @@
+import { useOpenTrack } from '../hooks/useOpenTrack';
 import AddToPlaylistButton from '../components/AddToPlaylistButton';
 import React, { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Image, Linking, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -22,6 +23,7 @@ export default function AlbumScreen() {
 }
 
 function SpotifyAlbumScreen() {
+  const openTrackSelection = useOpenTrack();
   const { id: routeId } = useLocalSearchParams();
   const id = typeof routeId === 'string' ? routeId : '';
   const { catalog, session } = useSession();
@@ -40,8 +42,7 @@ function SpotifyAlbumScreen() {
   const busy = state.status === 'loading';
   const multipleDiscs = state.tracks.some(track => track.discNumber > 1);
   function openTrack(track) {
-    search.rememberEntity(track);
-    router.push(track.href);
+    openTrackSelection(track, state.tracks);
   }
   function openArtist(artist) {
     search.rememberEntity(search.getEntity('artist', artist.id) ?? artist);

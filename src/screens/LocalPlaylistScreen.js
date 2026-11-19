@@ -1,3 +1,4 @@
+import { useOpenTrack } from '../hooks/useOpenTrack';
 import AddToPlaylistButton from '../components/AddToPlaylistButton';
 import React from 'react';
 import { ActivityIndicator, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -7,24 +8,23 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalData } from '../contexts/LocalDataContext';
 import { useSession } from '../contexts/SessionContext';
-import { useSearch } from '../contexts/SearchContext';
 import { localPlaylistCover, localPlaylistHref, selectLocalPlaylist } from '../services/localPlaylistDetails.mjs';
 import IconButton from '../components/IconButton';
 import LikeTrackButton from '../components/LikeTrackButton';
 import { colors, radius } from '../theme';
 
 export default function LocalPlaylistScreen() {
+  const openTrackSelection = useOpenTrack();
   const { id } = useLocalSearchParams();
   const router = useRouter();
   const { isDemo, signOut } = useSession();
   const { state } = useLocalData();
-  const { search } = useSearch();
   const selection = selectLocalPlaylist(state, id);
   const playlist = selection.playlist;
   const cover = localPlaylistCover(playlist);
   const library = () => router.dismissTo('/library');
   const back = () => { if (router.canGoBack()) router.back(); else router.replace('/library'); };
-  function open(track) { search.rememberEntity(track); router.push(track.href); }
+  function open(track) { openTrackSelection(track, playlist.tracks); }
   const topbar = <View style={styles.topbar}><IconButton name="arrow-left" accessibilityLabel="Voltar" onPress={back} style={styles.back} /><View style={styles.tag}><MaterialCommunityIcons name="playlist-music" size={23} color={colors.green} /><Text style={styles.tagText}>Playlist local</Text></View></View>;
 
   function feedback() {

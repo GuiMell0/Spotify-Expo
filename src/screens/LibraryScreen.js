@@ -1,3 +1,4 @@
+import { useOpenTrack } from '../hooks/useOpenTrack';
 import { displayNameForAccount } from '../services/localDisplayName.mjs';
 import { createSpotifyLibrary } from '../services/spotifyLibrary.mjs';
 import SpotifyLibraryPlaylists from '../components/SpotifyLibraryPlaylists';
@@ -22,6 +23,7 @@ export default function LibraryScreen() {
 }
 
 function SavedLibraryScreen() {
+  const openTrackSelection = useOpenTrack();
   const router = useRouter();
   const { session, catalog } = useSession();
   const scope = session?.user.id;
@@ -44,8 +46,7 @@ function SavedLibraryScreen() {
   }
   function open(item) {
     if (item.type === 'track') {
-      search.rememberEntity(item.track);
-      router.push(item.track.href);
+      openTrackSelection(item.track, entries.filter(entry => entry.type === 'track').map(entry => entry.track));
     } else if (item.type === 'local-playlist') {
       if (item.href) router.push(item.href);
     } else if (item.type === 'local-artist') {

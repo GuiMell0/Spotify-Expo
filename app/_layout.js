@@ -1,3 +1,5 @@
+import { TrackQueueProvider } from '../src/contexts/TrackQueueContext';
+import MiniPlayer from '../src/components/MiniPlayer';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { LocalDataProvider } from '../src/contexts/LocalDataContext';
@@ -45,13 +47,14 @@ function RootNavigator() {
         </Stack.Protected>
         <Stack.Screen name="+not-found" />
       </Stack>
+      <MiniPlayer />
       </View>
     </ThemeProvider>
   );
 }
 
 export default function RootLayout() {
-  return <SessionProvider><LocalDataProvider><SearchProvider><HomeProvider><RootNavigator /></HomeProvider></SearchProvider></LocalDataProvider></SessionProvider>;
+  return <SessionProvider><LocalDataProvider><SearchProvider><HomeProvider><TrackQueueProvider><RootNavigator /></TrackQueueProvider></HomeProvider></SearchProvider></LocalDataProvider></SessionProvider>;
 }
 
 const styles = StyleSheet.create({ root: { flex: 1 } });

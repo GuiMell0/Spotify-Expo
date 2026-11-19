@@ -6,7 +6,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import IconButton from '../components/IconButton';
 import BackButton from '../components/BackButton';
-import MiniPlayer from '../components/MiniPlayer';
+import MiniPlayer from '../components/DemoMiniPlayer';
 import { ASSETS, libraryItems } from '../data/media';
 import { colors, radius } from '../theme';
 import { useSession } from '../contexts/SessionContext';

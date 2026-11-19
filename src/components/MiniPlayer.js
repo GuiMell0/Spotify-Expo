@@ -1,39 +1,34 @@
-import { useRouter } from 'expo-router';
 import React from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { usePathname, useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { ASSETS } from '../data/media';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTrackQueue } from '../contexts/TrackQueueContext';
+import { useSession } from '../contexts/SessionContext';
 import { colors, radius } from '../theme';
 
 export default function MiniPlayer() {
+  const { state } = useTrackQueue();
+  const { session, isDemo } = useSession();
+  const pathname = usePathname();
   const router = useRouter();
-  return (
-    <Pressable
-      onPress={() => router.push('/player')}
-      style={({ pressed }) => [styles.container, pressed && { opacity: 0.9 }]}
-      accessibilityRole="button"
-      accessibilityLabel="Abrir player de Bedless"
-    >
-      <Image source={ASSETS.playerCover} style={styles.cover} />
-      <View style={styles.meta}>
-        <Text numberOfLines={1} style={styles.title}>Bedless</Text>
-        <Text numberOfLines={1} style={styles.artist}>Pierce The Veil</Text>
-      </View>
-      <MaterialCommunityIcons name="cellphone-sound" size={21} color={colors.text} />
-      <MaterialCommunityIcons name="check-circle" size={21} color={colors.green} style={styles.icon} />
-      <MaterialCommunityIcons name="play" size={29} color={colors.text} />
+  const insets = useSafeAreaInsets();
+  const track = state.track;
+  if (!session || isDemo || !track || ['/player', '/login', '/callback'].includes(pathname)) return null;
+  return <View style={[styles.area, { paddingBottom: Math.max(insets.bottom, 8) }]}>
+    <Pressable accessibilityRole="button" accessibilityLabel={'Abrir faixa selecionada ' + track.title}
+      onPress={() => router.push(track.href)} style={styles.container}>
+      {track.image ? <Image source={track.image} resizeMode="contain" style={styles.cover} /> : <View style={styles.placeholder}><MaterialCommunityIcons name="music-note" size={26} color={colors.text} /></View>}
+      <View style={styles.info}><Text numberOfLines={1} style={styles.title}>{track.title}</Text><Text numberOfLines={1} style={styles.artist}>{track.artist}</Text><Text style={styles.caption}>Selecionada · {state.index + 1}/{state.tracks.length}</Text></View>
+      <MaterialCommunityIcons name="chevron-up" size={28} color={colors.text} />
     </Pressable>
-  );
+  </View>;
 }
-
 const styles = StyleSheet.create({
-  container: {
-    position: 'absolute', left: 8, right: 8, bottom: 5, height: 62, borderRadius: radius.md,
-    backgroundColor: '#155B72', flexDirection: 'row', alignItems: 'center', padding: 7,
-  },
-  cover: { width: 48, height: 48, borderRadius: radius.sm, backgroundColor: colors.surface },
-  meta: { flex: 1, marginLeft: 10, marginRight: 6 },
-  title: { color: colors.text, fontSize: 14, fontWeight: '700' },
-  artist: { color: '#D5E8EE', fontSize: 12, marginTop: 2 },
-  icon: { marginHorizontal: 13 },
+  area: { backgroundColor: colors.background, paddingHorizontal: 8, paddingTop: 5 },
+  container: { minHeight: 76, padding: 9, borderRadius: radius.md, backgroundColor: '#224B38', flexDirection: 'row', alignItems: 'center', gap: 10 },
+  cover: { width: 48, height: 48, borderRadius: radius.sm },
+  placeholder: { width: 48, height: 48, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center' },
+  info: { flex: 1, gap: 3 }, title: { color: colors.text, fontSize: 14, fontWeight: '700' },
+  artist: { color: colors.muted, fontSize: 12 }, caption: { color: colors.muted, fontSize: 11 },
 });
