@@ -58,6 +58,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 | Busca | Pesquisa Spotify com filtros, paginação e resultados reais; demonstração local separada. |
 | Biblioteca | Músicas curtidas e buscas locais, atalhos, filtros, ordenação e visualização persistentes. |
 | Adicionar à playlist | Escolha de playlist local para uma faixa real, sem duplicatas e com confirmação de gravação. |
+| Editar playlist local | Renomeação, remoção de músicas e exclusão com confirmação e persistência. |
 | Playlist local | Detalhes do ID solicitado, nome, capa, quantidade e consulta às faixas salvas; estados de carregamento, vazio e falha. |
 | Criar playlist local | Formulário com validação, gravação por conta e retorno à Biblioteca após confirmação. |
 | Músicas curtidas | Favoritas salvas por conta neste aparelho, remoção, estado vazio e abertura dos metadados da faixa. |
@@ -365,6 +366,12 @@ Validação da G02: 298 testes unitários (18 novos), lint e bundles Android/web
 Faixas na busca, álbum, curtidas e detalhes oferecem a ação de adicionar a uma playlist local. A nova tela /add-to-playlist permite escolher o destino, impede duplicatas e abre a playlist após a confirmação da gravação. A G03 acrescenta a 14ª tela principal. Ver [guia de inclusão](docs/ADICIONAR-MUSICAS.md).
 
 Validação G03: 306 testes unitários, lint e bundles Android/web aprovados; sete cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. APK somente na conclusão do projeto completo.
+
+## Edição de playlists na G04
+
+Os detalhes oferecem Editar playlist: renomear, remover músicas e excluir a playlist, com confirmação nas remoções. Cancelar não grava alterações; falhas preservam os dados confirmados e oferecem recuperação. A G04 acrescenta a 15ª tela principal. Ver [guia de edição](docs/EDITAR-PLAYLISTS.md).
+
+Validação G04: 314 testes unitários, lint e bundles Android/web aprovados; nove cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. O teste físico do APK permanece para o projeto completo.
 
 ## Limitações atuais
 

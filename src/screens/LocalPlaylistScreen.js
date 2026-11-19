@@ -8,7 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalData } from '../contexts/LocalDataContext';
 import { useSession } from '../contexts/SessionContext';
 import { useSearch } from '../contexts/SearchContext';
-import { localPlaylistCover, selectLocalPlaylist } from '../services/localPlaylistDetails.mjs';
+import { localPlaylistCover, localPlaylistHref, selectLocalPlaylist } from '../services/localPlaylistDetails.mjs';
 import IconButton from '../components/IconButton';
 import LikeTrackButton from '../components/LikeTrackButton';
 import { colors, radius } from '../theme';
@@ -44,6 +44,7 @@ export default function LocalPlaylistScreen() {
             {cover ? <Image accessibilityLabel={'Capa de ' + playlist.name} source={cover} resizeMode="contain" style={styles.cover} /> : <LinearGradient colors={['#31694D', '#1B3024']} accessibilityLabel="Playlist sem capa" style={styles.placeholder}><MaterialCommunityIcons name="playlist-music" size={86} color={colors.text} /></LinearGradient>}
             <Text accessibilityRole="header" style={styles.title}>{playlist.name}</Text>
             <Text style={styles.description}>Salva neste aparelho · não altera sua conta Spotify</Text>
+            <Pressable accessibilityRole="button" accessibilityLabel="Editar playlist local" accessibilityState={{disabled:state.status!=='ready'}} disabled={state.status!=='ready'} onPress={()=>router.push(localPlaylistHref(playlist.id) + '/edit')} style={styles.secondary}><Text style={styles.secondaryText}>Editar playlist</Text></Pressable>
             <Text style={styles.count}>{playlist.tracks.length} {playlist.tracks.length === 1 ? 'música' : 'músicas'}</Text>
             {['idle', 'loading'].includes(state.status) && <Text accessibilityLiveRegion="polite" style={styles.description}>Recarregando dados salvos…</Text>}
             {state.status === 'saving' && <Text accessibilityLiveRegion="polite" style={styles.description}>Salvando dados…</Text>}

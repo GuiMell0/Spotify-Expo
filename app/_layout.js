@@ -35,6 +35,7 @@ function RootNavigator() {
           <Stack.Screen name="recent-searches" />
           <Stack.Screen name="local-playlist/new" />
           <Stack.Screen name="local-playlist/[id]/index" />
+          <Stack.Screen name="local-playlist/[id]/edit" />
           <Stack.Screen name="artist/[id]" />
           <Stack.Screen name="playlist/[id]" />
           <Stack.Screen name="profile/index" />
