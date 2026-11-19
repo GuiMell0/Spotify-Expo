@@ -41,7 +41,7 @@ export function snapshotTrack(value) {
     duration_ms: value.durationMs, disc_number: value.discNumber, track_number: value.trackNumber,
     explicit: value.explicit, is_playable: value.isPlayable, restrictions: value.restriction ? { reason: name(value.restriction, 80) } : undefined });
 }
-function snapshotArtist(value) {
+export function snapshotArtist(value) {
   if (!object(value) || value.type !== 'artist' || !isSpotifyId(value.id)) fail();
   if (!Array.isArray(value.genres) || value.genres.length > 50) fail();
   return mapArtist({ id: value.id, type: 'artist', name: name(value.title), images: image(value.image), genres: value.genres.map(item => name(item, 80)) });

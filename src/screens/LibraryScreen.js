@@ -47,6 +47,9 @@ function SavedLibraryScreen() {
       router.push(item.track.href);
     } else if (item.type === 'local-playlist') {
       if (item.href) router.push(item.href);
+    } else if (item.type === 'local-artist') {
+      search.rememberEntity(item.artist);
+      router.push(item.href);
     } else if (item.type === 'search') {
       rememberIfReady(item.term);
       search.setFilter('all');
@@ -58,7 +61,7 @@ function SavedLibraryScreen() {
   function empty() {
     if (loading) return <View style={styles.empty}><ActivityIndicator color={colors.green} /><Text style={styles.description}>Carregando sua biblioteca…</Text></View>;
     if (state.status === 'error') return <View style={styles.empty}><Text style={styles.description}>Não foi possível carregar sua biblioteca. Use Tentar novamente no aviso acima.</Text></View>;
-    const title = filter === 'tracks' ? 'Nenhuma música curtida' : filter === 'searches' ? 'Nenhuma busca recente' : filter === 'playlists' ? 'Nenhuma playlist local' : 'Nenhum item local salvo';
+    const title = filter === 'tracks' ? 'Nenhuma música curtida' : filter === 'searches' ? 'Nenhuma busca recente' : filter === 'artists' ? 'Nenhum artista acompanhado' : filter === 'playlists' ? 'Nenhuma playlist local' : 'Nenhum item local salvo';
     return <View style={styles.empty}><MaterialCommunityIcons name="bookshelf" size={48} color={colors.muted} /><Text style={styles.emptyTitle}>{title}</Text><Text style={styles.emptyDescription}>Crie uma playlist ou busque no Spotify e curta suas músicas. Seus dados ficam salvos neste aparelho.</Text><Pressable accessibilityRole="button" onPress={() => router.navigate('/search')} style={styles.action}><Text style={styles.actionText}>Buscar músicas</Text></Pressable></View>;
   }
 
@@ -79,14 +82,14 @@ function SavedLibraryScreen() {
       </View>}
       ListFooterComponent={<SpotifyLibraryPlaylists controller={spotifyLibrary} visible={filter==='all'||filter==='playlists'} view={view} sort={sort}/>}
       ListEmptyComponent={empty}
-      renderItem={({ item }) => <Pressable accessibilityRole="button" accessibilityLabel={(item.type === 'track' ? 'Abrir música da biblioteca ' : item.type === 'local-playlist' ? 'Abrir playlist local ' : 'Repetir busca da biblioteca ') + item.title} accessibilityState={{ disabled: item.type === 'local-playlist' && !item.href }} disabled={item.type === 'local-playlist' && !item.href} onPress={() => open(item)} style={({ pressed }) => [styles.item, view === 'grid' ? styles.gridItem : styles.listItem, pressed && styles.pressed]}><LibraryItemContent item={item} /></Pressable>}
+      renderItem={({ item }) => <Pressable accessibilityRole="button" accessibilityLabel={(item.type === 'track' ? 'Abrir música da biblioteca ' : item.type === 'local-playlist' ? 'Abrir playlist local ' : item.type === 'local-artist' ? 'Abrir artista acompanhado ' : 'Repetir busca da biblioteca ') + item.title} accessibilityState={{ disabled: item.type === 'local-playlist' && !item.href }} disabled={item.type === 'local-playlist' && !item.href} onPress={() => open(item)} style={({ pressed }) => [styles.item, view === 'grid' ? styles.gridItem : styles.listItem, pressed && styles.pressed]}><LibraryItemContent item={item} /></Pressable>}
 
     />
   </SafeAreaView></View>;
 }
 
 function LibraryItemContent({ item }) {
-  return <>{item.image ? <Image source={item.image} resizeMode="contain" style={styles.art} /> : <View style={[styles.art, styles.placeholder]}><MaterialCommunityIcons name={item.type === 'track' ? 'music-note' : item.type === 'local-playlist' ? 'playlist-music' : 'history'} size={30} color={item.type === 'track' ? colors.green : colors.muted} /></View>}<View style={styles.info}><Text numberOfLines={2} style={styles.itemTitle}>{item.title}</Text><Text numberOfLines={2} style={styles.subtitle}>{item.subtitle}</Text></View></>;
+  return <>{item.image ? <Image source={item.image} resizeMode="contain" style={styles.art} /> : <View style={[styles.art, styles.placeholder]}><MaterialCommunityIcons name={item.type === 'track' ? 'music-note' : item.type === 'local-playlist' ? 'playlist-music' : item.type === 'local-artist' ? 'account-music' : 'history'} size={30} color={item.type === 'track' ? colors.green : colors.muted} /></View>}<View style={styles.info}><Text numberOfLines={2} style={styles.itemTitle}>{item.title}</Text><Text numberOfLines={2} style={styles.subtitle}>{item.subtitle}</Text></View></>;
 }
 
 const styles = StyleSheet.create({

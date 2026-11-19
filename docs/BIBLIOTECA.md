@@ -1,5 +1,7 @@
 # Biblioteca integrada — A15
 
+Atualização G07: artistas acompanhados localmente aparecem em Tudo e Artistas. Ver [ARTISTAS-ACOMPANHADOS.md](ARTISTAS-ACOMPANHADOS.md).
+
 Atualização G06: a seção de playlists da conta Spotify já possui consulta e paginação. Ver [BIBLIOTECA-SPOTIFY.md](BIBLIOTECA-SPOTIFY.md). Os registros históricos abaixo descrevem as etapas anteriores.
 
 Atualização G02: a Biblioteca também apresenta playlists locais, o botão Criar playlist e cards que abrem os [detalhes por ID](DETALHES-PLAYLIST-LOCAL.md). Consulte [PLAYLISTS-LOCAIS.md](PLAYLISTS-LOCAIS.md) para o contrato atual; os detalhes abaixo registram a entrega original A15.

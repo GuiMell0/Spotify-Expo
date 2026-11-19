@@ -385,6 +385,12 @@ A Biblioteca lista playlists Spotify em uma seção própria, separada das playl
 
 Validação G06: 330 testes unitários, lint e bundles Android/web aprovados; dez cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Permanecem 15 telas principais. APK e teste com a conta real somente na conclusão do projeto completo.
 
+## Artistas acompanhados localmente — G07
+
+A tela do artista permite acompanhar ou deixar de acompanhar neste aparelho. A Biblioteca mostra a escolha em Tudo e Artistas, com acesso ao artista correto. O estado persiste por conta, evita duplicatas e não modifica seguidores no Spotify. Ver [guia dos artistas acompanhados](docs/ARTISTAS-ACOMPANHADOS.md).
+
+Validação G07: 338 testes unitários, lint e bundles Android/web aprovados; dez cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Permanecem 15 telas principais. APK somente na conclusão do projeto completo.
+
 ## Limitações atuais
 
 - APK e login Android confirmados pela Ana; busca, Home, álbum e artista novos aguardam conferência no aparelho;

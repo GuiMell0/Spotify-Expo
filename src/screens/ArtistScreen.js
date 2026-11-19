@@ -1,3 +1,4 @@
+import FollowArtistButton from '../components/FollowArtistButton';
 import React, { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Image, Linking, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
@@ -63,6 +64,8 @@ function SpotifyArtistScreen() {
             {artist.image ? <Image source={artist.image} resizeMode="contain" style={styles.photo} /> : <View style={styles.placeholder}><MaterialCommunityIcons name="account-music" size={90} color={colors.muted} /></View>}
             <Text accessibilityRole="header" style={styles.title}>{artist.title}</Text>
             <Text style={styles.kind}>Artista</Text>
+            <FollowArtistButton artist={artist}/>
+            <Text style={styles.kind}>Acompanhamento local: não altera quem você segue no Spotify.</Text>
             {artist.genres.length > 0 && <Text style={styles.genres}>{artist.genres.join(' • ')}</Text>}
             <Pressable accessibilityRole="link" accessibilityLabel={'Ver ' + artist.title + ' no Spotify'} onPress={openSpotify} style={styles.spotify}><MaterialCommunityIcons name="spotify" size={23} color={colors.black} /><Text style={styles.spotifyText}>Ver no Spotify</Text></Pressable>
             {openError === controller && <Text accessibilityRole="alert" style={styles.notice}>Não foi possível abrir o Spotify. Tente tocar no botão novamente.</Text>}

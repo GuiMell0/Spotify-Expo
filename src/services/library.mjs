@@ -9,6 +9,7 @@ export const LIBRARY_FILTERS = Object.freeze([
   Object.freeze({ id: 'tracks', label: 'Músicas' }),
   Object.freeze({ id: 'playlists', label: 'Playlists' }),
   Object.freeze({ id: 'searches', label: 'Buscas' }),
+  Object.freeze({ id: 'artists', label: 'Artistas' }),
 ]);
 
 // Playlists locais têm destino próprio e não usam rotas de playlists Spotify.
@@ -27,7 +28,10 @@ export function listLibraryItems(data, { filter = 'all', sort = data?.preference
     subtitle: 'Playlist local · ' + playlist.tracks.length + (playlist.tracks.length === 1 ? ' música' : ' músicas'),
     image: localPlaylistCover(playlist), href: localPlaylistHref(playlist.id), updatedAt: playlist.updatedAt, playlist,
   }));
-  return [...tracks, ...searches, ...playlists].sort((a, b) => {
+  const artists = !['all','artists'].includes(filter) ? [] : (data?.followedArtists ?? []).map(({artist,savedAt}) => ({
+    key:'local-artist:'+artist.id,type:'local-artist',title:artist.title,subtitle:'Artista acompanhado neste aparelho',image:artist.image,href:artist.href,updatedAt:savedAt,artist,
+  }));
+  return [...tracks, ...searches, ...playlists, ...artists].sort((a, b) => {
     const byTitle = sort === 'title' ? a.title.localeCompare(b.title, 'pt-BR', { sensitivity: 'base' }) : 0;
     return byTitle || b.updatedAt - a.updatedAt || a.key.localeCompare(b.key);
   });
