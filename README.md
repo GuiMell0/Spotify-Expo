@@ -1,62 +1,66 @@
-# Spotify Expo — P2
+# Spotify Expo
 
-Aplicativo acadêmico em React Native e Expo, com identidade visual inspirada no Spotify, 17 telas, catálogo da Spotify Web API e dados pessoais persistentes por conta.
-
-O código das etapas A01–A15 e G01–G14 está implementado. A G15 reúne a validação final, o APK independente e a preparação da entrega. Ana confirmou instalação e os principais fluxos com a conta real no Android. O atalho offline da Home foi corrigido e o ícone do launcher foi configurado; ambos aguardam confirmação no APK atualizado; os casos ainda não executados estão registrados no checklist.
-
-[Repositório no GitHub](https://github.com/GuiMell0/Spotify-Expo)
-
-## Instalar no Android
-
-A opção principal é o APK independente: ele abre sem computador, Metro ou Expo Go. O link e as instruções ficam no [guia de instalação](docs/INSTALAR-NO-CELULAR.md).
-
-Para conferir as funcionalidades no aparelho, siga o [checklist final da P2](docs/VALIDACAO-P2.md). Os resultados automatizados e as pendências reais estão separados nesse documento.
+Aplicativo acadêmico em React Native e Expo, com interface inspirada no Spotify, **17 telas navegáveis**, catálogo da Spotify Web API e dados locais separados por conta.
 
 ## Funcionalidades
 
-- Login Spotify por Authorization Code com PKCE, sem Client Secret no aplicativo.
-- Sessão Android no SecureStore, restauração, renovação compartilhada e logout.
-- Home, busca com filtros e paginação, álbuns, artistas, faixas e playlists pela API.
-- Biblioteca com playlists Spotify separadas das coleções locais.
-- Curtidas, histórico recente, playlists locais, artistas acompanhados e preferências no AsyncStorage.
-- Criação, edição, inclusão e remoção de músicas e exclusão de playlists locais com confirmação.
-- Perfil da conta e apelido local que não altera o nome no Spotify.
-- Configurações de grade/lista e ordenação, com limpeza seletiva dos dados.
-- Faixa selecionada, mini-player e fila compartilhada com anterior, próxima e escolha direta.
-- Recuperação de falhas, respeito a Retry-After e acesso aos dados locais quando a renovação falha temporariamente.
-- StyleSheet, Flexbox e tratamento de textos longos, áreas seguras e teclado.
+- Login Spotify com PKCE, restauração da sessão e renovação de tokens.
+- Home, busca com filtros, álbuns, artistas e playlists com dados reais.
+- Curtidas, buscas recentes, artistas acompanhados e preferências persistentes.
+- Playlists locais: criar, adicionar faixas, renomear, remover e excluir.
+- Perfil da conta, apelido local, grade/lista e ordenação da Biblioteca.
+- Faixa selecionada, mini-player e fila com anterior, próxima e seleção direta.
+- Tratamento de erros e acesso aos dados locais já salvos sem conexão.
 
-**Ouvir no Spotify abre a faixa no próprio Spotify.** O aplicativo não reproduz áudio internamente nem baixa músicas para ouvir offline. A fila representa seleção de metadados.
+**A reprodução acontece no Spotify.** O botão Ouvir no Spotify abre a faixa no aplicativo oficial ou no navegador. Este projeto não reproduz áudio internamente nem baixa músicas para ouvir offline.
 
-O modo de demonstração da P1 é uma opção explícita no login. Uma falha da API não troca o catálogo autenticado por dados fictícios.
+## Como funciona
 
-## As 17 telas
+```mermaid
+flowchart TD
+    inicio([Abrir aplicativo]) --> sessao{Existe sessão salva?}
+    sessao -->|Não| login[Entrar com Spotify]
+    login --> autorizacao{Autorização concluída?}
+    autorizacao -->|Não| login
+    autorizacao -->|Sim| salvar[Salvar sessão no SecureStore]
+    salvar --> abas[Início · Buscar · Biblioteca]
+    sessao -->|Sim| restaurar[Restaurar e renovar sessão]
+    restaurar -->|Disponível| abas
+    restaurar -->|Falha temporária| offline[Manter acesso local da conta]
+    restaurar -->|Sessão recusada| login
 
-| Tela | Rota |
-| --- | --- |
-| Login | /login |
-| Home | /home |
-| Busca | /search |
-| Biblioteca | /library |
-| Álbum | /album/[id] |
-| Artista | /artist/[id] |
-| Playlist Spotify | /playlist/[id] |
-| Player / faixa selecionada | /player?trackId=… |
-| Perfil | /profile |
-| Músicas curtidas | /liked |
-| Buscas recentes | /recent-searches |
-| Criar playlist local | /local-playlist/new |
-| Playlist local | /local-playlist/[id] |
-| Editar playlist local | /local-playlist/[id]/edit |
-| Adicionar à playlist | /add-to-playlist?trackId=… |
-| Editar apelido local | /profile/edit |
-| Configurações | /settings |
+    abas --> catalogo[Início e Busca]
+    catalogo --> api[Spotify Web API]
+    api --> detalhes[Álbuns, artistas e playlists]
+    detalhes --> faixa[Selecionar uma faixa]
 
-Callback OAuth, redirecionamento inicial e página inexistente não entram nessa contagem. A navegação usa Expo Router com Tabs, Stack e rotas dinâmicas em app/. O package.json aponta para expo-router/entry; não existe App.js concorrente.
+    abas --> biblioteca[Biblioteca e playlists locais]
+    offline --> biblioteca
+    biblioteca <-->|Persistência| dados[(AsyncStorage por conta)]
+    biblioteca --> faixa
+    abas --> perfil[Perfil e Configurações]
+    perfil --> dados
 
-## Preparar o projeto
+    faixa --> fila[Player, fila e mini-player]
+    fila --> spotify[Abrir a faixa no Spotify]
 
-Ambiente usado nas validações: Node.js 24.11, Expo 57.0.33, React 19.2.3 e React Native 0.86.3.
+    classDef destaque fill:#1ED760,stroke:#169C46,color:#000;
+    classDef tela fill:#181818,stroke:#777,color:#fff;
+    classDef decisao fill:#242424,stroke:#B3B3B3,color:#fff;
+    class inicio,abas,spotify destaque;
+    class login,salvar,restaurar,offline,catalogo,api,detalhes,faixa,biblioteca,dados,perfil,fila tela;
+    class sessao,autorizacao decisao;
+```
+
+O GitHub renderiza o fluxograma automaticamente. No Android, tokens são guardados no SecureStore; os dados pessoais do aplicativo ficam no AsyncStorage. No navegador, a sessão permanece somente em memória.
+
+## Tecnologias
+
+React 19, React Native 0.86, Expo SDK 57, Expo Router, StyleSheet/Flexbox, AsyncStorage, SecureStore, AuthSession e MaterialCommunityIcons.
+
+## Preparar o ambiente
+
+Use Node.js 24 e npm. Para testar o login, tenha uma conta Spotify autorizada no aplicativo cadastrado no Spotify for Developers.
 
 ```powershell
 git clone https://github.com/GuiMell0/Spotify-Expo.git
@@ -67,17 +71,106 @@ if (-not (Test-Path -LiteralPath '.env')) {
 }
 ```
 
-Preencha EXPO_PUBLIC_SPOTIFY_CLIENT_ID no próprio .env. O retorno Android é spotifyexpo-login://callback e precisa estar salvo no app do Spotify. O [guia Spotify](docs/SPOTIFY-SETUP.md) explica credenciais, usuários autorizados e PKCE. Nunca coloque Client Secret, senha ou tokens manuais no código ou em EXPO_PUBLIC.
+### Configurar o Spotify
 
-Para desenvolver com um development build instalado:
+1. Abra o [Spotify for Developers](https://developer.spotify.com/dashboard) e crie ou selecione o aplicativo.
+2. Cadastre o retorno Android: `spotifyexpo-login://callback`.
+3. Para testar no navegador do computador, cadastre também `http://127.0.0.1:8081/callback`.
+4. Autorize as contas de teste conforme as permissões disponíveis no painel.
+5. Copie somente o Client ID para o arquivo `.env`:
+
+```dotenv
+EXPO_PUBLIC_SPOTIFY_CLIENT_ID=seu_client_id
+EXPO_PUBLIC_SPOTIFY_REDIRECT_URI_ANDROID=spotifyexpo-login://callback
+EXPO_PUBLIC_SPOTIFY_REDIRECT_URI_WEB=http://127.0.0.1:8081/callback
+```
+
+Substitua `seu_client_id` pelo identificador do aplicativo. O fluxo utilizado é Authorization Code com PKCE: **não é necessário Client Secret no cliente**. Não coloque senhas, tokens ou Client Secret no código, em `EXPO_PUBLIC` ou no Git.
+
+### Executar no Android durante o desenvolvimento
+
+O login usa um retorno nativo e precisa de um APK com as bibliotecas do projeto. **Expo Go não é compatível com esse login.**
+
+Na primeira instalação, entre no EAS com uma conta que tenha acesso ao projeto vinculado e gere um development build:
+
+```powershell
+npx eas-cli login
+npx eas-cli build --platform android --profile development
+```
+
+Instale o APK gerado no Android e inicie o servidor:
 
 ```powershell
 npm run dev
 ```
 
-A demonstração pode ser aberta com npm run start:go. Para o login real no Android, utilize um APK com os schemes e bibliotecas nativas do projeto. O perfil preview gera o aplicativo independente; development usa Metro. Veja [Android/EAS](docs/ANDROID-EAS.md).
+Mantenha computador e celular na mesma rede. Se necessário, use `npm run dev -- --tunnel`. Depois de adicionar dependências nativas ou alterar configurações Android, gere outro APK de desenvolvimento.
 
-## Verificação
+### Executar no navegador
+
+```powershell
+npm run web
+```
+
+Abra **http://127.0.0.1:8081**, correspondente ao retorno cadastrado. Se outra porta for utilizada, ajuste a origem e o retorno no painel e no `.env`. O endereço de loopback é para o navegador do computador, não para acessar o computador pelo celular.
+
+## Gerar o APK independente
+
+O perfil `preview` gera um APK que abre sem computador, Metro ou Expo Go:
+
+```powershell
+npx eas-cli build --platform android --profile preview
+```
+
+No ambiente `preview` do projeto EAS, configure as variáveis públicas `EXPO_PUBLIC_SPOTIFY_CLIENT_ID` e `EXPO_PUBLIC_SPOTIFY_REDIRECT_URI_ANDROID`. O `.env` local não é versionado.
+
+Quando a compilação estiver **Finished**, baixe o arquivo `.apk` pelo link do EAS e instale no celular. Para preservar os dados de uma instalação existente, atualize com o mesmo pacote Android e a mesma assinatura.
+
+Uma mudança no código incluído, nas dependências nativas ou no ícone precisa estar presente na nova compilação para aparecer no APK independente.
+
+## Telas e navegação
+
+| Tela | Rota |
+| --- | --- |
+| Login | /login |
+| Início | /home |
+| Buscar | /search |
+| Biblioteca | /library |
+| Álbum | /album/[id] |
+| Artista | /artist/[id] |
+| Playlist Spotify | /playlist/[id] |
+| Player | /player?trackId=… |
+| Perfil | /profile |
+| Músicas curtidas | /liked |
+| Buscas recentes | /recent-searches |
+| Criar playlist local | /local-playlist/new |
+| Playlist local | /local-playlist/[id] |
+| Editar playlist local | /local-playlist/[id]/edit |
+| Adicionar faixa à playlist | /add-to-playlist?trackId=… |
+| Editar apelido | /profile/edit |
+| Configurações | /settings |
+
+As rotas ficam em `app/`, com Tabs, Stack e parâmetros dinâmicos. A entrada é `expo-router/entry`; não existe `App.js` concorrente. Callback OAuth, redirecionamento inicial e página inexistente não entram na contagem de telas.
+
+## Organização
+
+```text
+app/                  Rotas e layouts do Expo Router
+assets/icons/         Ícones do aplicativo
+src/components/       Componentes reutilizáveis
+src/config/           Configuração pública do Spotify
+src/contexts/         Sessão, dados locais, catálogo e seleção de faixas
+src/hooks/            Integrações compartilhadas entre as telas
+src/screens/          Telas do aplicativo
+src/services/         API, autenticação e regras das funcionalidades
+src/storage/          Validação e persistência por conta
+src/theme/            Cores, espaçamentos e estilos
+tests/                Testes unitários com dados e respostas simuladas
+```
+
+O aplicativo usa dados reais da API e registros locais da conta. As respostas simuladas ficam restritas aos testes; não existe modo de demonstração no aplicativo.
+
+## Validação
 
 ```powershell
 npm test
@@ -86,35 +179,23 @@ npx expo install --check
 npx expo-doctor
 ```
 
-A G15 confirmou 394 testes unitários aprovados, lint sem avisos, dependências compatíveis e 21/21 verificações do Expo Doctor. Os bundles Android/web e os 76 cenários de navegador da G14 passaram sobre o código funcional 6b781cd: 40 de layout, 15 de recuperação e 21 de player/fila. Após o retorno do teste Android, o atalho Abrir Biblioteca local foi corrigido: navegação de abas na Home/Busca e retorno por pilha nos detalhes. A G15 reexportou os bundles e aprovou cinco cenários específicos para essa correção. Os testes de navegador usam Spotify simulado e não substituem a conferência da API e dos módulos nativos no celular.
+A limpeza foi validada com **394 testes unitários**, **81 cenários de navegador com API simulada**, lint sem avisos, **21/21 verificações do Expo Doctor** e bundles Android/web. As 17 telas foram conferidas em larguras de 320 e 768 pixels.
 
-As 17 telas foram verificadas em larguras de 320 e 768 pixels; três formulários também foram exercitados com altura reduzida. O teclado real foi confirmado pela Ana. Token vencido offline, troca de conta e a conferência completa de insets, escala de fonte e TalkBack continuam não testados no aparelho.
+A suíte unitária possui **394 testes**. Eles verificam autenticação, API, armazenamento, isolamento entre contas, recuperação de falhas e regras das funcionalidades sem acessar a conta Spotify real.
 
-## Dados e limites
+Depois de instalar o APK final, confira login e restauração, catálogo, curtidas e playlists após reinício, fila, abertura no Spotify e acesso à Biblioteca sem rede. Teclado, fonte ampliada, áreas seguras e TalkBack precisam ser conferidos no aparelho.
 
-As coleções locais são separadas pelo ID da conta. Tokens ficam no SecureStore Android; no navegador ficam somente em memória. A fila fica na memória da sessão e é limpa ao sair ou reiniciar.
+## Dados locais e limitações
 
-Sem internet, os dados locais previamente salvos continuam disponíveis para a conta restaurada. Primeira autorização, novo catálogo e capas remotas dependem de conexão. Uma sessão efetivamente rejeitada exige novo login.
+- Curtidas, histórico, playlists, artistas acompanhados e preferências são separados pelo ID da conta.
+- As playlists locais e o acompanhamento local não alteram a conta Spotify.
+- A fila fica na memória da sessão e é limpa ao sair ou reiniciar.
+- Primeira autorização, novos resultados do catálogo e capas remotas dependem de conexão.
+- Uma falha temporária na renovação preserva o acesso aos dados locais da conta salva. Uma sessão rejeitada exige novo login.
+- Conteúdos e endpoints dependem da disponibilidade e das permissões da conta no Spotify.
 
-Playlists e acompanhamento de artistas locais não alteram a conta Spotify. O acesso a endpoints e playlists remotas depende das permissões e da disponibilidade para a conta autorizada.
+## Integrantes e créditos
 
-## Entrega
+**Ana Carolina Gomes Soares** e **Guilherme Viana Ramos Mello**.
 
-O histórico conferido na abertura da G15 tem 58 commits: 29 da Ana e 29 nos identificadores Git de Guilherme/GuiMell0. São 15 etapas A e 14 etapas G registradas desde a P1. O commit G15 completará 59 commits e 15 etapas de cada sequência. A contagem registra autoria Git e não substitui a contribuição efetiva de cada integrante.
-
-- [Validação final e resposta para retomar no chat](docs/VALIDACAO-P2.md)
-- [Roteiro de vídeo com duração de 4min50s](docs/ROTEIRO-VIDEO.md)
-- [Planejamento e histórico das etapas](docs/P2-ROTEIRO.md)
-- [Continuidade da dupla](docs/ROTEIRO-DUPLA.md)
-- [Revisão visual](docs/REVISAO-VISUAL.md)
-- [Recuperação e uso offline](docs/RECUPERACAO-OFFLINE.md)
-- [Player e abertura no Spotify](docs/PLAYER-SPOTIFY.md)
-- [Mini-player e fila](docs/MINI-PLAYER-FILA.md)
-
-O vídeo ainda precisa ser gravado e publicado por link. Cada integrante entrega individualmente os links exigidos na disciplina.
-
-## Integrantes
-
-Ana Carolina Gomes Soares e Guilherme Viana Ramos Mello.
-
-Projeto acadêmico sem vínculo oficial com o Spotify. Marcas, capas e demais conteúdos pertencem aos respectivos titulares.
+Projeto acadêmico, sem vínculo oficial com o Spotify. Marcas e conteúdos pertencem aos respectivos titulares. O ícone usa o glifo Spotify de MaterialCommunityIcons, distribuído por `@expo/vector-icons`. A licença da base do projeto está em [LICENSE](LICENSE).

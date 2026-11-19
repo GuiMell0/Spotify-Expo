@@ -11,7 +11,7 @@ export default function UnavailableContent({ title = 'Conteúdo não encontrado'
       <BackButton style={styles.back} />
       <View style={styles.content}>
         <Text accessibilityRole="header" style={styles.title}>{title}</Text>
-        <Text style={styles.message}>Este endereço não está disponível no catálogo demonstrativo.</Text>
+        <Text style={styles.message}>Este endereço não está disponível. Volte ao início para continuar.</Text>
         <Link href="/home" replace asChild>
           <Pressable accessibilityRole="button" style={styles.button}>
             <Text style={styles.buttonText}>Ir para o início</Text>

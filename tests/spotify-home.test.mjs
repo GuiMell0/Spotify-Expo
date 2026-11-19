@@ -24,7 +24,7 @@ test('uma consulta real abastece as três seções sem rankings ou dados inventa
   assert.equal(f.state().status, 'ready');
   assert.deepEqual(f.state().sections.map(section => section.items[0].type), ['track', 'album', 'artist']);
 });
-test('instância inativa não busca dados e pode ser usada no provedor sem ativar a demonstração', async t => {
+test('instância inativa não faz consultas antes de receber foco', async t => {
   const f = fixture(t);
   await f.home.refresh();
   await f.home.setTopic('rock');

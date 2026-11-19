@@ -185,7 +185,7 @@ test('web mantém sessão só durante a execução e nunca usa armazenamento do 
   assert.equal(await reopened.manager.restore(), null);
   assert.equal(f.manager.persistent, false);
 });
-test('demonstração desativa conta sem renovar tokens', async () => {
+test('desativar conta impede renovação de tokens', async () => {
   const f = fixture();
   await f.manager.accept(initial);
   f.manager.deactivate();

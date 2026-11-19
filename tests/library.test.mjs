@@ -116,7 +116,7 @@ test('falha de leitura bloqueia preferências sem substituir o registro', async 
   assert.equal(f.writes.length, 0); assert.equal(store.getSnapshot().data, null);
   f.recover(); await store.retry(); assert.equal(store.getSnapshot().data.likedTracks.length, 2);
 });
-test('contas e demonstração não herdam preferências ou biblioteca de outra conta', async t => {
+test('contas inativas não herdam preferências ou biblioteca de outra conta', async t => {
   const f = fixture(t), ana = f.account(), gui = f.account('gui'); await ana.start(); await gui.start();
   await saveLibraryPreference(ana, 'libraryView', 'list');
   assert.equal(gui.getSnapshot().data.preferences.libraryView, 'grid');

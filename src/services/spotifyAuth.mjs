@@ -16,7 +16,7 @@ export function authErrorMessage(error) {
 
 export function getLoginBlocker(config, { platform, expoGo = false, origin } = {}) {
   if (!config.isConfigured) return config.issues[0];
-  if (platform === 'android' && expoGo) return 'Para entrar no Spotify, abra o APK de desenvolvimento. No Expo Go, use a demonstração.';
+  if (platform === 'android' && expoGo) return 'Para entrar no Spotify, use o APK do aplicativo. O login não está disponível no Expo Go.';
   if (platform === 'web' && origin !== new URL(config.redirectUri).origin) {
     return 'Para entrar pelo navegador, abra ' + new URL(config.redirectUri).origin + '.';
   }
@@ -30,7 +30,7 @@ export function readAuthorizationCode(result, expectedState) {
   if (!expectedState || !params || params.state !== expectedState) {
     throw new SpotifyAuthError('state_mismatch', 'O retorno do login não corresponde à tentativa atual. Inicie novamente.');
   }
-  if (params.error === 'access_denied') throw new SpotifyAuthError('access_denied', 'A autorização foi recusada. Você pode tentar novamente ou explorar a demonstração.');
+  if (params.error === 'access_denied') throw new SpotifyAuthError('access_denied', 'A autorização foi recusada. Você pode tentar novamente.');
   if (result.type !== 'success' || params.error) throw new SpotifyAuthError('authorization', 'O Spotify não concluiu a autorização. Inicie novamente.');
   if (typeof params.code !== 'string' || !params.code.trim()) throw new SpotifyAuthError('missing_code', 'O Spotify retornou sem código de autorização. Inicie novamente.');
   return params.code;
