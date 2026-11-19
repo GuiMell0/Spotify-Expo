@@ -4,7 +4,13 @@ Este roteiro foi atualizado com a implementação da A15. Usar depois que a Ana 
 
 **Decisão da Ana: gerar e testar o APK somente quando o projeto completo estiver pronto.** Durante G01–G14, validar com testes e bundles, sem exigir instalações a cada commit. O login no Android já foi confirmado anteriormente; os recursos novos e a persistência nativa ainda precisam da validação final.
 
-## Estado após G14
+## Estado na G15
+
+G14 commitada (6b781cd). G15 iniciada em 19/11/2026: validação automática final, README atual, guia de instalação, checklist do Android e roteiro de vídeo preparados. 394 testes unitários e lint sem avisos confirmados; dependências compatíveis e Expo Doctor com 21/21 verificações aprovadas. Os bundles e os 76 cenários de navegador da G14 validam o mesmo código funcional. APK final enviado ao EAS; acompanhar o link em INSTALAR-NO-CELULAR.md. Ana confirmou instalação e os principais fluxos no Android. O botão offline da Home apresentou falha, foi corrigido com navegação adequada às abas e passou em cinco testes específicos de navegador; o ícone Android solicitado pela Ana também foi configurado; falta confirmar o ícone e o botão no APK atualizado. Token vencido offline, outra conta e acessibilidade completa não foram testados. Vídeo e entrega permanecem pendentes.
+
+O histórico tem 58 commits, com 29 de Ana e 29 nos identificadores Git de Guilherme/GuiMell0. G15 será a 30ª etapa nova e o 59º commit total. Usar a autoria real e não alterar o histórico. Depois dos testes no aparelho, registrar os resultados em [VALIDACAO-P2.md](VALIDACAO-P2.md), corrigir falhas e somente então fechar o commit G15. O [roteiro do vídeo](ROTEIRO-VIDEO.md) dura 4min50s. Não iniciar outra compilação enquanto a atual estiver na fila.
+
+## Histórico após G14
 
 G13 commitada (9d32eec). G14 implementada e validada e aguarda commit: StyleSheet, Flexbox para textos longos, política compartilhada de áreas seguras, alvos de toque, rótulos, teclado e recolhimento do mini-player. As 17 telas foram conferidas no navegador em 320 e 768 pixels. 394 testes unitários, lint sem avisos e bundles Android/web aprovados; 76 cenários de navegador com Spotify simulado aprovados (40 de layout, 15 de recuperação e 21 de player/fila), sem exceções JavaScript. Ver [guia da revisão visual](REVISAO-VISUAL.md). Depois do commit, continuar somente G15: validação final, APK, conferência do histórico e roteiro do vídeo. O teste físico de teclado, insets, escala de fonte e TalkBack permanece pendente. Não gerar APK antes dessa etapa final.
 

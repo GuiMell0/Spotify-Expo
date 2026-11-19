@@ -74,7 +74,8 @@
     "test:settings": "node --test tests/local-settings.test.mjs",
     "test:track": "node --test tests/spotify-track.test.mjs",
     "test:queue": "node --test tests/track-queue.test.mjs",
-    "test:recovery": "node --test tests/session-recovery.test.mjs"
+    "test:recovery": "node --test tests/session-recovery.test.mjs",
+    "test": "node --test tests/*.test.mjs"
   },
   "private": true
 }

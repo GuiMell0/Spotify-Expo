@@ -92,7 +92,7 @@ A15 conclui a parte implementada da Ana: API real para Home, busca, álbuns, art
 
 ## Etapas do Guilherme — 15 commits
 
-G13 conferida no Git: 9d32eec. G14 implementada e validada: estilos estáticos em StyleSheet, Flexbox para textos longos, áreas seguras compartilhadas, alvos de toque e semântica acessível, teclado e mini-player. As 17 telas foram conferidas no navegador em 320 e 768 pixels. 394 testes unitários, lint sem avisos e bundles Android/web aprovados; 76 cenários de navegador com Spotify simulado aprovados (40 de layout, 15 de recuperação e 21 de player/fila), sem exceções JavaScript. G14 pronta para commit; G15 ainda não iniciada. Teclado nativo, insets reais, escala de fonte e TalkBack aguardam o Android. APK e teste físico somente na conclusão do projeto completo. Ver [revisão visual](REVISAO-VISUAL.md).
+G14 conferida no Git: 6b781cd. G15 em andamento: README atualizado, checklist Android e roteiro do vídeo preparados; 394 testes unitários e lint sem avisos confirmados, dependências compatíveis e Expo Doctor com 21/21 verificações aprovadas. Bundles e 76 cenários de navegador da G14 aprovados sobre o mesmo código funcional. APK final enviado ao EAS; link/status em INSTALAR-NO-CELULAR.md. Histórico com 58 commits, 29 da Ana e 29 dos identificadores de Guilherme/GuiMell0; G15 completará 59 totais e as 30 etapas novas. Ana confirmou instalação e os principais fluxos no Android. O atalho offline da Home foi corrigido e aprovado em cinco cenários específicos de navegador; ícone Android solicitado pela Ana configurado com variantes adaptativa e monocromática e versionCode 2; falta confirmar ícone e botão na atualização do aparelho. Token vencido offline, outra conta e acessibilidade completa não foram testados; vídeo e envio individual continuam pendentes. Não declarar G15 concluída antes de registrar os resultados reais. Ver [validação final](VALIDACAO-P2.md) e [roteiro do vídeo](ROTEIRO-VIDEO.md).
 
 | Etapa | Mensagem de commit | Entrega e critério de aceite |
 | --- | --- | --- |
@@ -110,7 +110,7 @@ G13 conferida no Git: 9d32eec. G14 implementada e validada: estilos estáticos e
 | G12 | feat: sincroniza mini-player e fila de faixas | Mesmo estado de faixa selecionada nas telas e mini-player, fila de seleção e navegação anterior/próxima; não simular áudio que não está tocando. |
 | G13 | fix: melhora recuperacao de falhas e uso offline | Dados locais continuam acessíveis sem rede; tratar sessão expirada, permissões, cota, lista vazia e repetição manual da consulta. |
 | G14 | style: padroniza telas com StyleSheet e Flexbox | Revisar as 17 telas, eliminar estilos estáticos inline, ajustar teclado, áreas seguras, texto longo, alvos de toque e rótulos acessíveis no Android. |
-| G15 | docs: registra validacao da P2 e roteiro do video | Executar checklist, registrar resultados reais, atualizar README para o estado final e preparar vídeo de até 5 minutos; corrigir falhas antes da entrega. |
+| G15 | feat: finaliza P2 com icone Android e correcao da Biblioteca | Executar checklist, registrar resultados reais, atualizar README para o estado final e preparar vídeo de até 5 minutos; corrigir falhas antes da entrega. |
 
 ## Decisões para manter o aplicativo funcional
 
@@ -125,22 +125,22 @@ G13 conferida no Git: 9d32eec. G14 implementada e validada: estilos estáticos e
 
 ## Checklist de aceite da P2
 
-- [ ] Todas as telas e componentes usam StyleSheet e Flexbox, mantendo a identidade Spotify.
+- [x] StyleSheet e Flexbox revisados nas 17 telas e componentes; conferência nativa final pendente.
 - [x] app/ é a origem das rotas, com Tabs, Stack e IDs dinâmicos.
 - [x] package.json usa expo-router/entry e não há entrada antiga concorrente.
 - [ ] Login real no Android e cancelamento tratados.
 - [ ] Sessão restaurada; renovação e logout funcionam sem loop.
-- [ ] Artistas, álbuns, faixas, playlists e busca vêm da Spotify Web API.
-- [ ] IDs distintos apresentam os dados correspondentes.
-- [ ] Falhas de rede, autorização e limites encerram o carregamento.
+- [x] Integração de artistas, álbuns, faixas, playlists e busca implementada e validada com API simulada; conferir a conta real no Android.
+- [x] IDs distintos cobertos na validação automatizada; conferir os fluxos no Android.
+- [x] Falhas de rede, autorização e limites cobertas por testes unitários e navegador simulado.
 - [ ] Favoritas, recentes, playlists e preferências persistem após reinício.
 - [ ] Dados de usuários diferentes não se misturam.
 - [x] Pelo menos 12 telas distintas possuem entradas navegáveis: 17 na G10; revisar os fluxos na validação final.
-- [ ] Código de produção não depende de src/data/media.js.
-- [ ] Validar dependências com Expo e compilar os bundles; registrar comandos e resultados reais.
+- [x] Catálogo autenticado usa API e dados locais; src/data/media.js fica restrito à demonstração explícita.
+- [x] Dependências, Expo Doctor e bundles validados; resultados registrados em VALIDACAO-P2.md.
 - [ ] Percorrer manualmente os fluxos no Android, incluindo voltar e teclado.
 - [ ] 15 novos commits de cada integrante, com mensagens correspondentes às entregas.
-- [ ] Nenhum segredo, token ou arquivo .env pessoal foi enviado ao GitHub.
+- [x] .env pessoal ignorado e busca delimitada de credenciais no código/histórico sem ocorrências; escopo em VALIDACAO-P2.md.
 - [ ] Vídeo de no máximo 5 minutos, com link acessível.
 - [ ] Cada integrante envia individualmente o link do GitHub e do vídeo conforme orientação da disciplina.
 

@@ -12,7 +12,14 @@
     "android": {
       "package": "com.guimello.spotifyexpo",
       "predictiveBackGestureEnabled": false,
-      "softwareKeyboardLayoutMode": "resize"
+      "softwareKeyboardLayoutMode": "resize",
+      "icon": "./assets/icons/icon.png",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icons/adaptive-foreground.png",
+        "monochromeImage": "./assets/icons/adaptive-monochrome.png",
+        "backgroundColor": "#121212"
+      },
+      "versionCode": 2
     },
     "ios": {
       "supportsTablet": true,
@@ -48,6 +55,7 @@
       "eas": {
         "projectId": "6880c665-3964-4ba2-8207-e641116b132e"
       }
-    }
+    },
+    "icon": "./assets/icons/icon.png"
   }
 }

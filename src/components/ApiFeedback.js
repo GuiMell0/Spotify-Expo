@@ -2,12 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SpotifyApiError } from '../services/spotifyErrors.mjs';
 import { getApiRecovery } from '../services/apiRecovery.mjs';
-import { useRouter } from 'expo-router';
+import { useRouter, useSegments } from 'expo-router';
 import { useSession } from '../contexts/SessionContext';
 import { colors, radius } from '../theme';
 
 export default function ApiFeedback({ loading = false, error, message, onRetry, retryLabel = 'Tentar novamente' }) {
   const router = useRouter();
+  const segments = useSegments();
+  function openLocalLibrary() {
+    if (segments[0] === '(tabs)') router.navigate('/(tabs)/library');
+    else router.dismissTo('/(tabs)/library');
+  }
   const { session, isDemo } = useSession();
   const [now, setNow] = useState(Date.now);
   const retryAt = error instanceof SpotifyApiError ? error.retryAt : null;
@@ -30,7 +35,7 @@ export default function ApiFeedback({ loading = false, error, message, onRetry, 
       {loading ? <View style={styles.loading}><ActivityIndicator color={colors.green} /><Text style={styles.text}>Carregando…</Text></View> : (
         <Text accessibilityRole="alert" accessibilityLiveRegion="polite" style={styles.text}>{message || errorMessage}</Text>
       )}
-      {!loading && showLocalLibrary && !!session && !isDemo && <Pressable accessibilityRole="button" accessibilityLabel="Abrir Biblioteca local" onPress={() => router.dismissTo('/library')} style={styles.local}><Text style={styles.localText}>Abrir Biblioteca local</Text></Pressable>}
+      {!loading && showLocalLibrary && !!session && !isDemo && <Pressable accessibilityRole="button" accessibilityLabel="Abrir Biblioteca local" onPress={openLocalLibrary} style={styles.local}><Text style={styles.localText}>Abrir Biblioteca local</Text></Pressable>}
       {seconds > 0 && <Text accessibilityLiveRegion="polite" style={styles.detail}>Tente novamente em {seconds}s.</Text>}
       {!!onRetry && !loading && retryAllowed && (
         <Pressable accessibilityRole="button" accessibilityState={{ disabled: !canRetry }} disabled={!canRetry} onPress={onRetry} style={[styles.button, !canRetry && styles.disabled]}>
