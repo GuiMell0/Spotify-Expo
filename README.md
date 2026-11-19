@@ -179,12 +179,6 @@ npx expo install --check
 npx expo-doctor
 ```
 
-A limpeza foi validada com **394 testes unitários**, **81 cenários de navegador com API simulada**, lint sem avisos, **21/21 verificações do Expo Doctor** e bundles Android/web. As 17 telas foram conferidas em larguras de 320 e 768 pixels.
-
-A suíte unitária possui **394 testes**. Eles verificam autenticação, API, armazenamento, isolamento entre contas, recuperação de falhas e regras das funcionalidades sem acessar a conta Spotify real.
-
-Depois de instalar o APK final, confira login e restauração, catálogo, curtidas e playlists após reinício, fila, abertura no Spotify e acesso à Biblioteca sem rede. Teclado, fonte ampliada, áreas seguras e TalkBack precisam ser conferidos no aparelho.
-
 ## Dados locais e limitações
 
 - Curtidas, histórico, playlists, artistas acompanhados e preferências são separados pelo ID da conta.
