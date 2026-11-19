@@ -1,5 +1,7 @@
 # Biblioteca integrada — A15
 
+Atualização G06: a seção de playlists da conta Spotify já possui consulta e paginação. Ver [BIBLIOTECA-SPOTIFY.md](BIBLIOTECA-SPOTIFY.md). Os registros históricos abaixo descrevem as etapas anteriores.
+
 Atualização G02: a Biblioteca também apresenta playlists locais, o botão Criar playlist e cards que abrem os [detalhes por ID](DETALHES-PLAYLIST-LOCAL.md). Consulte [PLAYLISTS-LOCAIS.md](PLAYLISTS-LOCAIS.md) para o contrato atual; os detalhes abaixo registram a entrega original A15.
 
 A Biblioteca autenticada usa os dados locais da conta. Os exemplos da P1 ficam em DemoLibraryScreen, acessível apenas pela demonstração explícita.

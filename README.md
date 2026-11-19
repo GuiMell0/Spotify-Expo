@@ -56,7 +56,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 | Login | Entrada Spotify por PKCE, cancelamento, mensagens de erro e acesso explícito à demonstração. |
 | Home | Temas Brasil, Rock e Indie com músicas, álbuns e artistas reais, cache e atualização. |
 | Busca | Pesquisa Spotify com filtros, paginação e resultados reais; demonstração local separada. |
-| Biblioteca | Músicas curtidas e buscas locais, atalhos, filtros, ordenação e visualização persistentes. |
+| Biblioteca | Dados locais e playlists da conta Spotify em seções identificadas, com filtros, paginação e visualização persistente. |
 | Adicionar à playlist | Escolha de playlist local para uma faixa real, sem duplicatas e com confirmação de gravação. |
 | Editar playlist local | Renomeação, remoção de músicas e exclusão com confirmação e persistência. |
 | Playlist local | Detalhes do ID solicitado, nome, capa, quantidade e consulta às faixas salvas; estados de carregamento, vazio e falha. |
@@ -378,6 +378,12 @@ Validação G04: 314 testes unitários, lint e bundles Android/web aprovados; no
 /playlist/[id] exibe os metadados e músicas permitidos pela API, com paginação e recuperação de falhas. A tela permite curtir faixas e adicioná-las às playlists locais. A demonstração da P1 fica separada, sem ativação automática em caso de erro. São 15 telas principais; a listagem das playlists da conta na Biblioteca fica para G06. Ver [guia de playlists Spotify](docs/SPOTIFY-PLAYLISTS.md).
 
 Validação G05: 322 testes unitários, lint e bundles Android/web aprovados; nove cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Teste real no Android somente ao concluir o projeto completo.
+
+## Playlists da conta na Biblioteca — G06
+
+A Biblioteca lista playlists Spotify em uma seção própria, separada das playlists locais. Há atualização, paginação, abertura dos detalhes e preservação das páginas ao trocar filtros, layout e ordenação. Falhas não apagam resultados anteriores nem dados locais. Ver [guia da Biblioteca Spotify](docs/BIBLIOTECA-SPOTIFY.md).
+
+Validação G06: 330 testes unitários, lint e bundles Android/web aprovados; dez cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Permanecem 15 telas principais. APK e teste com a conta real somente na conclusão do projeto completo.
 
 ## Limitações atuais
 

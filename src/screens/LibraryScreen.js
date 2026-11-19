@@ -1,4 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import { createSpotifyLibrary } from '../services/spotifyLibrary.mjs';
+import SpotifyLibraryPlaylists from '../components/SpotifyLibraryPlaylists';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -20,7 +22,10 @@ export default function LibraryScreen() {
 
 function SavedLibraryScreen() {
   const router = useRouter();
-  const { session } = useSession();
+  const { session, catalog } = useSession();
+  const scope = session?.user.id;
+  const spotifyLibrary = useMemo(() => createSpotifyLibrary(catalog, { scope }), [catalog, scope]);
+  useEffect(() => () => spotifyLibrary.suspend(), [spotifyLibrary]);
   const { search } = useSearch();
   const { rememberIfReady } = useRecentSearches();
   const { localData, state } = useLocalData();
@@ -53,7 +58,7 @@ function SavedLibraryScreen() {
   function empty() {
     if (loading) return <View style={styles.empty}><ActivityIndicator color={colors.green} /><Text style={styles.description}>Carregando sua biblioteca…</Text></View>;
     if (state.status === 'error') return <View style={styles.empty}><Text style={styles.description}>Não foi possível carregar sua biblioteca. Use Tentar novamente no aviso acima.</Text></View>;
-    const title = filter === 'tracks' ? 'Nenhuma música curtida' : filter === 'searches' ? 'Nenhuma busca recente' : filter === 'playlists' ? 'Nenhuma playlist local' : 'Sua biblioteca começa aqui';
+    const title = filter === 'tracks' ? 'Nenhuma música curtida' : filter === 'searches' ? 'Nenhuma busca recente' : filter === 'playlists' ? 'Nenhuma playlist local' : 'Nenhum item local salvo';
     return <View style={styles.empty}><MaterialCommunityIcons name="bookshelf" size={48} color={colors.muted} /><Text style={styles.emptyTitle}>{title}</Text><Text style={styles.emptyDescription}>Crie uma playlist ou busque no Spotify e curta suas músicas. Seus dados ficam salvos neste aparelho.</Text><Pressable accessibilityRole="button" onPress={() => router.navigate('/search')} style={styles.action}><Text style={styles.actionText}>Buscar músicas</Text></Pressable></View>;
   }
 
@@ -72,6 +77,7 @@ function SavedLibraryScreen() {
         {state.status === 'saving' && <Text accessibilityLiveRegion="polite" style={styles.description}>Salvando dados…</Text>}
         {state.status === 'error' && entries.length > 0 && <Text style={styles.description}>Esta é a última biblioteca carregada. Recarregue os dados pelo aviso acima.</Text>}
       </View>}
+      ListFooterComponent={<SpotifyLibraryPlaylists controller={spotifyLibrary} visible={filter==='all'||filter==='playlists'} view={view} sort={sort}/>}
       ListEmptyComponent={empty}
       renderItem={({ item }) => <Pressable accessibilityRole="button" accessibilityLabel={(item.type === 'track' ? 'Abrir música da biblioteca ' : item.type === 'local-playlist' ? 'Abrir playlist local ' : 'Repetir busca da biblioteca ') + item.title} accessibilityState={{ disabled: item.type === 'local-playlist' && !item.href }} disabled={item.type === 'local-playlist' && !item.href} onPress={() => open(item)} style={({ pressed }) => [styles.item, view === 'grid' ? styles.gridItem : styles.listItem, pressed && styles.pressed]}><LibraryItemContent item={item} /></Pressable>}
 
