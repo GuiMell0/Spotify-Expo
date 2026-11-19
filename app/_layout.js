@@ -1,3 +1,4 @@
+import SessionRecoveryNotice from '../src/components/SessionRecoveryNotice';
 import { TrackQueueProvider } from '../src/contexts/TrackQueueContext';
 import MiniPlayer from '../src/components/MiniPlayer';
 import React from 'react';
@@ -24,6 +25,7 @@ function RootNavigator() {
     <ThemeProvider value={navigationTheme}>
       <StatusBar style="light" />
       <View style={styles.root}>
+      <SessionRecoveryNotice />
       <LocalDataNotice />
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}>
         <Stack.Screen name="index" />

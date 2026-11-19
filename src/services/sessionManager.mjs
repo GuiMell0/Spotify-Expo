@@ -1,3 +1,4 @@
+import { isTransientSessionError } from './sessionRecovery.mjs';
 import { SpotifyAuthError } from './spotifyErrors.mjs';
 
 const cancelled = () => new SpotifyAuthError('cancelled', 'A sessão foi encerrada ou substituída.');
@@ -26,7 +27,7 @@ function snapshot(session) {
 
 export function createSessionManager({
   storage, clientId, refreshSession, now = Date.now,
-  onChange = () => {}, onRefreshing = () => {}, skewMs = 60000, storageTimeoutMs = 5000,
+  onChange = () => {}, onRefreshing = () => {}, onRecoveryChange = () => {}, skewMs = 60000, storageTimeoutMs = 5000,
 }) {
   let current = null;
   let epoch = 0;
@@ -55,6 +56,7 @@ export function createSessionManager({
     epoch++;
     flight?.controller.abort();
     current = null;
+    onRecoveryChange(null);
     onChange(null);
     onRefreshing(false);
   }
@@ -78,6 +80,7 @@ export function createSessionManager({
     });
     check(version, signal);
     current = value;
+    onRecoveryChange(null);
     onChange(value);
     return value;
   }
@@ -120,9 +123,13 @@ export function createSessionManager({
           await clear();
           throw error;
         }
-        const transient = ['network', 'timeout', 'server', 'rate_limited'].includes(error.code);
+        const transient = isTransientSessionError(error);
         if (transient && !forceRefresh && session.expiresAt > now()) return session.accessToken;
-        if (current?.expiresAt <= now() || error.code === 'storage') onChange(null);
+        if (transient && current) {
+          // A identidade salva libera apenas os dados locais: o token vencido nunca é retornado.
+          onRecoveryChange(error.code);
+          onChange(current);
+        } else if (current?.expiresAt <= now() || error.code === 'storage') onChange(null);
         throw error;
       } finally {
         if (flight === operation) { flight = null; onRefreshing(false); }
@@ -151,7 +158,13 @@ export function createSessionManager({
     }
     if (!saved) return null;
     current = snapshot(saved);
-    await getAccessToken();
+    try { await getAccessToken(); }
+    catch (error) {
+      if (!isTransientSessionError(error)) throw error;
+      check(version);
+      if (!current) throw error;
+      // A restauração offline conserva a conta para abrir seu registro local.
+    }
     check(version);
     onChange(current);
     return current;

@@ -73,7 +73,8 @@
     "test:local-display-name": "node --test tests/local-display-name.test.mjs",
     "test:settings": "node --test tests/local-settings.test.mjs",
     "test:track": "node --test tests/spotify-track.test.mjs",
-    "test:queue": "node --test tests/track-queue.test.mjs"
+    "test:queue": "node --test tests/track-queue.test.mjs",
+    "test:recovery": "node --test tests/session-recovery.test.mjs"
   },
   "private": true
 }

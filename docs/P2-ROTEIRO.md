@@ -92,7 +92,7 @@ A15 conclui a parte implementada da Ana: API real para Home, busca, álbuns, art
 
 ## Etapas do Guilherme — 15 commits
 
-G11 conferida no Git: 33177c8. G12 implementada e validada: estado compartilhado da faixa, mini-player, fila da origem, seleção direta e navegação anterior/próxima, sem simular reprodução. 382 testes unitários, lint sem avisos e bundles Android/web aprovados; 21 cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Permanecem 17 telas principais. G12 pronta para commit; G13 ainda não iniciada. APK e teste físico somente no final do projeto completo. Ver [mini-player e fila](MINI-PLAYER-FILA.md).
+G12 conferida no Git: 97e7060. G13 implementada e validada: restauração e continuidade da conta local em falhas transitórias de renovação, reconexão manual, caminho para Biblioteca local e política de erros com espera para 429. Tokens vencidos não são enviados à API e sessões rejeitadas continuam exigindo login. 394 testes unitários, lint sem avisos e bundles Android/web aprovados; 36 cenários de navegador com Spotify simulado aprovados (15 de recuperação e 21 de regressão do player/fila), sem exceções JavaScript. Permanecem 17 telas principais. G13 pronta para commit; G14 ainda não iniciada. APK e teste físico somente no final do projeto completo. Ver [recuperação e uso offline](RECUPERACAO-OFFLINE.md).
 
 | Etapa | Mensagem de commit | Entrega e critério de aceite |
 | --- | --- | --- |

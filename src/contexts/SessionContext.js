@@ -30,6 +30,7 @@ export function SessionProvider({ children }) {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [canRetryRestore, setCanRetryRestore] = useState(false);
   const [session, setSession] = useState(null);
+  const [sessionRecovery, setSessionRecovery] = useState(null);
   const [isDemo, setIsDemo] = useState(false);
   const [request, setRequest] = useState(null);
   const [generation, setGeneration] = useState(0);
@@ -48,6 +49,7 @@ export function SessionProvider({ children }) {
     refreshSession: refreshSpotifySession,
     onChange: setSession,
     onRefreshing: setIsRefreshing,
+    onRecoveryChange: setSessionRecovery,
   }), [config]);
 
   const invalidateApiSession = useCallback(async ({ sessionVersion }) => {
@@ -272,8 +274,13 @@ export function SessionProvider({ children }) {
     setGeneration(value => value + 1);
   }, []);
 
+  const retrySession = useCallback(async () => {
+    try { await manager.getAccessToken({ forceRefresh: true }); }
+    catch (error) { reportSessionError(error); }
+  }, [manager, reportSessionError]);
+
   const value = {
-    session, api, catalog, isDemo, status, message, blocker, isBrowserOpen,
+    session, sessionRecovery, retrySession, api, catalog, isDemo, status, message, blocker, isBrowserOpen,
     isRestoring, isEndingSession, logoutBlocked, isRefreshing, canRetryRestore,
     canAccess: Boolean(session) || isDemo,
     isBusy: ['authenticating', 'exchanging'].includes(status),

@@ -95,9 +95,10 @@ test('invalid_grant limpa sessão e exige login, sem repetir renovação', async
 test('falha de rede preserva refresh token e permite repetição manual', async () => {
   let failed = true;
   const f = fixture({ raw: stored({ ...initial, expiresAt: 100 }), refreshSession: async ({ session }) => { if (failed) throw error('network'); return renewal(session); } });
-  await assert.rejects(f.manager.restore(), { code: 'network' });
+  assert.equal((await f.manager.restore()).user.id, 'user-a');
   assert.equal(JSON.parse(f.raw()).session.refreshToken, 'test-refresh');
-  assert.equal(f.changes.at(-1), null);
+  assert.equal(f.changes.at(-1).user.id, 'user-a');
+  await assert.rejects(f.manager.getAccessToken(), { code: 'network' });
   failed = false;
   assert.equal((await f.manager.restore()).accessToken, 'new-access');
 });

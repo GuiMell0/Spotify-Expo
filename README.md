@@ -423,6 +423,12 @@ Uma faixa aberta pela Home, busca, Biblioteca, curtidas, álbum ou playlist pass
 
 Validação G12: 382 testes unitários, lint sem avisos e bundles Android/web aprovados; 21 cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Permanecem 17 telas principais. APK e teste físico somente ao concluir o projeto completo.
 
+## Recuperação de falhas e uso offline — G13
+
+A sessão previamente salva mantém o acesso à Biblioteca local quando o token vence e sua renovação falha temporariamente. O aviso permite reconectar sem perder as alterações locais. Tokens vencidos não são enviados à API; uma sessão rejeitada exige novo login. Falhas do catálogo oferecem acesso local e os erros 429 respeitam o prazo de espera. Ver [guia de recuperação e uso offline](docs/RECUPERACAO-OFFLINE.md).
+
+Validação G13: 394 testes unitários, lint sem avisos e bundles Android/web aprovados; 36 cenários de navegador com Spotify simulado aprovados (15 de recuperação e 21 de regressão do player/fila), sem exceções JavaScript. Permanecem 17 telas principais. A restauração inicial da sessão persistente foi testada no domínio; o teste real no Android e a geração do APK ficam para a conclusão do projeto completo.
+
 ## Limitações atuais
 
 - APK e login Android confirmados pela Ana; busca, Home, álbum e artista novos aguardam conferência no aparelho;
