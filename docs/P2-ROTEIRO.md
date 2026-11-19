@@ -92,7 +92,7 @@ A15 conclui a parte implementada da Ana: API real para Home, busca, álbuns, art
 
 ## Etapas do Guilherme — 15 commits
 
-G01 conferida no Git: 8d69537. G02 implementada e validada: rota dinâmica de playlist local, cards navegáveis, nome, capa, quantidade, estado vazio e consulta às faixas salvas. 298 testes unitários, lint e bundles Android/web aprovados. 39 cenários de navegador com Spotify simulado aprovados (19 de detalhes e 20 de regressão da criação), sem exceções JavaScript. Aguardando commit G02; G03 permanece pendente. São 13 telas principais navegáveis. Teste físico do APK somente na conclusão do projeto completo. Ver [detalhes locais](DETALHES-PLAYLIST-LOCAL.md).
+G02 conferida no Git: 7a8fa74. G03 implementada: escolha de playlist local para faixas reais, gravação confirmada, deduplicação e acesso aos detalhes atualizados. Validação: 306 testes unitários, lint e bundles Android/web aprovados; sete cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. São 14 telas principais. G03 pronta para commit; G04 ainda não iniciada. APK apenas no final do projeto completo. Ver [inclusão de músicas](ADICIONAR-MUSICAS.md).
 
 | Etapa | Mensagem de commit | Entrega e critério de aceite |
 | --- | --- | --- |
@@ -135,7 +135,7 @@ G01 conferida no Git: 8d69537. G02 implementada e validada: rota dinâmica de pl
 - [ ] Falhas de rede, autorização e limites encerram o carregamento.
 - [ ] Favoritas, recentes, playlists e preferências persistem após reinício.
 - [ ] Dados de usuários diferentes não se misturam.
-- [x] Pelo menos 12 telas distintas possuem entradas navegáveis: 13 na G02; meta final: 17.
+- [x] Pelo menos 12 telas distintas possuem entradas navegáveis: 14 na G03; meta final: 17.
 - [ ] Código de produção não depende de src/data/media.js.
 - [ ] Validar dependências com Expo e compilar os bundles; registrar comandos e resultados reais.
 - [ ] Percorrer manualmente os fluxos no Android, incluindo voltar e teclado.

@@ -1,3 +1,4 @@
+import AddToPlaylistButton from '../components/AddToPlaylistButton';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -52,7 +53,7 @@ export default function CatalogEntityPreview({ type, id }) {
           {data.image ? <Image source={data.image} resizeMode="contain" style={styles.cover} /> : <View style={styles.placeholder}><MaterialCommunityIcons name={icons[type]} size={90} color={colors.muted} /></View>}
           <Text accessibilityRole="header" style={styles.title}>{data.title}</Text>
           <Text style={styles.subtitle}>{data.subtitle}</Text>
-          {type === 'track' && <LikeTrackButton track={data} showLabel />}
+          {type === 'track' && <><LikeTrackButton track={data} showLabel /><AddToPlaylistButton track={data} /></>}
           {data.releaseDate && <Text style={styles.detail}>Lançamento: {data.releaseDate}</Text>}
           {data.duration && <Text style={styles.detail}>Duração: {data.duration}</Text>}
           {data.description && <Text style={styles.detail}>{data.description}</Text>}

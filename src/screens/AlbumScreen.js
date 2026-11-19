@@ -1,3 +1,4 @@
+import AddToPlaylistButton from '../components/AddToPlaylistButton';
 import React, { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Image, Linking, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
@@ -83,7 +84,7 @@ function SpotifyAlbumScreen() {
               <View style={styles.trackInfo}><Text numberOfLines={2} style={styles.trackTitle}>{track.title}</Text><View style={styles.trackMeta}>{track.explicit && <Text accessibilityLabel="Conteúdo explícito" style={styles.explicit}>E</Text>}<Text numberOfLines={1} style={styles.trackArtist}>{track.artist}</Text></View>{track.isPlayable === false && <Text style={styles.restricted}>Indisponível nesta conta</Text>}</View>
               {track.duration && <Text style={styles.duration}>{track.duration}</Text>}
               <MaterialCommunityIcons name="chevron-right" size={20} color={colors.muted} />
-            </Pressable><LikeTrackButton track={track} /></View>)}
+            </Pressable><LikeTrackButton track={track} /><AddToPlaylistButton track={track} /></View>)}
             {state.skippedCount > 0 && <Text style={styles.notice}>Algumas faixas não foram fornecidas pelo Spotify.</Text>}
             <ApiFeedback loading={state.loadingMore} error={state.moreError} onRetry={controller.loadMore} retryLabel="Tentar carregar mais faixas" />
             {!!state.page?.next && !state.moreError && !state.loadingMore && !busy && <Pressable accessibilityRole="button" onPress={controller.loadMore} style={styles.more}><Text style={styles.moreText}>Carregar mais faixas</Text></Pressable>}

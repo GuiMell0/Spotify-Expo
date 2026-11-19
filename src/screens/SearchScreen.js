@@ -1,3 +1,4 @@
+import AddToPlaylistButton from '../components/AddToPlaylistButton';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -86,7 +87,7 @@ function SpotifySearchScreen() {
                     {item.image ? <Image source={item.image} resizeMode="contain" style={[styles.resultImage, item.type === 'artist' && styles.artistImage]} /> : <View style={[styles.placeholder, item.type === 'artist' && styles.artistImage]}><MaterialCommunityIcons name={icons[item.type]} size={28} color={colors.muted} /></View>}
                     <View style={styles.resultInfo}><Text numberOfLines={2} style={styles.resultTitle}>{item.title}</Text><Text numberOfLines={2} style={styles.resultSub}>{item.type === 'artist' || item.type === 'playlist' ? item.subtitle : typeLabels[item.type] + ' • ' + item.subtitle}{item.duration ? ' • ' + item.duration : ''}</Text></View>
                     <MaterialCommunityIcons name="chevron-right" size={24} color={colors.muted} />
-                  </Pressable>{item.type === 'track' && <LikeTrackButton track={item} />}</View>)}
+                  </Pressable>{item.type === 'track' && <LikeTrackButton track={item} />}{item.type === 'track' && <AddToPlaylistButton track={item} />}</View>)}
                   <ApiFeedback loading={result.loadingMore} error={result.error} onRetry={() => search.loadMore(group.key)} retryLabel={'Tentar carregar mais ' + group.label.toLowerCase()} />
                   {!!result.page.next && !result.loadingMore && !result.error && <Pressable accessibilityRole="button" accessibilityLabel={'Carregar mais ' + group.label.toLowerCase()} onPress={() => search.loadMore(group.key)} style={styles.more}><Text style={styles.moreText}>Carregar mais {group.label.toLowerCase()}</Text></Pressable>}
                 </View>;

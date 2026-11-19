@@ -1,3 +1,4 @@
+import AddToPlaylistButton from '../components/AddToPlaylistButton';
 import React from 'react';
 import { ActivityIndicator, FlatList, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -37,7 +38,7 @@ export default function LikedScreen() {
           {item.track.image ? <Image source={item.track.image} resizeMode="contain" style={styles.cover} /> : <View style={styles.placeholder}><MaterialCommunityIcons name="music-note" size={25} color={colors.muted} /></View>}
           <View style={styles.info}><Text numberOfLines={2} style={styles.trackTitle}>{item.track.title}</Text><Text numberOfLines={1} style={styles.artist}>{item.track.artist}</Text></View>
           {item.track.duration && <Text style={styles.duration}>{item.track.duration}</Text>}
-        </Pressable><LikeTrackButton track={item.track} /></View>}
+        </Pressable><LikeTrackButton track={item.track} /><AddToPlaylistButton track={item.track} /></View>}
       />
     </SafeAreaView>
   </View>;

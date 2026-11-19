@@ -57,6 +57,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 | Home | Temas Brasil, Rock e Indie com músicas, álbuns e artistas reais, cache e atualização. |
 | Busca | Pesquisa Spotify com filtros, paginação e resultados reais; demonstração local separada. |
 | Biblioteca | Músicas curtidas e buscas locais, atalhos, filtros, ordenação e visualização persistentes. |
+| Adicionar à playlist | Escolha de playlist local para uma faixa real, sem duplicatas e com confirmação de gravação. |
 | Playlist local | Detalhes do ID solicitado, nome, capa, quantidade e consulta às faixas salvas; estados de carregamento, vazio e falha. |
 | Criar playlist local | Formulário com validação, gravação por conta e retorno à Biblioteca após confirmação. |
 | Músicas curtidas | Favoritas salvas por conta neste aparelho, remoção, estado vazio e abertura dos metadados da faixa. |
@@ -358,6 +359,12 @@ Os cards da Biblioteca abrem /local-playlist/[id]. A tela mostra nome, capa disp
 A consulta usa os dados da conta atual e funciona sem chamada de catálogo. Adicionar músicas pela interface continua na G03. A G02 acrescenta a décima terceira tela principal. Contrato e conferência final no [guia dos detalhes locais](docs/DETALHES-PLAYLIST-LOCAL.md).
 
 Validação da G02: 298 testes unitários (18 novos), lint e bundles Android/web aprovados. 39 cenários de navegador com Spotify simulado aprovados (19 de detalhes e 20 de regressão da criação), sem exceções JavaScript. O teste físico do APK continua reservado para a conclusão do projeto completo.
+
+## Adição de músicas na G03
+
+Faixas na busca, álbum, curtidas e detalhes oferecem a ação de adicionar a uma playlist local. A nova tela /add-to-playlist permite escolher o destino, impede duplicatas e abre a playlist após a confirmação da gravação. A G03 acrescenta a 14ª tela principal. Ver [guia de inclusão](docs/ADICIONAR-MUSICAS.md).
+
+Validação G03: 306 testes unitários, lint e bundles Android/web aprovados; sete cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. APK somente na conclusão do projeto completo.
 
 ## Limitações atuais
 

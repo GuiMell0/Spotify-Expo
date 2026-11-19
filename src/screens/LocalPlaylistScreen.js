@@ -1,3 +1,4 @@
+import AddToPlaylistButton from '../components/AddToPlaylistButton';
 import React from 'react';
 import { ActivityIndicator, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -53,7 +54,7 @@ export default function LocalPlaylistScreen() {
             <Text style={styles.position}>{index + 1}</Text>
             {item.image ? <Image source={item.image} resizeMode="contain" style={styles.trackCover} /> : <View style={styles.trackPlaceholder}><MaterialCommunityIcons name="music-note" size={24} color={colors.muted} /></View>}
             <View style={styles.info}><Text numberOfLines={2} style={styles.trackTitle}>{item.title}</Text><Text numberOfLines={2} style={styles.artist}>{item.artist}</Text>{item.duration && <Text style={styles.duration}>{item.duration}</Text>}</View>
-          </Pressable><LikeTrackButton track={item} /></View>}
+          </Pressable><LikeTrackButton track={item} /><AddToPlaylistButton track={item} /></View>}
         />}
     </SafeAreaView>
   </View>;

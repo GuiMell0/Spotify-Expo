@@ -1,4 +1,6 @@
 const messages = {
+  playlist_missing: 'A playlist local não está mais disponível. Carregue seus dados novamente.',
+  playlist_full: 'Esta playlist atingiu o limite de 300 músicas. Escolha outra playlist.',
   read: 'Não foi possível carregar seus dados salvos. Tente novamente. Os dados existentes foram preservados.',
   write: 'Não foi possível confirmar o salvamento. Carregue os dados novamente antes de continuar.',
   invalid_data: 'Não foi possível validar os dados locais. Os dados salvos foram preservados.',
