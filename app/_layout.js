@@ -40,6 +40,7 @@ function RootNavigator() {
           <Stack.Screen name="playlist/[id]" />
           <Stack.Screen name="profile/index" />
           <Stack.Screen name="profile/edit" />
+          <Stack.Screen name="settings" />
           <Stack.Screen name="player" options={{ animation: 'slide_from_bottom', presentation: 'fullScreenModal' }} />
         </Stack.Protected>
         <Stack.Screen name="+not-found" />

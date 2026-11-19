@@ -67,6 +67,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 | Álbum | Detalhes e faixas reais por ID, paginação, atualização e navegação ao artista e à faixa. |
 | Artista | Dados reais por ID, discografia paginada de álbuns e singles, atualização e acesso aos álbuns. |
 | Player | Metadados de faixa real, curtida local e link Spotify; player da P1 nas telas ainda não refatoradas. |
+| Configurações | Preferências da Biblioteca, limpeza seletiva com confirmação e logout. |
 | Editar perfil local | Apelido persistente por conta, cancelamento e retorno ao nome do Spotify. |
 | Perfil | Dados reais de /me, foto ou inicial, playlists da conta, atualização, link Spotify e logout. |
 
@@ -403,6 +404,12 @@ Validação G08: 346 testes unitários, lint e bundles Android/web aprovados; de
 Perfil → Editar apelido local permite salvar um apelido por conta, cancelar sem gravar ou voltar ao nome do Spotify. A preferência aparece no perfil e na Home, sem modificar a conta Spotify. A G09 acrescenta a 16ª tela principal. Ver [guia do apelido local](docs/APELIDO-LOCAL.md).
 
 Validação G09: 354 testes unitários, lint e bundles Android/web aprovados; onze cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. APK e teste físico somente ao concluir o projeto completo.
+
+## Configurações e limpeza seletiva — G10
+
+Perfil → Configurações permite escolher visualização e ordenação da Biblioteca, editar o apelido e sair da conta. A limpeza exige confirmação para cada grupo local: curtidas, buscas, playlists, artistas ou preferências. Os outros grupos e as outras contas são preservados. A G10 acrescenta a 17ª tela principal. Ver [guia das configurações](docs/CONFIGURACOES.md).
+
+Validação G10: 362 testes unitários, lint e bundles Android/web aprovados; doze cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. O projeto ainda passa pelas etapas de player, fila e revisão final. APK e teste físico somente ao concluir o projeto completo.
 
 ## Limitações atuais
 

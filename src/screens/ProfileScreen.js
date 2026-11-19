@@ -33,6 +33,7 @@ function AccountProfile(){
  <View style={styles.identity}>{profile.image&&failedImage!==profile.image.uri?<Image accessibilityLabel="Foto da conta Spotify" source={profile.image} onError={()=>setFailedImage(profile.image.uri)} style={styles.avatar}/>:<View accessibilityLabel="Perfil sem foto disponível" style={styles.placeholder}><Text style={styles.initial}>{initial}</Text></View>}<Text accessibilityRole="header" style={styles.name}>{name}</Text></View>
  {localState.data?.preferences.displayName&&<Text style={styles.description}>Apelido local · Nome no Spotify: {profile.name}</Text>}
  <Pressable accessibilityRole="button" accessibilityLabel="Editar apelido local" disabled={localState.status!=='ready'} onPress={()=>router.push('/profile/edit')} style={styles.secondary}><Text style={styles.secondaryText}>Editar apelido local</Text></Pressable>
+ <Pressable accessibilityRole="button" accessibilityLabel="Abrir configurações" onPress={()=>router.push('/settings')} style={styles.secondary}><Text style={styles.secondaryText}>Configurações</Text></Pressable>
  <Text style={styles.description}>Identificador Spotify: {profile.id}</Text>
  {profile.followers!==null&&<Text style={styles.description}>{profile.followers} {profile.followers===1?'seguidor':'seguidores'}</Text>}
  {state.error&&<Text style={styles.description}>{state.profile?'Os dados anteriores foram mantidos. Não foi possível atualizar o perfil.':'A identificação exibida vem da sessão. Não foi possível atualizar o perfil.'}</Text>}
