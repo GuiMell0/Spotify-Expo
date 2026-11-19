@@ -92,7 +92,7 @@ A15 conclui a parte implementada da Ana: API real para Home, busca, álbuns, art
 
 ## Etapas do Guilherme — 15 commits
 
-G09 conferida no Git: e0f1c16. G10 implementada e validada: configurações, preferências persistentes da Biblioteca, limpeza seletiva com confirmação e logout. 362 testes unitários, lint e bundles Android/web aprovados; doze cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. São 17 telas principais. G10 pronta para commit; G11 ainda não iniciada. APK somente no final do projeto completo. Ver [configurações](CONFIGURACOES.md).
+G10 conferida no Git: cc7a0f5. G11 implementada e validada: player com metadados da faixa real, curtidas, inclusão em playlists locais, links de álbum/artista e abertura canônica no Spotify, sem progresso ou letra fictícios no modo autenticado. 370 testes unitários, lint e bundles Android/web aprovados; onze cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. São 17 telas principais. G11 pronta para commit; G12 ainda não iniciada. APK e teste físico somente no final do projeto completo. Ver [player com faixa real](PLAYER-SPOTIFY.md).
 
 | Etapa | Mensagem de commit | Entrega e critério de aceite |
 | --- | --- | --- |

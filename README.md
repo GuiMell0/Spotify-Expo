@@ -66,7 +66,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 | Playlist | Metadados e músicas reais, paginação, tratamento de acesso negado e link Spotify; demonstração separada. |
 | Álbum | Detalhes e faixas reais por ID, paginação, atualização e navegação ao artista e à faixa. |
 | Artista | Dados reais por ID, discografia paginada de álbuns e singles, atualização e acesso aos álbuns. |
-| Player | Metadados de faixa real, curtida local e link Spotify; player da P1 nas telas ainda não refatoradas. |
+| Player | Faixa real, capa, artistas, duração, curtidas e playlists locais; abertura funcional no Spotify e navegação para álbum/artista. |
 | Configurações | Preferências da Biblioteca, limpeza seletiva com confirmação e logout. |
 | Editar perfil local | Apelido persistente por conta, cancelamento e retorno ao nome do Spotify. |
 | Perfil | Dados reais de /me, foto ou inicial, playlists da conta, atualização, link Spotify e logout. |
@@ -411,6 +411,12 @@ Perfil → Configurações permite escolher visualização e ordenação da Bibl
 
 Validação G10: 362 testes unitários, lint e bundles Android/web aprovados; doze cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. O projeto ainda passa pelas etapas de player, fila e revisão final. APK e teste físico somente ao concluir o projeto completo.
 
+## Player com faixa real — G11
+
+O player autenticado mostra a música selecionada, com capa disponível, artistas e duração. Permite curtir, adicionar a uma playlist local e visitar álbum/artista, mantendo a faixa ao voltar. O botão Ouvir no Spotify abre o endereço da música: a reprodução acontece no próprio Spotify. Não há progresso nem letra fictícios nesse modo. Ver [guia do player](docs/PLAYER-SPOTIFY.md).
+
+Validação G11: 370 testes unitários, lint e bundles Android/web aprovados; onze cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Permanecem 17 telas principais. A abertura externa foi interceptada nos testes; a integração no aparelho será conferida com o APK apenas ao concluir o projeto completo. Mini-player e fila compartilhada continuam na G12.
+
 ## Limitações atuais
 
 - APK e login Android confirmados pela Ana; busca, Home, álbum e artista novos aguardam conferência no aparelho;
@@ -420,7 +426,7 @@ Validação G10: 362 testes unitários, lint e bundles Android/web aprovados; do
 - Curtidas e histórico locais estão conectados. A sessão Android possui armazenamento seguro desde a A05;
 - O módulo nativo do AsyncStorage precisa ser incluído em um APK atualizado da A12;
 - Algumas imagens dependem de conexão com a internet;
-- Home, busca, álbuns e artistas usam dados reais. Conteúdo completo de playlists continua nas etapas do Guilherme;
+- Home, busca, álbuns, artistas, playlists e perfil usam a API real; recursos novos aguardam a conferência final no Android;
 
 ## Integrantes
 
