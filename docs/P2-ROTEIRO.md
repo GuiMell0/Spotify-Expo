@@ -92,7 +92,7 @@ A15 conclui a parte implementada da Ana: API real para Home, busca, álbuns, art
 
 ## Etapas do Guilherme — 15 commits
 
-G07 conferida no Git: 21c40bb. G08 implementada: perfil real de /me, tratamento de foto e nome ausentes, playlists da conta e logout. 346 testes unitários, lint e bundles Android/web aprovados; dez cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Permanecem 15 telas principais. G08 pronta para commit; G09 ainda não iniciada. APK somente no projeto completo. Ver [perfil real](PERFIL-SPOTIFY.md).
+G08 conferida no Git: 8bb9764. G09 implementada e validada: tela de apelido local, persistência por conta, retorno ao nome Spotify e sincronização com perfil e Home. 354 testes unitários, lint e bundles Android/web aprovados; onze cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. São 16 telas principais. G09 pronta para commit; G10 ainda não iniciada. APK somente no final do projeto completo. Ver [apelido local](APELIDO-LOCAL.md).
 
 | Etapa | Mensagem de commit | Entrega e critério de aceite |
 | --- | --- | --- |
@@ -135,7 +135,7 @@ G07 conferida no Git: 21c40bb. G08 implementada: perfil real de /me, tratamento 
 - [ ] Falhas de rede, autorização e limites encerram o carregamento.
 - [ ] Favoritas, recentes, playlists e preferências persistem após reinício.
 - [ ] Dados de usuários diferentes não se misturam.
-- [x] Pelo menos 12 telas distintas possuem entradas navegáveis: 15 na G04; meta final: 17.
+- [x] Pelo menos 12 telas distintas possuem entradas navegáveis: 16 na G09; meta final: 17.
 - [ ] Código de produção não depende de src/data/media.js.
 - [ ] Validar dependências com Expo e compilar os bundles; registrar comandos e resultados reais.
 - [ ] Percorrer manualmente os fluxos no Android, incluindo voltar e teclado.

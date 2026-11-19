@@ -67,6 +67,7 @@ Repositório: https://github.com/GuiMell0/Spotify-Expo
 | Álbum | Detalhes e faixas reais por ID, paginação, atualização e navegação ao artista e à faixa. |
 | Artista | Dados reais por ID, discografia paginada de álbuns e singles, atualização e acesso aos álbuns. |
 | Player | Metadados de faixa real, curtida local e link Spotify; player da P1 nas telas ainda não refatoradas. |
+| Editar perfil local | Apelido persistente por conta, cancelamento e retorno ao nome do Spotify. |
 | Perfil | Dados reais de /me, foto ou inicial, playlists da conta, atualização, link Spotify e logout. |
 
 ## Tecnologias utilizadas
@@ -396,6 +397,12 @@ Validação G07: 338 testes unitários, lint e bundles Android/web aprovados; de
 O perfil autenticado usa /me para apresentar a identificação da conta, com foto ou inicial e nome ou ID. Seguidores só aparecem se a API informar uma contagem válida. A tela oferece atualização, playlists reais, link Spotify e logout, sem os controles fictícios da P1. Ver [guia do perfil](docs/PERFIL-SPOTIFY.md).
 
 Validação G08: 346 testes unitários, lint e bundles Android/web aprovados; dez cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. Permanecem 15 telas principais. APK e teste físico somente ao concluir o projeto completo.
+
+## Edição de apelido local — G09
+
+Perfil → Editar apelido local permite salvar um apelido por conta, cancelar sem gravar ou voltar ao nome do Spotify. A preferência aparece no perfil e na Home, sem modificar a conta Spotify. A G09 acrescenta a 16ª tela principal. Ver [guia do apelido local](docs/APELIDO-LOCAL.md).
+
+Validação G09: 354 testes unitários, lint e bundles Android/web aprovados; onze cenários de navegador com Spotify simulado aprovados, sem exceções JavaScript. APK e teste físico somente ao concluir o projeto completo.
 
 ## Limitações atuais
 

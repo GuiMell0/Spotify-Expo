@@ -69,7 +69,8 @@
     "test:spotify-playlist": "node --test tests/spotify-playlist.test.mjs",
     "test:spotify-library": "node --test tests/spotify-library.test.mjs",
     "test:followed-artists": "node --test tests/followed-artists.test.mjs",
-    "test:profile": "node --test tests/spotify-profile.test.mjs"
+    "test:profile": "node --test tests/spotify-profile.test.mjs",
+    "test:local-display-name": "node --test tests/local-display-name.test.mjs"
   },
   "private": true
 }

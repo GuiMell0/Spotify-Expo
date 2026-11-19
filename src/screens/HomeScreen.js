@@ -1,3 +1,5 @@
+import { useLocalData } from '../contexts/LocalDataContext';
+import { displayNameForAccount } from '../services/localDisplayName.mjs';
 import React, { useCallback } from 'react';
 import { Image, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
@@ -23,6 +25,7 @@ export default function HomeScreen() {
 function SpotifyHomeScreen() {
   const router = useRouter();
   const { session } = useSession();
+  const { state: localState } = useLocalData();
   const { home, state } = useHome();
   const { search } = useSearch();
   const { width } = useWindowDimensions();
@@ -35,7 +38,7 @@ function SpotifyHomeScreen() {
   const busy = state.status === 'loading';
   const sections = state.sections.filter(section => section.items.length > 0);
   const shortcuts = sections.flatMap(section => section.items.slice(0, 2));
-  const name = session?.user.displayName || session?.user.id || 'Spotify';
+  const name = displayNameForAccount(localState.data, session?.user.displayName || session?.user.id || 'Spotify');
   const initial = Array.from(name.trim())[0]?.toLocaleUpperCase() || '♪';
   function open(item) {
     search.rememberEntity(item);

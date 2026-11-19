@@ -1,4 +1,5 @@
 const messages = {
+  invalid_display_name: 'Digite um apelido de 1 a 80 caracteres.',
   playlist_missing: 'A playlist local não está mais disponível. Carregue seus dados novamente.',
   playlist_full: 'Esta playlist atingiu o limite de 300 músicas. Escolha outra playlist.',
   read: 'Não foi possível carregar seus dados salvos. Tente novamente. Os dados existentes foram preservados.',

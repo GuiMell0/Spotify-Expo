@@ -1,3 +1,4 @@
+import { displayNameForAccount } from '../services/localDisplayName.mjs';
 import { createSpotifyLibrary } from '../services/spotifyLibrary.mjs';
 import SpotifyLibraryPlaylists from '../components/SpotifyLibraryPlaylists';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -35,7 +36,7 @@ function SavedLibraryScreen() {
   const entries = useMemo(() => listLibraryItems(state.data, { filter, sort }), [state.data, filter, sort]);
   const loading = ['idle', 'loading'].includes(state.status);
   const canSave = state.status === 'ready';
-  const initial = Array.from((session?.user.displayName || session?.user.id || 'Spotify').trim())[0]?.toLocaleUpperCase() || '♪';
+  const initial = Array.from(displayNameForAccount(state.data, session?.user.displayName || session?.user.id || 'Spotify').trim())[0]?.toLocaleUpperCase() || '♪';
 
   function preference(key, value) {
     if (localData.getSnapshot().status !== 'ready') return;

@@ -1,6 +1,8 @@
+import { useLocalData } from '../contexts/LocalDataContext';
+import { displayNameForAccount } from '../services/localDisplayName.mjs';
 import React, { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSession } from '../contexts/SessionContext';
@@ -14,20 +16,23 @@ import { colors, radius } from '../theme';
 export default function ProfileScreen(){const {isDemo}=useSession();return isDemo?<DemoProfileScreen/>:<AccountProfile/>;}
 function AccountProfile(){
  const {session,api,catalog,signOut}=useSession(),user=session.user,id=user.id;
+ const {state:localState}=useLocalData(),router=useRouter();
  const controller=useMemo(()=>createSpotifyProfile(api,id),[api,id]);
  const playlists=useMemo(()=>createSpotifyLibrary(catalog,{scope:id}),[catalog,id]);
  const state=useSyncExternalStore(controller.subscribe,controller.getSnapshot,controller.getSnapshot);
  const [failedImage,setFailedImage]=useState(null),[linkError,setLinkError]=useState(null);
  useEffect(()=>()=>{controller.suspend();playlists.suspend();},[controller,playlists]);
  useFocusEffect(useCallback(()=>{controller.setActive(true);return()=>controller.setActive(false);},[controller]));
- const profile=state.profile??sessionProfile(user),initial=Array.from(profile.name)[0]?.toLocaleUpperCase()||'♪';
+ const profile=state.profile??sessionProfile(user),name=displayNameForAccount(localState.data,profile.name),initial=Array.from(name)[0]?.toLocaleUpperCase()||'♪';
  function refresh(){setFailedImage(null);controller.refresh();}
  async function open(){setLinkError(null);try{await Linking.openURL(profile.spotifyUrl);}catch{setLinkError(controller);}}
  return <SafeAreaView style={styles.root} edges={['top','bottom']}><ScrollView contentContainerStyle={styles.content}>
  <View style={styles.top}><BackButton style={styles.icon}/><MaterialCommunityIcons name="spotify" size={26} color={colors.green}/><Text style={styles.description}>Sua conta Spotify</Text><Pressable accessibilityRole="button" accessibilityLabel="Atualizar perfil Spotify" disabled={state.status==='loading'} onPress={refresh} style={styles.icon}><MaterialCommunityIcons name="refresh" size={25} color={colors.text}/></Pressable></View>
  <ApiFeedback loading={state.status==='loading'} error={state.error} onRetry={refresh} retryLabel="Tentar carregar perfil"/>
  {state.status==='paused'&&<ApiFeedback message="Atualização interrompida." onRetry={refresh}/>}
- <View style={styles.identity}>{profile.image&&failedImage!==profile.image.uri?<Image accessibilityLabel="Foto da conta Spotify" source={profile.image} onError={()=>setFailedImage(profile.image.uri)} style={styles.avatar}/>:<View accessibilityLabel="Perfil sem foto disponível" style={styles.placeholder}><Text style={styles.initial}>{initial}</Text></View>}<Text accessibilityRole="header" style={styles.name}>{profile.name}</Text></View>
+ <View style={styles.identity}>{profile.image&&failedImage!==profile.image.uri?<Image accessibilityLabel="Foto da conta Spotify" source={profile.image} onError={()=>setFailedImage(profile.image.uri)} style={styles.avatar}/>:<View accessibilityLabel="Perfil sem foto disponível" style={styles.placeholder}><Text style={styles.initial}>{initial}</Text></View>}<Text accessibilityRole="header" style={styles.name}>{name}</Text></View>
+ {localState.data?.preferences.displayName&&<Text style={styles.description}>Apelido local · Nome no Spotify: {profile.name}</Text>}
+ <Pressable accessibilityRole="button" accessibilityLabel="Editar apelido local" disabled={localState.status!=='ready'} onPress={()=>router.push('/profile/edit')} style={styles.secondary}><Text style={styles.secondaryText}>Editar apelido local</Text></Pressable>
  <Text style={styles.description}>Identificador Spotify: {profile.id}</Text>
  {profile.followers!==null&&<Text style={styles.description}>{profile.followers} {profile.followers===1?'seguidor':'seguidores'}</Text>}
  {state.error&&<Text style={styles.description}>{state.profile?'Os dados anteriores foram mantidos. Não foi possível atualizar o perfil.':'A identificação exibida vem da sessão. Não foi possível atualizar o perfil.'}</Text>}
