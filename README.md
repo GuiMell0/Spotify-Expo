@@ -188,6 +188,9 @@ npx expo-doctor
 - Uma falha temporária na renovação preserva o acesso aos dados locais da conta salva. Uma sessão rejeitada exige novo login.
 - Conteúdos e endpoints dependem da disponibilidade e das permissões da conta no Spotify.
 
+## Vídeo demonstrativo
+- Link do Vídeo: https://drive.google.com/file/d/1_hOiZPvKmBWbZvJwF1ss5TMRm0YrzQ7d/view?usp=drive_link
+
 ## Integrantes e créditos
 
 **Ana Carolina Gomes Soares** e **Guilherme Viana Ramos Mello**.
